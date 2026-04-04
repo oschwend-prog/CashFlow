@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>CashFlow — Become a Courier</title>
+  <meta name="description" content="Join London's first on-demand cash delivery network. Earn money delivering cash using the cash you already carry." />
+  <meta name="theme-color" content="#050A12" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #root { min-height: 100vh; }
+    body {
+      background: #050A12;
+      font-family: 'Outfit', 'SF Pro Display', -apple-system, sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+    }
+    input::placeholder, select { color: #556677; }
+    select option { background: #0D1B2A; color: #fff; }
+    button:active { transform: scale(0.98); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    @keyframes checkmark {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // ============================================================
+    // CONFIG
+    // ============================================================
+    const SUPABASE_URL = "https://intjyovslhvxsvxcbhgk.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA";
+
+    // ============================================================
+    // BRAND
+    // ============================================================
+    const B = {
+      bg: "#050A12", bgCard: "#0A1628", bgInput: "#0D1B2A",
+      emerald: "#00E8B8", amber: "#FFB800", amberDark: "#CC9400",
+      amberGlow: "rgba(255,184,0,0.15)", white: "#FFFFFF",
+      gray: "#8892A4", grayLight: "#C4CCD8", danger: "#FF4757",
+      border: "#1A2A40",
+    };
+
+    // ============================================================
+    // LONDON AREAS
+    // ============================================================
+    const areas = [
+      "E1 — Whitechapel / Spitalfields", "E2 — Bethnal Green / Shoreditch",
+      "E8 — Hackney / Dalston", "E14 — Canary Wharf / Isle of Dogs",
+      "EC1 — Clerkenwell / Farringdon", "EC2 — Moorgate / Liverpool Street",
+      "N1 — Islington / Angel", "SE1 — Southwark / Borough",
+      "SW1 — Westminster / Victoria", "W1 — Soho / Mayfair",
+      "W2 — Paddington / Bayswater", "WC1 — Bloomsbury / King's Cross",
+      "WC2 — Covent Garden / Strand", "Other — I'll cover multiple areas",
+    ];
+
+    // ============================================================
+    // APP
+    // ============================================================
+    function App() {
+      const [screen, setScreen] = useState("landing");
+      const [email, setEmail] = useState("");
+      const [otp, setOtp] = useState(["","","","","",""]);
+      const [profile, setProfile] = useState({ firstName:"", lastName:"", phone:"", area:"" });
+      const [loading, setLoading] = useState(false);
+      const [error, setError] = useState("");
+      const [focused, setFocused] = useState(null);
+      const [accessToken, setAccessToken] = useState("");
+      const otpRefs = useRef([]);
+
+      const progress = { landing:0, auth:25, otp:50, profile:75, success:100 };
+      const stepIdx = { landing:-1, auth:0, otp:1, profile:2, success:3 };
+
+      // ---- Supabase: Send OTP ----
+      const sendOtp = async () => {
+        if (!email || !email.includes("@")) { setError("Please enter a valid email"); return; }
+        setLoading(true); setError("");
+        try {
+          const res = await fetch(SUPABASE_URL + "/auth/v1/otp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ email }),
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message || data.msg || "Failed to send code");
+          if (!res.ok && !data.error) throw new Error("Server error — please try again");
+          setScreen("otp");
+        } catch (e) {
+          setError(e.message === "Failed to fetch" ? "Network error — check your connection and try again" : e.message);
+        }
+        setLoading(false);
+      };
+
+      // ---- Supabase: Verify OTP ----
+      const verifyOtp = async () => {
+        const code = otp.join("");
+        if (code.length !== 6) { setError("Enter all 6 digits"); return; }
+        setLoading(true); setError("");
+        try {
+          const res = await fetch(SUPABASE_URL + "/auth/v1/verify", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_ANON_KEY,
+            },
+            body: JSON.stringify({ email, token: code, type: "email" }),
+          });
+          const data = await res.json();
+          if (data.error) throw new Error(data.error.message || "Invalid code");
+          if (data.access_token) setAccessToken(data.access_token);
+          setScreen("profile");
+        } catch (e) {
+          setError(e.message === "Failed to fetch" ? "Network error — try again" : e.message);
+        }
+        setLoading(false);
+      };
+
+      // ---- Supabase: Save profile ----
+      const saveProfile = async () => {
+        if (!profile.firstName || !profile.lastName || !profile.phone) {
+          setError("Please fill in all required fields"); return;
+        }
+        setLoading(true); setError("");
+        try {
+          const authHeader = accessToken ? "Bearer " + accessToken : "Bearer " + SUPABASE_ANON_KEY;
+          const res = await fetch(SUPABASE_URL + "/rest/v1/profiles", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              apikey: SUPABASE_ANON_KEY,
+              Authorization: authHeader,
+              Prefer: "resolution=merge-duplicates",
+            },
+            body: JSON.stringify({
+              email,
+              first_name: profile.firstName,
+              last_name: profile.lastName,
+              phone: profile.phone,
+              preferred_area: profile.area,
+              role: "courier",
+              status: "pending",
+            }),
+          });
+          if (!res.ok) {
+            const errData = await res.json().catch(() => ({}));
+            throw new Error(errData.message || "Failed to save — please try again");
+          }
+          setScreen("success");
+        } catch (e) {
+          setError(e.message === "Failed to fetch" ? "Network error — try again" : e.message);
+        }
+        setLoading(false);
+      };
+
+      // ---- OTP handlers ----
+      const onOtpChange = (i, v) => {
+        if (!/^\d*$/.test(v)) return;
+        const n = [...otp]; n[i] = v.slice(-1); setOtp(n);
+        if (v && i < 5) otpRefs.current[i+1]?.focus();
+      };
+      const onOtpKey = (i, e) => {
+        if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i-1]?.focus();
+      };
+
+      // ---- Styles ----
+      const S = {
+        wrap: { minHeight:"100vh", background:`linear-gradient(165deg,${B.bg} 0%,#0A1628 50%,${B.bg} 100%)`, display:"flex", flexDirection:"column", alignItems:"center", position:"relative", overflow:"hidden" },
+        noise: { position:"fixed", inset:0, opacity:0.03, background:`url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, pointerEvents:"none", zIndex:0 },
+        bar: { position:"fixed", top:0, left:0, height:3, background:`linear-gradient(90deg,${B.amber},${B.emerald})`, transition:"width 0.4s ease", zIndex:100 },
+        ctn: { width:"100%", maxWidth:420, padding:"0 20px", position:"relative", zIndex:1 },
+        hdr: { display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 0 12px", gap:8 },
+        logo: { fontSize:26, fontWeight:800, letterSpacing:"-0.02em" },
+        cash: { color:B.white },
+        flow: { background:`linear-gradient(135deg,${B.emerald},${B.amber})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" },
+        card: { background:B.bgCard, borderRadius:20, padding:"28px 24px", border:`1px solid ${B.border}`, marginBottom:20 },
+        title: { fontSize:20, fontWeight:700, marginBottom:4, letterSpacing:"-0.01em" },
+        sub: { fontSize:14, color:B.gray, marginBottom:24 },
+        ig: { marginBottom:16 },
+        lbl: { display:"block", fontSize:13, fontWeight:600, color:B.grayLight, marginBottom:6 },
+        inp: (n) => ({ width:"100%", padding:"14px 16px", background:B.bgInput, border:`1.5px solid ${focused===n ? B.amber : B.border}`, borderRadius:12, color:B.white, fontSize:16, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s,box-shadow 0.2s", boxSizing:"border-box", ...(focused===n ? {boxShadow:`0 0 0 3px ${B.amber}22`} : {}) }),
+        sel: { width:"100%", padding:"14px 16px", background:B.bgInput, border:`1.5px solid ${B.border}`, borderRadius:12, color:B.white, fontSize:16, fontFamily:"'Outfit',sans-serif", outline:"none", appearance:"none", boxSizing:"border-box", backgroundImage:`url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238892A4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat:"no-repeat", backgroundPosition:"right 16px center" },
+        otp: (i) => ({ width:48, height:56, background:B.bgInput, border:`1.5px solid ${focused===`o${i}` ? B.amber : otp[i] ? B.amber+"66" : B.border}`, borderRadius:12, color:B.white, fontSize:24, fontWeight:700, fontFamily:"'Outfit',sans-serif", textAlign:"center", outline:"none", transition:"border-color 0.2s", ...(focused===`o${i}` ? {boxShadow:`0 0 0 3px ${B.amber}22`} : {}) }),
+        btn: (on) => ({ width:"100%", padding:"16px", borderRadius:14, border:"none", fontSize:16, fontWeight:700, fontFamily:"'Outfit',sans-serif", cursor:on?"pointer":"not-allowed", transition:"all 0.2s", letterSpacing:"0.01em", marginTop:8, ...(on ? { background:`linear-gradient(135deg,${B.amber},${B.amberDark})`, color:B.bg, boxShadow:`0 4px 20px ${B.amber}44` } : { background:B.border, color:B.gray, boxShadow:"none" }) }),
+        link: { color:B.amber, fontSize:14, background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", fontWeight:600, padding:"12px", display:"block", margin:"0 auto" },
+        err: { color:B.danger, fontSize:13, marginTop:8 },
+        steps: { display:"flex", justifyContent:"center", gap:8, marginBottom:28 },
+        dot: (a,d) => ({ width:d||a?28:8, height:8, borderRadius:4, background:d?B.amber:a?B.amber+"88":B.border, transition:"all 0.3s" }),
+        hero: { textAlign:"center", padding:"40px 0 32px" },
+        hIcon: { width:80, height:80, borderRadius:24, background:`linear-gradient(135deg,${B.amber}22,${B.amber}08)`, border:`1px solid ${B.amber}33`, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 24px", fontSize:36 },
+        h1: { fontSize:32, fontWeight:800, lineHeight:1.15, marginBottom:12, letterSpacing:"-0.03em" },
+        hsub: { fontSize:16, color:B.gray, lineHeight:1.5, maxWidth:300, margin:"0 auto" },
+        stats: { display:"flex", gap:12, margin:"32px 0" },
+        stat: { flex:1, background:B.bgCard, borderRadius:16, padding:"16px 12px", textAlign:"center", border:`1px solid ${B.border}` },
+        sv: { fontSize:22, fontWeight:800, color:B.amber, marginBottom:4 },
+        sl: { fontSize:11, color:B.gray, textTransform:"uppercase", letterSpacing:"0.06em" },
+        fl: { textAlign:"left", margin:"28px 0" },
+        fi: { display:"flex", alignItems:"flex-start", gap:14, marginBottom:18 },
+        fic: { width:36, height:36, borderRadius:10, background:B.amberGlow, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0, marginTop:2 },
+        ft: { fontWeight:700, marginBottom:2, fontSize:15 },
+        fd: { color:B.gray, fontSize:13 },
+        footer: { textAlign:"center", padding:"24px 0 40px", color:B.gray, fontSize:12 },
+        sIcon: { width:100, height:100, borderRadius:"50%", background:`linear-gradient(135deg,${B.amber}22,${B.amber}08)`, border:`2px solid ${B.amber}44`, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 28px", fontSize:48, animation:"checkmark 0.6s ease" },
+      };
+
+      const features = [
+        { icon:"⚡", t:"Use cash you already have", d:"No ATM runs. Deliver from your own float." },
+        { icon:"📍", t:"Choose your zone", d:"Go online when you want, where you want." },
+        { icon:"🔒", t:"Verified & tracked", d:"QR handover, GPS tracking, rated by users." },
+        { icon:"💸", t:"Instant payouts", d:"Earnings hit your account same day via Airwallex." },
+      ];
+
+      const si = stepIdx[screen];
+
+      return (
+        <div style={S.wrap}>
+          <div style={S.noise} />
+          <div style={{...S.bar, width:`${progress[screen]}%`}} />
+          <div style={S.ctn}>
+
+            {/* Header */}
+            <div style={S.hdr}>
+              <span style={S.logo}>
+                <span style={S.cash}>Cash</span><span style={S.flow}>Flow</span>
+              </span>
+            </div>
+
+            {/* Steps */}
+            {["auth","otp","profile"].includes(screen) && (
+              <div style={S.steps}>
+                {[0,1,2].map(i => <div key={i} style={S.dot(si===i, si>i)} />)}
+              </div>
+            )}
+
+            {/* ---- LANDING ---- */}
+            {screen === "landing" && (
+              <div style={{animation:"fadeIn 0.5s ease"}}>
+                <div style={S.hero}>
+                  <div style={S.hIcon}>💷</div>
+                  <h1 style={S.h1}>Deliver Cash.<br/><span style={{color:B.amber}}>Earn Instantly.</span></h1>
+                  <p style={S.hsub}>Turn the cash you already carry into income. Join London's first on-demand cash delivery network.</p>
+                </div>
+                <div style={S.stats}>
+                  <div style={S.stat}><div style={S.sv}>75%</div><div style={S.sl}>You Keep</div></div>
+                  <div style={S.stat}><div style={S.sv}>£7.50</div><div style={S.sl}>Per £100 Drop</div></div>
+                  <div style={S.stat}><div style={S.sv}>E1</div><div style={S.sl}>Launching</div></div>
+                </div>
+                <div style={S.fl}>
+                  {features.map((f,i) => (
+                    <div key={i} style={S.fi}>
+                      <div style={S.fic}>{f.icon}</div>
+                      <div><div style={S.ft}>{f.t}</div><div style={S.fd}>{f.d}</div></div>
+                    </div>
+                  ))}
+                </div>
+                <button style={S.btn(true)} onClick={() => setScreen("auth")}>Register as a Courier</button>
+                <div style={S.footer}>Already registered? <button style={{...S.link, display:"inline", padding:0, fontSize:12}} onClick={() => setScreen("auth")}>Sign in</button></div>
+                <div style={S.footer}>© 2026 CashFlow Ltd · London, UK</div>
+              </div>
+            )}
+
+            {/* ---- EMAIL ---- */}
+            {screen === "auth" && (
+              <div style={{animation:"fadeIn 0.4s ease"}}>
+                <div style={S.card}>
+                  <h2 style={S.title}>Get started</h2>
+                  <p style={S.sub}>We'll send a 6-digit code to verify your email.</p>
+                  <div style={S.ig}>
+                    <label style={S.lbl}>Email address</label>
+                    <input type="email" placeholder="you@email.com" value={email}
+                      onChange={e => { setEmail(e.target.value); setError(""); }}
+                      onFocus={() => setFocused("em")} onBlur={() => setFocused(null)}
+                      style={S.inp("em")} autoFocus />
+                  </div>
+                  {error && <div style={S.err}>{error}</div>}
+                  <button style={S.btn(!loading && email)} onClick={sendOtp} disabled={loading || !email}>
+                    {loading ? "Sending..." : "Send verification code"}
+                  </button>
+                </div>
+                <button style={S.link} onClick={() => { setScreen("landing"); setError(""); }}>← Back</button>
+              </div>
+            )}
+
+            {/* ---- OTP ---- */}
+            {screen === "otp" && (
+              <div style={{animation:"fadeIn 0.4s ease"}}>
+                <div style={S.card}>
+                  <h2 style={S.title}>Check your email</h2>
+                  <p style={S.sub}>Enter the 6-digit code sent to <span style={{color:B.amber, fontWeight:600}}>{email}</span></p>
+                  <div style={{display:"flex", gap:10, justifyContent:"center", margin:"20px 0"}}>
+                    {otp.map((d,i) => (
+                      <input key={i} ref={el => otpRefs.current[i]=el} type="text" inputMode="numeric"
+                        maxLength={1} value={d} onChange={e => onOtpChange(i, e.target.value)}
+                        onKeyDown={e => onOtpKey(i, e)} onFocus={() => setFocused(`o${i}`)}
+                        onBlur={() => setFocused(null)} style={S.otp(i)} autoFocus={i===0} />
+                    ))}
+                  </div>
+                  {error && <div style={S.err}>{error}</div>}
+                  <button style={S.btn(!loading && otp.join("").length===6)} onClick={verifyOtp}
+                    disabled={loading || otp.join("").length<6}>
+                    {loading ? "Verifying..." : "Verify & continue"}
+                  </button>
+                  <div style={{textAlign:"center", marginTop:16}}>
+                    <button style={{...S.link, display:"inline", padding:0}} onClick={sendOtp}>Resend code</button>
+                  </div>
+                </div>
+                <button style={S.link} onClick={() => { setScreen("auth"); setOtp(["","","","","",""]); setError(""); }}>← Change email</button>
+              </div>
+            )}
+
+            {/* ---- PROFILE ---- */}
+            {screen === "profile" && (
+              <div style={{animation:"fadeIn 0.4s ease"}}>
+                <div style={S.card}>
+                  <h2 style={S.title}>Your details</h2>
+                  <p style={S.sub}>Tell us a bit about yourself to get started.</p>
+                  <div style={{display:"flex", gap:12}}>
+                    <div style={{...S.ig, flex:1}}>
+                      <label style={S.lbl}>First name *</label>
+                      <input type="text" placeholder="John" value={profile.firstName}
+                        onChange={e => { setProfile({...profile, firstName:e.target.value}); setError(""); }}
+                        onFocus={() => setFocused("fn")} onBlur={() => setFocused(null)}
+                        style={S.inp("fn")} autoFocus />
+                    </div>
+                    <div style={{...S.ig, flex:1}}>
+                      <label style={S.lbl}>Last name *</label>
+                      <input type="text" placeholder="Smith" value={profile.lastName}
+                        onChange={e => { setProfile({...profile, lastName:e.target.value}); setError(""); }}
+                        onFocus={() => setFocused("ln")} onBlur={() => setFocused(null)}
+                        style={S.inp("ln")} />
+                    </div>
+                  </div>
+                  <div style={S.ig}>
+                    <label style={S.lbl}>Phone number *</label>
+                    <input type="tel" placeholder="+44 7XXX XXX XXX" value={profile.phone}
+                      onChange={e => { setProfile({...profile, phone:e.target.value}); setError(""); }}
+                      onFocus={() => setFocused("ph")} onBlur={() => setFocused(null)}
+                      style={S.inp("ph")} />
+                  </div>
+                  <div style={S.ig}>
+                    <label style={S.lbl}>Preferred area</label>
+                    <select value={profile.area} onChange={e => setProfile({...profile, area:e.target.value})} style={S.sel}>
+                      <option value="">Select your zone...</option>
+                      {areas.map(a => <option key={a} value={a}>{a}</option>)}
+                    </select>
+                  </div>
+                  {error && <div style={S.err}>{error}</div>}
+                  <button style={S.btn(!loading && profile.firstName && profile.lastName && profile.phone)}
+                    onClick={saveProfile} disabled={loading || !profile.firstName || !profile.lastName || !profile.phone}>
+                    {loading ? "Saving..." : "Complete registration"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ---- SUCCESS ---- */}
+            {screen === "success" && (
+              <div style={{textAlign:"center", padding:"60px 0 40px", animation:"fadeIn 0.5s ease"}}>
+                <div style={S.sIcon}>✓</div>
+                <h1 style={{...S.h1, fontSize:28}}>You're in, <span style={{color:B.amber}}>{profile.firstName}!</span></h1>
+                <p style={{...S.hsub, marginBottom:32}}>You've been registered as a CashFlow courier in London. We'll notify you as soon as the platform goes live in your area.</p>
+
+                <div style={{...S.card, background:B.amberGlow, border:`1px solid ${B.amber}33`, textAlign:"left"}}>
+                  <div style={{fontSize:14, fontWeight:700, marginBottom:12, color:B.amber}}>What happens next</div>
+                  {["We'll review your registration (usually within 24hrs)", "You'll receive an email when your area goes live", "Download the CashFlow app to start accepting deliveries"].map((t,i) => (
+                    <div key={i} style={{display:"flex", alignItems:"flex-start", gap:10, marginBottom:10, fontSize:14, lineHeight:1.4}}>
+                      <span style={{color:B.amber, fontWeight:800, fontSize:13, marginTop:1, flexShrink:0}}>{i+1}.</span>
+                      <span style={{color:B.grayLight}}>{t}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{...S.card, textAlign:"left", marginTop:16}}>
+                  <div style={{fontSize:14, fontWeight:700, marginBottom:8}}>Your registration</div>
+                  <div style={{fontSize:13, color:B.gray, lineHeight:1.8}}>
+                    {profile.firstName} {profile.lastName}<br/>{email}<br/>{profile.phone}<br/>{profile.area || "No area selected"}
+                  </div>
+                </div>
+
+                <div style={S.footer}>
+                  <span style={{...S.logo, fontSize:16}}><span style={S.cash}>Cash</span><span style={S.flow}>Flow</span></span><br/>
+                  <span style={{marginTop:4, display:"inline-block"}}>© 2026 CashFlow Ltd. All rights reserved.</span>
+                </div>
+              </div>
+            )}
+
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
