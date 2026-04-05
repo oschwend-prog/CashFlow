@@ -1,416 +1,1292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>CashFlow — Become a Courier</title>
-  <meta name="description" content="Join London's first on-demand cash delivery network. Earn money delivering cash using the cash you already carry." />
-  <meta name="theme-color" content="#050A12" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body, #root { min-height: 100vh; }
-    body {
-      background: #050A12;
-      font-family: 'Outfit', 'SF Pro Display', -apple-system, sans-serif;
-      color: #fff;
-      -webkit-font-smoothing: antialiased;
-    }
-    input::placeholder, select { color: #556677; }
-    select option { background: #0D1B2A; color: #fff; }
-    button:active { transform: scale(0.98); }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
-    @keyframes checkmark {
-      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
-      50% { transform: scale(1.2) rotate(0deg); opacity: 1; }
-      100% { transform: scale(1) rotate(0deg); opacity: 1; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#050A12">
+<title>CashFlow</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+:root {
+  --bg: #050A12;
+  --surface: #0B1221;
+  --surface2: #111D2E;
+  --surface3: #162236;
+  --emerald: #00E8B8;
+  --emerald-dim: rgba(0,232,184,0.12);
+  --emerald-glow: rgba(0,232,184,0.25);
+  --amber: #FFB800;
+  --amber-dim: rgba(255,184,0,0.12);
+  --amber-glow: rgba(255,184,0,0.25);
+  --white: #F0F2F5;
+  --gray: #8A9BB0;
+  --muted: #5A6D82;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.1);
+  --danger: #FF4D6A;
+  --success: #00E8B8;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top, 20px);
+  --safe-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html, body { height:100%; overflow:hidden; }
+body {
+  font-family: 'Outfit', -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--white);
+  overscroll-behavior: none;
+}
+
+/* ====== SCREENS ====== */
+.screen {
+  position: absolute; inset: 0;
+  display: none; flex-direction: column;
+  overflow-y: auto; overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(80px + var(--safe-bottom));
+}
+.screen.active { display: flex; }
+.screen.no-tab { padding-bottom: var(--safe-bottom); }
+
+/* ====== AUTH SCREEN ====== */
+#authScreen {
+  justify-content: center;
+  padding: 32px;
+  z-index: 100;
+}
+.auth-logo { font-size: 42px; font-weight: 900; letter-spacing: -1.5px; margin-bottom: 48px; text-align: center; }
+.auth-logo .w { color: var(--white); }
+.auth-logo .g { background: linear-gradient(135deg, var(--emerald), #00D4A8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.auth-title { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.auth-sub { font-size: 14px; color: var(--gray); margin-bottom: 28px; line-height: 1.5; }
+.auth-input {
+  width: 100%; padding: 16px 18px; font-size: 17px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius); color: var(--white);
+  font-family: inherit; outline: none; transition: border-color 0.2s;
+}
+.auth-input:focus { border-color: var(--emerald); }
+.auth-input::placeholder { color: var(--muted); }
+.auth-btn {
+  width: 100%; padding: 16px; margin-top: 20px;
+  background: var(--emerald); border: none; border-radius: var(--radius);
+  font-size: 16px; font-weight: 700; color: var(--bg);
+  cursor: pointer; font-family: inherit; transition: opacity 0.2s;
+}
+.auth-btn:active { opacity: 0.8; }
+.auth-btn:disabled { opacity: 0.5; }
+.auth-btn.secondary { background: var(--surface2); color: var(--gray); margin-top: 12px; }
+.auth-err { color: var(--danger); font-size: 13px; margin-top: 10px; min-height: 18px; }
+.auth-otp-row { display: flex; gap: 6px; margin-top: 4px; }
+.auth-otp-digit {
+  flex: 1; height: 56px; text-align: center; font-size: 22px; font-weight: 700;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--white);
+  font-family: inherit; outline: none; caret-color: var(--emerald);
+}
+.auth-otp-digit:focus { border-color: var(--emerald); background: var(--surface2); }
+.auth-sent { font-size: 13px; color: var(--emerald); margin-bottom: 16px; }
+.auth-step { display: none; }
+.auth-step.active { display: block; }
+
+/* ====== HEADER ====== */
+.header {
+  padding: calc(var(--safe-top) + 12px) 20px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-greeting { font-size: 14px; color: var(--gray); }
+.header-name { font-size: 22px; font-weight: 700; }
+.header-avatar {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: var(--emerald-dim); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: var(--emerald);
+  cursor: pointer;
+}
+
+/* ====== ROLE CARDS ====== */
+.role-cards { display: flex; gap: 12px; padding: 0 20px; margin-top: 20px; }
+.role-card {
+  flex: 1; padding: 24px 16px; border-radius: var(--radius);
+  border: 1px solid var(--border2); cursor: pointer;
+  transition: all 0.3s; text-align: center; position: relative; overflow: hidden;
+}
+.role-card::before {
+  content: ''; position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.3s; border-radius: var(--radius);
+}
+.role-card.get::before { background: radial-gradient(circle at 50% 120%, var(--emerald-glow) 0%, transparent 70%); }
+.role-card.deliver::before { background: radial-gradient(circle at 50% 120%, var(--amber-glow) 0%, transparent 70%); }
+.role-card:hover::before, .role-card:active::before { opacity: 1; }
+.role-card.get { background: var(--surface); }
+.role-card.deliver { background: var(--surface); }
+.role-card.get:hover, .role-card.get.selected { border-color: var(--emerald); background: rgba(0,232,184,0.05); }
+.role-card.deliver:hover, .role-card.deliver.selected { border-color: var(--amber); background: rgba(255,184,0,0.05); }
+.role-icon { font-size: 36px; margin-bottom: 12px; position: relative; z-index: 1; }
+.role-title { font-size: 16px; font-weight: 700; position: relative; z-index: 1; }
+.role-sub { font-size: 12px; color: var(--gray); margin-top: 4px; position: relative; z-index: 1; }
+
+/* ====== SECTIONS ====== */
+.section { padding: 20px; }
+.section-title { font-size: 16px; font-weight: 700; margin-bottom: 14px; }
+
+/* ====== REQUESTER FLOW ====== */
+.amount-display {
+  text-align: center; padding: 32px 0;
+  background: var(--surface); border-radius: var(--radius);
+  margin: 0 20px;
+}
+.amount-label { font-size: 13px; color: var(--gray); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.amount-value { font-size: 56px; font-weight: 900; letter-spacing: -2px; }
+.amount-value .currency { font-size: 32px; color: var(--gray); font-weight: 600; }
+.amount-presets { display: flex; gap: 8px; padding: 16px 20px; flex-wrap: wrap; }
+.amount-preset {
+  flex: 1; min-width: 60px; padding: 12px 8px; text-align: center;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; color: var(--white); font-family: inherit;
+}
+.amount-preset:hover, .amount-preset.active { border-color: var(--emerald); color: var(--emerald); background: var(--emerald-dim); }
+.amount-custom {
+  display: flex; gap: 10px; padding: 0 20px; margin-top: 4px;
+}
+.amount-custom input {
+  flex: 1; padding: 14px 16px; background: var(--surface);
+  border: 1px solid var(--border2); border-radius: var(--radius-sm);
+  color: var(--white); font-size: 16px; font-family: inherit; outline: none;
+}
+.amount-custom input:focus { border-color: var(--emerald); }
+
+/* ====== ADDRESS ====== */
+.address-section { padding: 0 20px; margin-top: 16px; }
+.address-input-wrap {
+  position: relative;
+}
+.address-input-wrap input {
+  width: 100%; padding: 14px 16px 14px 42px;
+  background: var(--surface); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--white);
+  font-size: 15px; font-family: inherit; outline: none;
+}
+.address-input-wrap input:focus { border-color: var(--emerald); }
+.address-input-wrap .pin { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; }
+.address-results {
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); margin-top: 4px;
+  max-height: 200px; overflow-y: auto;
+}
+.address-result {
+  padding: 12px 16px; font-size: 14px; cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s;
+}
+.address-result:hover { background: var(--surface3); }
+.address-result:last-child { border-bottom: none; }
+
+/* ====== FEE BREAKDOWN ====== */
+.fee-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 20px; margin: 16px 20px 0;
+  border: 1px solid var(--border2);
+}
+.fee-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.fee-row.total { border-top: 1px solid var(--border2); padding-top: 12px; margin-top: 8px; font-weight: 700; font-size: 16px; }
+.fee-row .label { color: var(--gray); }
+
+/* ====== MAIN BUTTON ====== */
+.main-btn {
+  margin: 20px; padding: 18px; border: none;
+  border-radius: var(--radius); font-size: 16px; font-weight: 700;
+  cursor: pointer; font-family: inherit; transition: all 0.2s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.main-btn.emerald { background: var(--emerald); color: var(--bg); }
+.main-btn.amber { background: var(--amber); color: var(--bg); }
+.main-btn:active { transform: scale(0.98); }
+.main-btn:disabled { opacity: 0.5; }
+
+/* ====== MAP ====== */
+.map-container {
+  height: 280px; border-radius: var(--radius);
+  margin: 0 20px; overflow: hidden;
+  border: 1px solid var(--border2);
+}
+#reqMap, #courierMap { width: 100%; height: 100%; }
+
+/* ====== STATUS CARD ====== */
+.status-card {
+  background: var(--surface); border-radius: var(--radius);
+  padding: 20px; margin: 16px 20px;
+  border: 1px solid var(--border2);
+}
+.status-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+}
+.status-badge.active { background: var(--emerald-dim); color: var(--emerald); }
+.status-badge.pending { background: var(--amber-dim); color: var(--amber); }
+.status-badge.waiting { background: rgba(120,140,255,0.12); color: #8C9EFF; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+
+.status-detail { margin-top: 14px; }
+.status-detail .row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+.status-detail .row:last-child { border: none; }
+.status-detail .row .k { color: var(--gray); }
+
+/* ====== COURIER DASHBOARD ====== */
+.online-toggle {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface); border-radius: var(--radius);
+  padding: 20px; margin: 0 20px;
+  border: 1px solid var(--border2);
+}
+.toggle-track {
+  width: 56px; height: 30px; border-radius: 15px;
+  background: var(--surface3); cursor: pointer;
+  position: relative; transition: background 0.3s;
+}
+.toggle-track.on { background: var(--emerald); }
+.toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: white; transition: transform 0.3s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+.toggle-track.on .toggle-thumb { transform: translateX(26px); }
+.toggle-label { font-size: 16px; font-weight: 600; }
+.toggle-sub { font-size: 12px; color: var(--gray); }
+
+/* ====== EARNINGS ====== */
+.earnings-hero {
+  text-align: center; padding: 28px;
+  background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+  border-radius: var(--radius); margin: 0 20px;
+}
+.earnings-amount { font-size: 48px; font-weight: 900; color: var(--amber); }
+.earnings-label { font-size: 13px; color: var(--gray); margin-top: 4px; }
+.earnings-row { display: flex; gap: 10px; padding: 0 20px; margin-top: 12px; }
+.earnings-stat {
+  flex: 1; background: var(--surface); border-radius: var(--radius-sm);
+  padding: 16px; text-align: center; border: 1px solid var(--border);
+}
+.earnings-stat .val { font-size: 22px; font-weight: 700; }
+.earnings-stat .lbl { font-size: 11px; color: var(--gray); margin-top: 2px; }
+
+/* ====== INCOMING REQUEST ====== */
+.incoming-card {
+  background: var(--surface); border: 2px solid var(--amber);
+  border-radius: var(--radius); padding: 20px; margin: 16px 20px;
+  animation: glow-amber 2s infinite;
+}
+@keyframes glow-amber {
+  0%,100% { box-shadow: 0 0 0 0 rgba(255,184,0,0); }
+  50% { box-shadow: 0 0 20px 4px rgba(255,184,0,0.15); }
+}
+.incoming-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.incoming-amount { font-size: 32px; font-weight: 900; }
+.incoming-fee { font-size: 14px; color: var(--amber); font-weight: 600; }
+.incoming-meta { font-size: 13px; color: var(--gray); margin-bottom: 16px; }
+.incoming-actions { display: flex; gap: 10px; }
+.incoming-actions button { flex: 1; padding: 14px; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 700; cursor: pointer; font-family: inherit; }
+.btn-accept { background: var(--amber); color: var(--bg); }
+.btn-decline { background: var(--surface2); color: var(--gray); }
+
+/* ====== QR ====== */
+.qr-container { text-align: center; padding: 24px; }
+.qr-box {
+  width: 200px; height: 200px; margin: 0 auto 16px;
+  background: white; border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: #333;
+}
+.qr-code { font-size: 11px; letter-spacing: 4px; color: var(--gray); margin-top: 8px; }
+
+/* ====== ORDER LIST ====== */
+.order-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  cursor: pointer;
+}
+.order-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.order-icon.in { background: var(--emerald-dim); }
+.order-icon.out { background: var(--amber-dim); }
+.order-info { flex: 1; }
+.order-info .top { font-size: 15px; font-weight: 600; }
+.order-info .bot { font-size: 12px; color: var(--gray); margin-top: 2px; }
+.order-amount { font-size: 16px; font-weight: 700; }
+
+/* ====== TAB BAR ====== */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(5,10,18,0.92); backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; padding: 8px 0 var(--safe-bottom);
+  z-index: 90;
+}
+.tab-bar.hidden { display: none; }
+.tab-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 3px; padding: 6px 0;
+  cursor: pointer; transition: color 0.2s;
+  color: var(--muted); font-size: 10px; font-weight: 500;
+}
+.tab-item.active { color: var(--emerald); }
+.tab-item .ti { font-size: 22px; }
+
+/* ====== TOAST ====== */
+.toast {
+  position: fixed; top: calc(var(--safe-top) + 10px); left: 16px; right: 16px;
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: var(--radius-sm); padding: 14px 18px;
+  display: flex; align-items: center; gap: 12px;
+  z-index: 200; transform: translateY(-120%); transition: transform 0.35s ease;
+}
+.toast.show { transform: translateY(0); }
+.toast-icon { font-size: 20px; }
+.toast-text { flex: 1; }
+.toast-text .t1 { font-size: 14px; font-weight: 600; }
+.toast-text .t2 { font-size: 12px; color: var(--gray); }
+
+/* ====== LOADING ====== */
+.spinner {
+  width: 36px; height: 36px; border: 3px solid var(--border2);
+  border-top-color: var(--emerald); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin: 0 auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-screen {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 40px; gap: 16px;
+}
+.loading-screen .msg { color: var(--gray); font-size: 14px; }
+
+/* ====== EMPTY STATE ====== */
+.empty-state { text-align: center; padding: 48px 32px; }
+.empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state .title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.empty-state .sub { font-size: 14px; color: var(--gray); line-height: 1.5; }
+
+/* ====== PROFILE ====== */
+.profile-header { text-align: center; padding: 24px 20px; }
+.profile-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  background: var(--emerald-dim); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 28px; font-weight: 800; color: var(--emerald);
+  margin: 0 auto 12px;
+}
+.profile-name { font-size: 22px; font-weight: 700; }
+.profile-email { font-size: 13px; color: var(--gray); margin-top: 2px; }
+.profile-menu-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.15s;
+}
+.profile-menu-item:active { background: var(--surface); }
+.profile-menu-item .pmi { font-size: 20px; width: 32px; text-align: center; }
+.profile-menu-item .pmt { flex: 1; font-size: 15px; }
+.profile-menu-item .pma { color: var(--muted); font-size: 18px; }
+.profile-menu-item.danger .pmt { color: var(--danger); }
+</style>
 </head>
 <body>
-  <div id="root"></div>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
 
-    // ============================================================
-    // CONFIG
-    // ============================================================
-    const SUPABASE_URL = "https://intjyovslhvxsvxcbhgk.supabase.co";
-    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA";
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✓</span>
+  <div class="toast-text">
+    <div class="t1" id="toastTitle"></div>
+    <div class="t2" id="toastSub"></div>
+  </div>
+</div>
 
-    // ============================================================
-    // BRAND
-    // ============================================================
-    const B = {
-      bg: "#050A12", bgCard: "#0A1628", bgInput: "#0D1B2A",
-      emerald: "#00E8B8", amber: "#FFB800", amberDark: "#CC9400",
-      amberGlow: "rgba(255,184,0,0.15)", white: "#FFFFFF",
-      gray: "#8892A4", grayLight: "#C4CCD8", danger: "#FF4757",
-      border: "#1A2A40",
+<!-- AUTH SCREEN -->
+<div class="screen active no-tab" id="authScreen">
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+    <div class="auth-logo"><span class="w">Cash</span><span class="g">Flow</span></div>
+
+    <div class="auth-step active" id="authEmailStep">
+      <div class="auth-title">Sign in</div>
+      <div class="auth-sub">Enter your email — we'll send a verification code</div>
+      <input class="auth-input" type="email" id="authEmail" placeholder="you@email.com" autocapitalize="none" autocorrect="off" autofocus>
+      <button class="auth-btn" id="authSendBtn" onclick="sendOTP()">Continue</button>
+      <div class="auth-err" id="authErr"></div>
+    </div>
+
+    <div class="auth-step" id="authOTPStep">
+      <div class="auth-title">Enter code</div>
+      <div class="auth-sent" id="authSentTo"></div>
+      <div class="auth-otp-row" id="otpRow"></div>
+      <button class="auth-btn" id="authVerifyBtn" onclick="verifyOTP()">Verify</button>
+      <button class="auth-btn secondary" onclick="backToEmail()">Change email</button>
+      <div class="auth-err" id="authErr2"></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOME SCREEN -->
+<div class="screen" id="homeScreen">
+  <div class="header">
+    <div>
+      <div class="header-greeting" id="greeting">Good evening</div>
+      <div class="header-name" id="userName">Welcome</div>
+    </div>
+    <div class="header-avatar" id="userAvatar" onclick="showTab('profile')">?</div>
+  </div>
+
+  <div class="role-cards">
+    <div class="role-card get" onclick="selectRole('requester')">
+      <div class="role-icon">💷</div>
+      <div class="role-title">Get Cash</div>
+      <div class="role-sub">Delivered to you</div>
+    </div>
+    <div class="role-card deliver" onclick="selectRole('courier')">
+      <div class="role-icon">🚀</div>
+      <div class="role-title">Deliver Cash</div>
+      <div class="role-sub">Earn money</div>
+    </div>
+  </div>
+
+  <!-- Recent orders -->
+  <div class="section" id="recentSection" style="display:none;">
+    <div class="section-title">Recent Activity</div>
+    <div id="recentOrders"></div>
+  </div>
+</div>
+
+<!-- REQUESTER FLOW -->
+<div class="screen" id="requestScreen">
+  <div class="header">
+    <div style="cursor:pointer" onclick="showTab('home')">← Back</div>
+    <div style="font-weight:600">Request Cash</div>
+    <div style="width:40px"></div>
+  </div>
+
+  <div class="amount-display">
+    <div class="amount-label">Amount</div>
+    <div class="amount-value"><span class="currency">£</span><span id="reqAmount">100</span></div>
+  </div>
+
+  <div class="amount-presets">
+    <button class="amount-preset" onclick="setAmount(20)">£20</button>
+    <button class="amount-preset" onclick="setAmount(50)">£50</button>
+    <button class="amount-preset active" onclick="setAmount(100)">£100</button>
+    <button class="amount-preset" onclick="setAmount(200)">£200</button>
+    <button class="amount-preset" onclick="setAmount(500)">£500</button>
+  </div>
+
+  <div class="amount-custom">
+    <input type="number" placeholder="Custom amount" id="customAmount" oninput="setAmount(parseInt(this.value)||0)">
+  </div>
+
+  <div class="address-section">
+    <div class="section-title" style="margin-top:20px">Delivery Address</div>
+    <div class="address-input-wrap">
+      <span class="pin">📍</span>
+      <input type="text" id="addressInput" placeholder="Search address..." oninput="searchAddress(this.value)" autocomplete="off">
+    </div>
+    <div class="address-results" id="addressResults" style="display:none"></div>
+  </div>
+
+  <div class="fee-card" id="feeCard">
+    <div class="fee-row"><span class="label">Cash amount</span><span id="feeCash">£100.00</span></div>
+    <div class="fee-row"><span class="label">Delivery fee</span><span id="feeDel">£5.00</span></div>
+    <div class="fee-row"><span class="label">Service fee (5%)</span><span id="feeSvc">£5.00</span></div>
+    <div class="fee-row total"><span>Total</span><span id="feeTotal">£110.00</span></div>
+  </div>
+
+  <button class="main-btn emerald" id="reqSubmitBtn" onclick="submitRequest()">
+    Find a Courier →
+  </button>
+</div>
+
+<!-- MATCHING SCREEN -->
+<div class="screen no-tab" id="matchingScreen">
+  <div class="loading-screen" style="flex:1">
+    <div class="spinner"></div>
+    <div class="msg" id="matchMsg">Finding nearby couriers...</div>
+    <button class="auth-btn secondary" style="width:auto;padding:12px 32px;margin-top:24px" onclick="cancelRequest()">Cancel</button>
+  </div>
+</div>
+
+<!-- TRACKING SCREEN -->
+<div class="screen no-tab" id="trackingScreen">
+  <div class="header">
+    <div style="font-weight:600">Courier on the way</div>
+    <div></div>
+  </div>
+  <div class="map-container"><div id="reqMap"></div></div>
+  <div class="status-card">
+    <div class="status-badge active"><span class="status-dot"></span> En route</div>
+    <div class="status-detail">
+      <div class="row"><span class="k">Courier</span><span id="trackCourier">—</span></div>
+      <div class="row"><span class="k">ETA</span><span id="trackETA">—</span></div>
+      <div class="row"><span class="k">Amount</span><span id="trackAmount">—</span></div>
+    </div>
+  </div>
+  <button class="main-btn emerald" id="confirmHandoverBtn" onclick="confirmHandover()" style="display:none">Confirm Cash Received ✓</button>
+</div>
+
+<!-- COURIER DASHBOARD -->
+<div class="screen" id="courierScreen">
+  <div class="header">
+    <div>
+      <div class="header-greeting">Courier Mode</div>
+      <div class="header-name" id="courierName">Dashboard</div>
+    </div>
+    <div class="header-avatar" style="background:var(--amber-dim);color:var(--amber)" onclick="showTab('home')">←</div>
+  </div>
+
+  <div class="online-toggle">
+    <div>
+      <div class="toggle-label" id="onlineLabel">You're offline</div>
+      <div class="toggle-sub" id="onlineSub">Go online to receive requests</div>
+    </div>
+    <div class="toggle-track" id="onlineToggle" onclick="toggleOnline()">
+      <div class="toggle-thumb"></div>
+    </div>
+  </div>
+
+  <div class="earnings-hero" style="margin-top:16px">
+    <div class="earnings-label">Today's Earnings</div>
+    <div class="earnings-amount" id="todayEarnings">£0.00</div>
+  </div>
+
+  <div class="earnings-row">
+    <div class="earnings-stat"><div class="val" id="todayDeliveries">0</div><div class="lbl">Deliveries</div></div>
+    <div class="earnings-stat"><div class="val" id="avgRating">—</div><div class="lbl">Rating</div></div>
+    <div class="earnings-stat"><div class="val" id="onlineTime">0h</div><div class="lbl">Online</div></div>
+  </div>
+
+  <!-- Incoming request (hidden by default) -->
+  <div id="incomingSection" style="display:none">
+    <div class="section" style="padding-bottom:0"><div class="section-title">Incoming Request</div></div>
+    <div class="incoming-card">
+      <div class="incoming-header">
+        <div class="incoming-amount" id="incAmount">£100</div>
+        <div class="incoming-fee" id="incFee">Earn £7.50</div>
+      </div>
+      <div class="incoming-meta" id="incMeta">0.4 km away · Brick Lane, E1</div>
+      <div class="incoming-actions">
+        <button class="btn-decline" onclick="declineRequest()">Decline</button>
+        <button class="btn-accept" onclick="acceptRequest()">Accept</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="map-container" style="margin-top:16px"><div id="courierMap"></div></div>
+</div>
+
+<!-- COURIER DELIVERY SCREEN -->
+<div class="screen no-tab" id="courierDeliveryScreen">
+  <div class="header">
+    <div style="font-weight:600">Active Delivery</div>
+    <div></div>
+  </div>
+  <div class="map-container"><div id="deliveryMap"></div></div>
+  <div class="status-card">
+    <div class="status-badge active"><span class="status-dot"></span> Delivering</div>
+    <div class="status-detail">
+      <div class="row"><span class="k">Deliver to</span><span id="delAddress">—</span></div>
+      <div class="row"><span class="k">Amount</span><span id="delAmount">—</span></div>
+      <div class="row"><span class="k">Your earnings</span><span id="delEarnings" style="color:var(--amber)">—</span></div>
+    </div>
+  </div>
+  <div class="qr-container" id="qrSection" style="display:none">
+    <div class="section-title">Handover Code</div>
+    <div class="qr-box" id="qrDisplay">Loading...</div>
+    <div class="qr-code" id="qrCode"></div>
+  </div>
+  <button class="main-btn amber" onclick="courierCompleteDelivery()">Cash Handed Over ✓</button>
+</div>
+
+<!-- HISTORY SCREEN -->
+<div class="screen" id="historyScreen">
+  <div class="header">
+    <div><div class="header-name">History</div></div>
+  </div>
+  <div id="historyList">
+    <div class="empty-state">
+      <div class="icon">📋</div>
+      <div class="title">No orders yet</div>
+      <div class="sub">Your completed deliveries will appear here</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE SCREEN -->
+<div class="screen" id="profileScreen">
+  <div class="profile-header">
+    <div class="profile-avatar" id="profAvatar">?</div>
+    <div class="profile-name" id="profName">—</div>
+    <div class="profile-email" id="profEmail">—</div>
+  </div>
+  <div class="profile-menu-item" onclick="showTab('history')"><span class="pmi">📋</span><span class="pmt">Order History</span><span class="pma">›</span></div>
+  <div class="profile-menu-item"><span class="pmi">💳</span><span class="pmt">Payment Methods</span><span class="pma">›</span></div>
+  <div class="profile-menu-item"><span class="pmi">🔔</span><span class="pmt">Notifications</span><span class="pma">›</span></div>
+  <div class="profile-menu-item"><span class="pmi">🛡</span><span class="pmt">Privacy & Security</span><span class="pma">›</span></div>
+  <div class="profile-menu-item"><span class="pmi">❓</span><span class="pmt">Help & Support</span><span class="pma">›</span></div>
+  <div class="profile-menu-item danger" onclick="signOut()"><span class="pmi">🚪</span><span class="pmt">Sign Out</span><span class="pma"></span></div>
+</div>
+
+<!-- TAB BAR -->
+<div class="tab-bar hidden" id="tabBar">
+  <div class="tab-item active" onclick="showTab('home')"><span class="ti">🏠</span>Home</div>
+  <div class="tab-item" onclick="showTab('history')"><span class="ti">📋</span>History</div>
+  <div class="tab-item" onclick="showTab('profile')"><span class="ti">👤</span>Profile</div>
+</div>
+
+<script>
+// ============================================================
+//  CASHFLOW — Full App
+//  Real Supabase Auth + DB · Mapbox Maps · Airwallex (sandbox)
+// ============================================================
+
+const SB_URL = 'https://intjyovslhvxsvxcbhgk.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
+const MB_TOKEN = 'pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
+const FIXED_FEE = 5;
+const SVC_PCT = 0.05;
+const PLATFORM_CUT = 0.25;
+
+// ---- State ----
+let currentUser = null;
+let authEmail = '';
+let selectedAmount = 100;
+let selectedAddress = null;
+let selectedCoords = null;
+let currentRole = null; // 'requester' or 'courier'
+let isOnline = false;
+let currentOrder = null;
+let maps = {};
+let realtimeSub = null;
+
+// ---- Supabase Helpers ----
+async function sbFetch(endpoint, opts = {}) {
+  const headers = {
+    'Content-Type': 'application/json',
+    'apikey': SB_KEY,
+    ...(opts.headers || {}),
+  };
+  if (currentUser?.access_token) {
+    headers['Authorization'] = 'Bearer ' + currentUser.access_token;
+  } else {
+    headers['Authorization'] = 'Bearer ' + SB_KEY;
+  }
+  const res = await fetch(SB_URL + endpoint, { ...opts, headers });
+  return res;
+}
+
+async function sbRest(table, query = '', opts = {}) {
+  const res = await sbFetch('/rest/v1/' + table + '?' + query, opts);
+  if (!res.ok) { const e = await res.text(); throw new Error(e); }
+  return res.json();
+}
+
+// ---- Auth ----
+function buildOTPInputs() {
+  const row = document.getElementById('otpRow');
+  row.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.inputMode = 'numeric'; inp.maxLength = 1;
+    inp.className = 'auth-otp-digit';
+    inp.dataset.idx = i;
+    inp.addEventListener('input', function() {
+      if (this.value && i < 7) row.children[i+1].focus();
+      if (i === 7 && this.value) verifyOTP();
+    });
+    inp.addEventListener('keydown', function(e) {
+      if (e.key === 'Backspace' && !this.value && i > 0) row.children[i-1].focus();
+    });
+    row.appendChild(inp);
+  }
+}
+
+async function sendOTP() {
+  const email = document.getElementById('authEmail').value.trim();
+  if (!email || !email.includes('@')) { document.getElementById('authErr').textContent = 'Enter a valid email'; return; }
+  authEmail = email;
+  const btn = document.getElementById('authSendBtn');
+  btn.disabled = true; btn.textContent = 'Sending...';
+  document.getElementById('authErr').textContent = '';
+
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'Failed to send code');
+
+    document.getElementById('authEmailStep').classList.remove('active');
+    document.getElementById('authOTPStep').classList.add('active');
+    document.getElementById('authSentTo').textContent = 'Code sent to ' + email;
+    buildOTPInputs();
+    setTimeout(() => document.querySelector('.auth-otp-digit')?.focus(), 200);
+  } catch (e) {
+    document.getElementById('authErr').textContent = e.message;
+  }
+  btn.disabled = false; btn.textContent = 'Continue';
+}
+
+async function verifyOTP() {
+  const digits = document.querySelectorAll('.auth-otp-digit');
+  const code = Array.from(digits).map(d => d.value).join('');
+  if (code.length < 8) { document.getElementById('authErr2').textContent = 'Enter all 8 digits'; return; }
+  const btn = document.getElementById('authVerifyBtn');
+  btn.disabled = true; btn.textContent = 'Verifying...';
+  document.getElementById('authErr2').textContent = '';
+
+  try {
+    const res = await fetch(SB_URL + '/auth/v1/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email: authEmail, token: code, type: 'email' })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message || 'Invalid code');
+
+    currentUser = {
+      id: data.user?.id || data.id,
+      email: data.user?.email || authEmail,
+      access_token: data.access_token,
+    };
+    await ensureProfile();
+    enterApp();
+  } catch (e) {
+    document.getElementById('authErr2').textContent = e.message;
+  }
+  btn.disabled = false; btn.textContent = 'Verify';
+}
+
+function backToEmail() {
+  document.getElementById('authOTPStep').classList.remove('active');
+  document.getElementById('authEmailStep').classList.add('active');
+  document.getElementById('authErr').textContent = '';
+}
+
+async function ensureProfile() {
+  try {
+    const profiles = await sbRest('profiles', 'id=eq.' + currentUser.id + '&select=*');
+    if (profiles.length === 0) {
+      await sbFetch('/rest/v1/profiles', {
+        method: 'POST',
+        headers: { 'Prefer': 'return=minimal' },
+        body: JSON.stringify({
+          id: currentUser.id,
+          display_name: authEmail.split('@')[0],
+        })
+      });
+    } else {
+      currentUser.display_name = profiles[0].display_name || authEmail.split('@')[0];
+    }
+  } catch (e) {
+    console.warn('Profile ensure error:', e);
+    currentUser.display_name = authEmail.split('@')[0];
+  }
+}
+
+function enterApp() {
+  document.getElementById('authScreen').classList.remove('active');
+  document.getElementById('homeScreen').classList.add('active');
+  document.getElementById('tabBar').classList.remove('hidden');
+  updateGreeting();
+  loadRecentOrders();
+  showToast('Welcome!', currentUser.email, '✓');
+}
+
+async function signOut() {
+  try { await sbFetch('/auth/v1/logout', { method: 'POST' }); } catch(e){}
+  currentUser = null;
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('authScreen').classList.add('active');
+  document.getElementById('tabBar').classList.add('hidden');
+  document.getElementById('authEmailStep').classList.add('active');
+  document.getElementById('authOTPStep').classList.remove('active');
+  document.getElementById('authEmail').value = '';
+}
+
+// ---- Navigation ----
+function showTab(tab) {
+  const screenMap = { home: 'homeScreen', history: 'historyScreen', profile: 'profileScreen' };
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenMap[tab]).classList.add('active');
+  document.querySelectorAll('.tab-item').forEach((t, i) => {
+    t.classList.toggle('active', ['home','history','profile'][i] === tab);
+  });
+  if (tab === 'profile') updateProfile();
+  if (tab === 'history') loadHistory();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const noTab = document.getElementById(id).classList.contains('no-tab');
+  document.getElementById('tabBar').classList.toggle('hidden', noTab);
+}
+
+// ---- Greeting ----
+function updateGreeting() {
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+  document.getElementById('greeting').textContent = g;
+  const name = currentUser?.display_name || authEmail.split('@')[0] || 'there';
+  document.getElementById('userName').textContent = name;
+  const initial = name.charAt(0).toUpperCase();
+  document.getElementById('userAvatar').textContent = initial;
+}
+
+function updateProfile() {
+  const name = currentUser?.display_name || authEmail.split('@')[0];
+  document.getElementById('profName').textContent = name;
+  document.getElementById('profEmail').textContent = currentUser?.email || authEmail;
+  document.getElementById('profAvatar').textContent = name.charAt(0).toUpperCase();
+}
+
+// ---- Role Selection ----
+function selectRole(role) {
+  currentRole = role;
+  if (role === 'requester') {
+    showScreen('requestScreen');
+    setAmount(100);
+  } else {
+    showScreen('courierScreen');
+    document.getElementById('courierName').textContent = currentUser?.display_name || 'Dashboard';
+    initCourierMap();
+  }
+}
+
+// ---- Requester Flow ----
+function setAmount(val) {
+  if (val < 10) val = 10;
+  if (val > 1000) val = 1000;
+  selectedAmount = val;
+  document.getElementById('reqAmount').textContent = val;
+  document.querySelectorAll('.amount-preset').forEach(p => {
+    p.classList.toggle('active', parseInt(p.textContent.replace('£','')) === val);
+  });
+  updateFees();
+}
+
+function updateFees() {
+  const svc = selectedAmount * SVC_PCT;
+  const total = selectedAmount + FIXED_FEE + svc;
+  document.getElementById('feeCash').textContent = '£' + selectedAmount.toFixed(2);
+  document.getElementById('feeDel').textContent = '£' + FIXED_FEE.toFixed(2);
+  document.getElementById('feeSvc').textContent = '£' + svc.toFixed(2);
+  document.getElementById('feeTotal').textContent = '£' + total.toFixed(2);
+}
+
+// ---- Mapbox Address Search ----
+let searchTimeout;
+function searchAddress(query) {
+  clearTimeout(searchTimeout);
+  const results = document.getElementById('addressResults');
+  if (query.length < 3) { results.style.display = 'none'; return; }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const res = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${MB_TOKEN}&country=GB&proximity=-0.0738,51.5194&limit=5`
+      );
+      const data = await res.json();
+      if (data.features?.length) {
+        results.innerHTML = data.features.map(f =>
+          `<div class="address-result" onclick="pickAddress('${f.place_name.replace(/'/g,"\\'")}', ${f.center[0]}, ${f.center[1]})">${f.place_name}</div>`
+        ).join('');
+        results.style.display = 'block';
+      } else {
+        results.style.display = 'none';
+      }
+    } catch (e) { console.error(e); }
+  }, 300);
+}
+
+function pickAddress(name, lng, lat) {
+  selectedAddress = name;
+  selectedCoords = [lng, lat];
+  document.getElementById('addressInput').value = name;
+  document.getElementById('addressResults').style.display = 'none';
+}
+
+// ---- Submit Request ----
+async function submitRequest() {
+  if (!selectedAddress) { showToast('Enter address', 'Please select a delivery address', '📍'); return; }
+  if (selectedAmount < 20) { showToast('Minimum £20', 'Please enter at least £20', '⚠️'); return; }
+
+  showScreen('matchingScreen');
+  const svcFee = selectedAmount * SVC_PCT;
+  const totalFee = FIXED_FEE + svcFee;
+
+  try {
+    const order = {
+      requester_id: currentUser.id,
+      amount: selectedAmount,
+      delivery_fee: FIXED_FEE,
+      service_fee: svcFee,
+      total_fee: totalFee,
+      delivery_address: selectedAddress,
+      delivery_lat: selectedCoords[1],
+      delivery_lng: selectedCoords[0],
+      status: 'PENDING',
     };
 
-    // ============================================================
-    // LONDON AREAS
-    // ============================================================
-    const areas = [
-      "E1 — Whitechapel / Spitalfields", "E2 — Bethnal Green / Shoreditch",
-      "E8 — Hackney / Dalston", "E14 — Canary Wharf / Isle of Dogs",
-      "EC1 — Clerkenwell / Farringdon", "EC2 — Moorgate / Liverpool Street",
-      "N1 — Islington / Angel", "SE1 — Southwark / Borough",
-      "SW1 — Westminster / Victoria", "W1 — Soho / Mayfair",
-      "W2 — Paddington / Bayswater", "WC1 — Bloomsbury / King's Cross",
-      "WC2 — Covent Garden / Strand", "Other — I'll cover multiple areas",
-    ];
+    const res = await sbFetch('/rest/v1/orders', {
+      method: 'POST',
+      headers: { 'Prefer': 'return=representation' },
+      body: JSON.stringify(order),
+    });
 
-    // ============================================================
-    // APP
-    // ============================================================
-    function App() {
-      const [screen, setScreen] = useState("landing");
-      const [email, setEmail] = useState("");
-      const [otp, setOtp] = useState(["","","","","",""]);
-      const [profile, setProfile] = useState({ firstName:"", lastName:"", phone:"", area:"" });
-      const [loading, setLoading] = useState(false);
-      const [error, setError] = useState("");
-      const [focused, setFocused] = useState(null);
-      const [accessToken, setAccessToken] = useState("");
-      const otpRefs = useRef([]);
+    if (!res.ok) throw new Error('Failed to create order');
+    const data = await res.json();
+    currentOrder = data[0] || data;
+    listenToOrder(currentOrder.id);
+    document.getElementById('matchMsg').textContent = 'Finding nearby couriers...';
 
-      const progress = { landing:0, auth:25, otp:50, profile:75, success:100 };
-      const stepIdx = { landing:-1, auth:0, otp:1, profile:2, success:3 };
+    // Simulate courier match for demo (in production, realtime handles this)
+    setTimeout(() => {
+      if (document.getElementById('matchingScreen').classList.contains('active')) {
+        document.getElementById('matchMsg').textContent = 'Courier found! Preparing delivery...';
+        setTimeout(() => showTracking(), 1500);
+      }
+    }, 3000);
 
-      // ---- Supabase: Send OTP ----
-      const sendOtp = async () => {
-        if (!email || !email.includes("@")) { setError("Please enter a valid email"); return; }
-        setLoading(true); setError("");
-        try {
-          const res = await fetch(SUPABASE_URL + "/auth/v1/otp", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: SUPABASE_ANON_KEY,
-            },
-            body: JSON.stringify({ email }),
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error.message || data.msg || "Failed to send code");
-          if (!res.ok && !data.error) throw new Error("Server error — please try again");
-          setScreen("otp");
-        } catch (e) {
-          setError(e.message === "Failed to fetch" ? "Network error — check your connection and try again" : e.message);
+  } catch (e) {
+    showToast('Error', e.message, '❌');
+    showScreen('requestScreen');
+  }
+}
+
+function cancelRequest() {
+  if (currentOrder) {
+    sbFetch('/rest/v1/orders?id=eq.' + currentOrder.id, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'CANCELLED' })
+    }).catch(() => {});
+  }
+  currentOrder = null;
+  showScreen('requestScreen');
+  document.getElementById('tabBar').classList.remove('hidden');
+}
+
+function showTracking() {
+  showScreen('trackingScreen');
+  document.getElementById('trackAmount').textContent = '£' + selectedAmount;
+  document.getElementById('trackCourier').textContent = 'Alex M.';
+  document.getElementById('trackETA').textContent = '~8 minutes';
+  initTrackingMap();
+
+  // Show confirm button after simulated arrival
+  setTimeout(() => {
+    document.getElementById('trackETA').textContent = 'Arrived';
+    document.getElementById('confirmHandoverBtn').style.display = 'flex';
+    showToast('Courier arrived!', 'Please confirm the cash handover', '🤝');
+  }, 8000);
+}
+
+function confirmHandover() {
+  if (currentOrder) {
+    sbFetch('/rest/v1/orders?id=eq.' + currentOrder.id, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: 'CONFIRMED' })
+    }).catch(() => {});
+  }
+  showToast('Cash received!', '£' + selectedAmount + ' delivered successfully', '✅');
+  currentOrder = null;
+  selectedAddress = null;
+  selectedCoords = null;
+  document.getElementById('addressInput').value = '';
+  document.getElementById('confirmHandoverBtn').style.display = 'none';
+  showTab('home');
+  loadRecentOrders();
+}
+
+// ---- Realtime ----
+function listenToOrder(orderId) {
+  // Using Supabase Realtime via WebSocket (simplified polling for web app)
+  if (realtimeSub) clearInterval(realtimeSub);
+  realtimeSub = setInterval(async () => {
+    try {
+      const orders = await sbRest('orders', 'id=eq.' + orderId + '&select=*');
+      if (orders[0]) {
+        const o = orders[0];
+        if (o.status === 'ACCEPTED' && document.getElementById('matchingScreen').classList.contains('active')) {
+          showTracking();
         }
-        setLoading(false);
-      };
-
-      // ---- Supabase: Verify OTP ----
-      const verifyOtp = async () => {
-        const code = otp.join("");
-        if (code.length !== 6) { setError("Enter all 6 digits"); return; }
-        setLoading(true); setError("");
-        try {
-          const res = await fetch(SUPABASE_URL + "/auth/v1/verify", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: SUPABASE_ANON_KEY,
-            },
-            body: JSON.stringify({ email, token: code, type: "email" }),
-          });
-          const data = await res.json();
-          if (data.error) throw new Error(data.error.message || "Invalid code");
-          if (data.access_token) setAccessToken(data.access_token);
-          setScreen("profile");
-        } catch (e) {
-          setError(e.message === "Failed to fetch" ? "Network error — try again" : e.message);
+        if (o.status === 'CONFIRMED' || o.status === 'CANCELLED') {
+          clearInterval(realtimeSub);
         }
-        setLoading(false);
-      };
+      }
+    } catch(e) {}
+  }, 3000);
+}
 
-      // ---- Supabase: Save profile ----
-      const saveProfile = async () => {
-        if (!profile.firstName || !profile.lastName || !profile.phone) {
-          setError("Please fill in all required fields"); return;
-        }
-        setLoading(true); setError("");
-        try {
-          const authHeader = accessToken ? "Bearer " + accessToken : "Bearer " + SUPABASE_ANON_KEY;
-          const res = await fetch(SUPABASE_URL + "/rest/v1/profiles", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              apikey: SUPABASE_ANON_KEY,
-              Authorization: authHeader,
-              Prefer: "resolution=merge-duplicates",
-            },
-            body: JSON.stringify({
-              email,
-              first_name: profile.firstName,
-              last_name: profile.lastName,
-              phone: profile.phone,
-              preferred_area: profile.area,
-              role: "courier",
-              status: "pending",
-            }),
-          });
-          if (!res.ok) {
-            const errData = await res.json().catch(() => ({}));
-            throw new Error(errData.message || "Failed to save — please try again");
-          }
-          setScreen("success");
-        } catch (e) {
-          setError(e.message === "Failed to fetch" ? "Network error — try again" : e.message);
-        }
-        setLoading(false);
-      };
+// ---- Courier Flow ----
+function toggleOnline() {
+  isOnline = !isOnline;
+  const track = document.getElementById('onlineToggle');
+  track.classList.toggle('on', isOnline);
+  document.getElementById('onlineLabel').textContent = isOnline ? "You're online" : "You're offline";
+  document.getElementById('onlineSub').textContent = isOnline ? 'Waiting for requests...' : 'Go online to receive requests';
 
-      // ---- OTP handlers ----
-      const onOtpChange = (i, v) => {
-        if (!/^\d*$/.test(v)) return;
-        const n = [...otp]; n[i] = v.slice(-1); setOtp(n);
-        if (v && i < 5) otpRefs.current[i+1]?.focus();
-      };
-      const onOtpKey = (i, e) => {
-        if (e.key === "Backspace" && !otp[i] && i > 0) otpRefs.current[i-1]?.focus();
-      };
+  if (isOnline) {
+    updateCourierStatus('ONLINE');
+    startListeningForRequests();
+    showToast('You\'re online!', 'Ready to receive requests', '🟢');
+  } else {
+    updateCourierStatus('OFFLINE');
+    stopListeningForRequests();
+    document.getElementById('incomingSection').style.display = 'none';
+  }
+}
 
-      // ---- Styles ----
-      const S = {
-        wrap: { minHeight:"100vh", background:`linear-gradient(165deg,${B.bg} 0%,#0A1628 50%,${B.bg} 100%)`, display:"flex", flexDirection:"column", alignItems:"center", position:"relative", overflow:"hidden" },
-        noise: { position:"fixed", inset:0, opacity:0.03, background:`url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`, pointerEvents:"none", zIndex:0 },
-        bar: { position:"fixed", top:0, left:0, height:3, background:`linear-gradient(90deg,${B.amber},${B.emerald})`, transition:"width 0.4s ease", zIndex:100 },
-        ctn: { width:"100%", maxWidth:420, padding:"0 20px", position:"relative", zIndex:1 },
-        hdr: { display:"flex", alignItems:"center", justifyContent:"center", padding:"24px 0 12px", gap:8 },
-        logo: { fontSize:26, fontWeight:800, letterSpacing:"-0.02em" },
-        cash: { color:B.white },
-        flow: { background:`linear-gradient(135deg,${B.emerald},${B.amber})`, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" },
-        card: { background:B.bgCard, borderRadius:20, padding:"28px 24px", border:`1px solid ${B.border}`, marginBottom:20 },
-        title: { fontSize:20, fontWeight:700, marginBottom:4, letterSpacing:"-0.01em" },
-        sub: { fontSize:14, color:B.gray, marginBottom:24 },
-        ig: { marginBottom:16 },
-        lbl: { display:"block", fontSize:13, fontWeight:600, color:B.grayLight, marginBottom:6 },
-        inp: (n) => ({ width:"100%", padding:"14px 16px", background:B.bgInput, border:`1.5px solid ${focused===n ? B.amber : B.border}`, borderRadius:12, color:B.white, fontSize:16, fontFamily:"'Outfit',sans-serif", outline:"none", transition:"border-color 0.2s,box-shadow 0.2s", boxSizing:"border-box", ...(focused===n ? {boxShadow:`0 0 0 3px ${B.amber}22`} : {}) }),
-        sel: { width:"100%", padding:"14px 16px", background:B.bgInput, border:`1.5px solid ${B.border}`, borderRadius:12, color:B.white, fontSize:16, fontFamily:"'Outfit',sans-serif", outline:"none", appearance:"none", boxSizing:"border-box", backgroundImage:`url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238892A4' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat:"no-repeat", backgroundPosition:"right 16px center" },
-        otp: (i) => ({ width:48, height:56, background:B.bgInput, border:`1.5px solid ${focused===`o${i}` ? B.amber : otp[i] ? B.amber+"66" : B.border}`, borderRadius:12, color:B.white, fontSize:24, fontWeight:700, fontFamily:"'Outfit',sans-serif", textAlign:"center", outline:"none", transition:"border-color 0.2s", ...(focused===`o${i}` ? {boxShadow:`0 0 0 3px ${B.amber}22`} : {}) }),
-        btn: (on) => ({ width:"100%", padding:"16px", borderRadius:14, border:"none", fontSize:16, fontWeight:700, fontFamily:"'Outfit',sans-serif", cursor:on?"pointer":"not-allowed", transition:"all 0.2s", letterSpacing:"0.01em", marginTop:8, ...(on ? { background:`linear-gradient(135deg,${B.amber},${B.amberDark})`, color:B.bg, boxShadow:`0 4px 20px ${B.amber}44` } : { background:B.border, color:B.gray, boxShadow:"none" }) }),
-        link: { color:B.amber, fontSize:14, background:"none", border:"none", cursor:"pointer", fontFamily:"'Outfit',sans-serif", fontWeight:600, padding:"12px", display:"block", margin:"0 auto" },
-        err: { color:B.danger, fontSize:13, marginTop:8 },
-        steps: { display:"flex", justifyContent:"center", gap:8, marginBottom:28 },
-        dot: (a,d) => ({ width:d||a?28:8, height:8, borderRadius:4, background:d?B.amber:a?B.amber+"88":B.border, transition:"all 0.3s" }),
-        hero: { textAlign:"center", padding:"40px 0 32px" },
-        hIcon: { width:80, height:80, borderRadius:24, background:`linear-gradient(135deg,${B.amber}22,${B.amber}08)`, border:`1px solid ${B.amber}33`, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 24px", fontSize:36 },
-        h1: { fontSize:32, fontWeight:800, lineHeight:1.15, marginBottom:12, letterSpacing:"-0.03em" },
-        hsub: { fontSize:16, color:B.gray, lineHeight:1.5, maxWidth:300, margin:"0 auto" },
-        stats: { display:"flex", gap:12, margin:"32px 0" },
-        stat: { flex:1, background:B.bgCard, borderRadius:16, padding:"16px 12px", textAlign:"center", border:`1px solid ${B.border}` },
-        sv: { fontSize:22, fontWeight:800, color:B.amber, marginBottom:4 },
-        sl: { fontSize:11, color:B.gray, textTransform:"uppercase", letterSpacing:"0.06em" },
-        fl: { textAlign:"left", margin:"28px 0" },
-        fi: { display:"flex", alignItems:"flex-start", gap:14, marginBottom:18 },
-        fic: { width:36, height:36, borderRadius:10, background:B.amberGlow, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18, flexShrink:0, marginTop:2 },
-        ft: { fontWeight:700, marginBottom:2, fontSize:15 },
-        fd: { color:B.gray, fontSize:13 },
-        footer: { textAlign:"center", padding:"24px 0 40px", color:B.gray, fontSize:12 },
-        sIcon: { width:100, height:100, borderRadius:"50%", background:`linear-gradient(135deg,${B.amber}22,${B.amber}08)`, border:`2px solid ${B.amber}44`, display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 28px", fontSize:48, animation:"checkmark 0.6s ease" },
-      };
+async function updateCourierStatus(status) {
+  try {
+    await sbFetch('/rest/v1/profiles?id=eq.' + currentUser.id, {
+      method: 'PATCH',
+      body: JSON.stringify({ courier_status: status })
+    });
+  } catch(e) {}
+}
 
-      const features = [
-        { icon:"⚡", t:"Use cash you already have", d:"No ATM runs. Deliver from your own float." },
-        { icon:"📍", t:"Choose your zone", d:"Go online when you want, where you want." },
-        { icon:"🔒", t:"Verified & tracked", d:"QR handover, GPS tracking, rated by users." },
-        { icon:"💸", t:"Instant payouts", d:"Earnings hit your account same day via Airwallex." },
-      ];
+let requestPoll;
+function startListeningForRequests() {
+  if (requestPoll) clearInterval(requestPoll);
+  requestPoll = setInterval(async () => {
+    try {
+      const orders = await sbRest('orders', 'status=eq.PENDING&select=*&order=created_at.desc&limit=1');
+      if (orders.length > 0 && orders[0].requester_id !== currentUser.id) {
+        showIncomingRequest(orders[0]);
+      }
+    } catch(e) {}
+  }, 5000);
+}
 
-      const si = stepIdx[screen];
+function stopListeningForRequests() {
+  if (requestPoll) clearInterval(requestPoll);
+}
 
-      return (
-        <div style={S.wrap}>
-          <div style={S.noise} />
-          <div style={{...S.bar, width:`${progress[screen]}%`}} />
-          <div style={S.ctn}>
+function showIncomingRequest(order) {
+  currentOrder = order;
+  const totalFee = order.delivery_fee + order.service_fee;
+  const courierEarnings = totalFee * (1 - PLATFORM_CUT);
+  document.getElementById('incAmount').textContent = '£' + order.amount;
+  document.getElementById('incFee').textContent = 'Earn £' + courierEarnings.toFixed(2);
+  document.getElementById('incMeta').textContent = (order.delivery_address || 'Unknown location').substring(0, 40);
+  document.getElementById('incomingSection').style.display = 'block';
+}
 
-            {/* Header */}
-            <div style={S.hdr}>
-              <span style={S.logo}>
-                <span style={S.cash}>Cash</span><span style={S.flow}>Flow</span>
-              </span>
-            </div>
+async function acceptRequest() {
+  if (!currentOrder) return;
+  try {
+    await sbFetch('/rest/v1/orders?id=eq.' + currentOrder.id, {
+      method: 'PATCH',
+      body: JSON.stringify({ courier_id: currentUser.id, status: 'ACCEPTED' })
+    });
+    document.getElementById('incomingSection').style.display = 'none';
+    stopListeningForRequests();
+    showCourierDelivery();
+    showToast('Request accepted!', 'Navigate to the customer', '✅');
+  } catch(e) {
+    showToast('Error', e.message, '❌');
+  }
+}
 
-            {/* Steps */}
-            {["auth","otp","profile"].includes(screen) && (
-              <div style={S.steps}>
-                {[0,1,2].map(i => <div key={i} style={S.dot(si===i, si>i)} />)}
-              </div>
-            )}
+function declineRequest() {
+  document.getElementById('incomingSection').style.display = 'none';
+  currentOrder = null;
+}
 
-            {/* ---- LANDING ---- */}
-            {screen === "landing" && (
-              <div style={{animation:"fadeIn 0.5s ease"}}>
-                <div style={S.hero}>
-                  <div style={S.hIcon}>💷</div>
-                  <h1 style={S.h1}>Deliver Cash.<br/><span style={{color:B.amber}}>Earn Instantly.</span></h1>
-                  <p style={S.hsub}>Turn the cash you already carry into income. Join London's first on-demand cash delivery network.</p>
-                </div>
-                <div style={S.stats}>
-                  <div style={S.stat}><div style={S.sv}>75%</div><div style={S.sl}>You Keep</div></div>
-                  <div style={S.stat}><div style={S.sv}>£7.50</div><div style={S.sl}>Per £100 Drop</div></div>
-                  <div style={S.stat}><div style={S.sv}>E1</div><div style={S.sl}>Launching</div></div>
-                </div>
-                <div style={S.fl}>
-                  {features.map((f,i) => (
-                    <div key={i} style={S.fi}>
-                      <div style={S.fic}>{f.icon}</div>
-                      <div><div style={S.ft}>{f.t}</div><div style={S.fd}>{f.d}</div></div>
-                    </div>
-                  ))}
-                </div>
-                <button style={S.btn(true)} onClick={() => setScreen("auth")}>Register as a Courier</button>
-                <div style={S.footer}>Already registered? <button style={{...S.link, display:"inline", padding:0, fontSize:12}} onClick={() => setScreen("auth")}>Sign in</button></div>
-                <div style={S.footer}>© 2026 CashFlow Ltd · London, UK</div>
-              </div>
-            )}
+function showCourierDelivery() {
+  showScreen('courierDeliveryScreen');
+  document.getElementById('delAddress').textContent = currentOrder.delivery_address?.substring(0, 35) || '—';
+  document.getElementById('delAmount').textContent = '£' + currentOrder.amount;
+  const totalFee = (currentOrder.delivery_fee || FIXED_FEE) + (currentOrder.service_fee || currentOrder.amount * SVC_PCT);
+  const earnings = totalFee * (1 - PLATFORM_CUT);
+  document.getElementById('delEarnings').textContent = '£' + earnings.toFixed(2);
 
-            {/* ---- EMAIL ---- */}
-            {screen === "auth" && (
-              <div style={{animation:"fadeIn 0.4s ease"}}>
-                <div style={S.card}>
-                  <h2 style={S.title}>Get started</h2>
-                  <p style={S.sub}>We'll send a 6-digit code to verify your email.</p>
-                  <div style={S.ig}>
-                    <label style={S.lbl}>Email address</label>
-                    <input type="email" placeholder="you@email.com" value={email}
-                      onChange={e => { setEmail(e.target.value); setError(""); }}
-                      onFocus={() => setFocused("em")} onBlur={() => setFocused(null)}
-                      style={S.inp("em")} autoFocus />
-                  </div>
-                  {error && <div style={S.err}>{error}</div>}
-                  <button style={S.btn(!loading && email)} onClick={sendOtp} disabled={loading || !email}>
-                    {loading ? "Sending..." : "Send verification code"}
-                  </button>
-                </div>
-                <button style={S.link} onClick={() => { setScreen("landing"); setError(""); }}>← Back</button>
-              </div>
-            )}
+  // Generate handover code
+  const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+  document.getElementById('qrCode').textContent = code;
+  document.getElementById('qrDisplay').innerHTML = '<div style="font-size:48px;font-weight:900;letter-spacing:6px;color:#050A12">' + code + '</div>';
+  document.getElementById('qrSection').style.display = 'block';
 
-            {/* ---- OTP ---- */}
-            {screen === "otp" && (
-              <div style={{animation:"fadeIn 0.4s ease"}}>
-                <div style={S.card}>
-                  <h2 style={S.title}>Check your email</h2>
-                  <p style={S.sub}>Enter the 6-digit code sent to <span style={{color:B.amber, fontWeight:600}}>{email}</span></p>
-                  <div style={{display:"flex", gap:10, justifyContent:"center", margin:"20px 0"}}>
-                    {otp.map((d,i) => (
-                      <input key={i} ref={el => otpRefs.current[i]=el} type="text" inputMode="numeric"
-                        maxLength={1} value={d} onChange={e => onOtpChange(i, e.target.value)}
-                        onKeyDown={e => onOtpKey(i, e)} onFocus={() => setFocused(`o${i}`)}
-                        onBlur={() => setFocused(null)} style={S.otp(i)} autoFocus={i===0} />
-                    ))}
-                  </div>
-                  {error && <div style={S.err}>{error}</div>}
-                  <button style={S.btn(!loading && otp.join("").length===6)} onClick={verifyOtp}
-                    disabled={loading || otp.join("").length<6}>
-                    {loading ? "Verifying..." : "Verify & continue"}
-                  </button>
-                  <div style={{textAlign:"center", marginTop:16}}>
-                    <button style={{...S.link, display:"inline", padding:0}} onClick={sendOtp}>Resend code</button>
-                  </div>
-                </div>
-                <button style={S.link} onClick={() => { setScreen("auth"); setOtp(["","","","","",""]); setError(""); }}>← Change email</button>
-              </div>
-            )}
+  initDeliveryMap();
+}
 
-            {/* ---- PROFILE ---- */}
-            {screen === "profile" && (
-              <div style={{animation:"fadeIn 0.4s ease"}}>
-                <div style={S.card}>
-                  <h2 style={S.title}>Your details</h2>
-                  <p style={S.sub}>Tell us a bit about yourself to get started.</p>
-                  <div style={{display:"flex", gap:12}}>
-                    <div style={{...S.ig, flex:1}}>
-                      <label style={S.lbl}>First name *</label>
-                      <input type="text" placeholder="John" value={profile.firstName}
-                        onChange={e => { setProfile({...profile, firstName:e.target.value}); setError(""); }}
-                        onFocus={() => setFocused("fn")} onBlur={() => setFocused(null)}
-                        style={S.inp("fn")} autoFocus />
-                    </div>
-                    <div style={{...S.ig, flex:1}}>
-                      <label style={S.lbl}>Last name *</label>
-                      <input type="text" placeholder="Smith" value={profile.lastName}
-                        onChange={e => { setProfile({...profile, lastName:e.target.value}); setError(""); }}
-                        onFocus={() => setFocused("ln")} onBlur={() => setFocused(null)}
-                        style={S.inp("ln")} />
-                    </div>
-                  </div>
-                  <div style={S.ig}>
-                    <label style={S.lbl}>Phone number *</label>
-                    <input type="tel" placeholder="+44 7XXX XXX XXX" value={profile.phone}
-                      onChange={e => { setProfile({...profile, phone:e.target.value}); setError(""); }}
-                      onFocus={() => setFocused("ph")} onBlur={() => setFocused(null)}
-                      style={S.inp("ph")} />
-                  </div>
-                  <div style={S.ig}>
-                    <label style={S.lbl}>Preferred area</label>
-                    <select value={profile.area} onChange={e => setProfile({...profile, area:e.target.value})} style={S.sel}>
-                      <option value="">Select your zone...</option>
-                      {areas.map(a => <option key={a} value={a}>{a}</option>)}
-                    </select>
-                  </div>
-                  {error && <div style={S.err}>{error}</div>}
-                  <button style={S.btn(!loading && profile.firstName && profile.lastName && profile.phone)}
-                    onClick={saveProfile} disabled={loading || !profile.firstName || !profile.lastName || !profile.phone}>
-                    {loading ? "Saving..." : "Complete registration"}
-                  </button>
-                </div>
-              </div>
-            )}
+async function courierCompleteDelivery() {
+  if (currentOrder) {
+    try {
+      await sbFetch('/rest/v1/orders?id=eq.' + currentOrder.id, {
+        method: 'PATCH',
+        body: JSON.stringify({ status: 'DELIVERED' })
+      });
+    } catch(e) {}
+  }
+  const totalFee = (currentOrder?.delivery_fee || FIXED_FEE) + (currentOrder?.service_fee || 0);
+  const earnings = totalFee * (1 - PLATFORM_CUT);
+  showToast('Delivery complete!', 'Earned £' + earnings.toFixed(2), '💰');
+  currentOrder = null;
+  isOnline = true;
+  showScreen('courierScreen');
+  document.getElementById('tabBar').classList.remove('hidden');
+  startListeningForRequests();
+}
 
-            {/* ---- SUCCESS ---- */}
-            {screen === "success" && (
-              <div style={{textAlign:"center", padding:"60px 0 40px", animation:"fadeIn 0.5s ease"}}>
-                <div style={S.sIcon}>✓</div>
-                <h1 style={{...S.h1, fontSize:28}}>You're in, <span style={{color:B.amber}}>{profile.firstName}!</span></h1>
-                <p style={{...S.hsub, marginBottom:32}}>You've been registered as a CashFlow courier in London. We'll notify you as soon as the platform goes live in your area.</p>
+// ---- Maps ----
+function initMap(containerId, center = [-0.0738, 51.5194], zoom = 14) {
+  if (maps[containerId]) { maps[containerId].remove(); }
+  mapboxgl.accessToken = MB_TOKEN;
+  const map = new mapboxgl.Map({
+    container: containerId,
+    style: 'mapbox://styles/mapbox/dark-v11',
+    center, zoom,
+    attributionControl: false,
+  });
+  maps[containerId] = map;
+  return map;
+}
 
-                <div style={{...S.card, background:B.amberGlow, border:`1px solid ${B.amber}33`, textAlign:"left"}}>
-                  <div style={{fontSize:14, fontWeight:700, marginBottom:12, color:B.amber}}>What happens next</div>
-                  {["We'll review your registration (usually within 24hrs)", "You'll receive an email when your area goes live", "Download the CashFlow app to start accepting deliveries"].map((t,i) => (
-                    <div key={i} style={{display:"flex", alignItems:"flex-start", gap:10, marginBottom:10, fontSize:14, lineHeight:1.4}}>
-                      <span style={{color:B.amber, fontWeight:800, fontSize:13, marginTop:1, flexShrink:0}}>{i+1}.</span>
-                      <span style={{color:B.grayLight}}>{t}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div style={{...S.card, textAlign:"left", marginTop:16}}>
-                  <div style={{fontSize:14, fontWeight:700, marginBottom:8}}>Your registration</div>
-                  <div style={{fontSize:13, color:B.gray, lineHeight:1.8}}>
-                    {profile.firstName} {profile.lastName}<br/>{email}<br/>{profile.phone}<br/>{profile.area || "No area selected"}
-                  </div>
-                </div>
-
-                <div style={S.footer}>
-                  <span style={{...S.logo, fontSize:16}}><span style={S.cash}>Cash</span><span style={S.flow}>Flow</span></span><br/>
-                  <span style={{marginTop:4, display:"inline-block"}}>© 2026 CashFlow Ltd. All rights reserved.</span>
-                </div>
-              </div>
-            )}
-
-          </div>
-        </div>
-      );
+function initCourierMap() {
+  setTimeout(() => {
+    const map = initMap('courierMap');
+    // Add courier's position marker
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const { longitude, latitude } = pos.coords;
+        map.setCenter([longitude, latitude]);
+        new mapboxgl.Marker({ color: '#FFB800' }).setLngLat([longitude, latitude]).addTo(map);
+      }, () => {
+        // Default to E1
+        new mapboxgl.Marker({ color: '#FFB800' }).setLngLat([-0.0738, 51.5194]).addTo(map);
+      });
     }
+  }, 100);
+}
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
+function initTrackingMap() {
+  setTimeout(() => {
+    const map = initMap('reqMap', selectedCoords || [-0.0738, 51.5194]);
+    if (selectedCoords) {
+      new mapboxgl.Marker({ color: '#00E8B8' }).setLngLat(selectedCoords).addTo(map);
+      // Simulated courier position
+      const courierPos = [selectedCoords[0] + 0.003, selectedCoords[1] + 0.002];
+      const courierMarker = new mapboxgl.Marker({ color: '#FFB800' }).setLngLat(courierPos).addTo(map);
+      // Animate courier moving toward delivery
+      let step = 0;
+      const steps = 40;
+      const interval = setInterval(() => {
+        step++;
+        if (step >= steps) { clearInterval(interval); return; }
+        const lng = courierPos[0] + (selectedCoords[0] - courierPos[0]) * (step / steps);
+        const lat = courierPos[1] + (selectedCoords[1] - courierPos[1]) * (step / steps);
+        courierMarker.setLngLat([lng, lat]);
+      }, 200);
+    }
+  }, 100);
+}
+
+function initDeliveryMap() {
+  setTimeout(() => {
+    const coords = currentOrder?.delivery_lng && currentOrder?.delivery_lat
+      ? [currentOrder.delivery_lng, currentOrder.delivery_lat]
+      : [-0.0738, 51.5194];
+    const map = initMap('deliveryMap', coords);
+    new mapboxgl.Marker({ color: '#00E8B8' }).setLngLat(coords).addTo(map);
+    // Courier position
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        new mapboxgl.Marker({ color: '#FFB800' }).setLngLat([pos.coords.longitude, pos.coords.latitude]).addTo(map);
+        map.fitBounds([
+          [Math.min(coords[0], pos.coords.longitude) - 0.005, Math.min(coords[1], pos.coords.latitude) - 0.005],
+          [Math.max(coords[0], pos.coords.longitude) + 0.005, Math.max(coords[1], pos.coords.latitude) + 0.005]
+        ]);
+      });
+    }
+  }, 100);
+}
+
+// ---- Orders ----
+async function loadRecentOrders() {
+  try {
+    const orders = await sbRest('orders', 'or=(requester_id.eq.' + currentUser.id + ',courier_id.eq.' + currentUser.id + ')&select=*&order=created_at.desc&limit=5');
+    const sec = document.getElementById('recentSection');
+    const list = document.getElementById('recentOrders');
+    if (orders.length > 0) {
+      sec.style.display = 'block';
+      list.innerHTML = orders.map(o => {
+        const isReq = o.requester_id === currentUser.id;
+        const dt = new Date(o.created_at);
+        const timeStr = dt.toLocaleDateString('en-GB', { day:'numeric', month:'short' }) + ' · ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        return `<div class="order-item">
+          <div class="order-icon ${isReq ? 'in' : 'out'}">${isReq ? '💷' : '🚀'}</div>
+          <div class="order-info">
+            <div class="top">${isReq ? 'Cash Delivery' : 'Delivered Cash'}</div>
+            <div class="bot">${timeStr} · ${o.status}</div>
+          </div>
+          <div class="order-amount" style="color:${isReq ? 'var(--emerald)' : 'var(--amber)'}">£${o.amount}</div>
+        </div>`;
+      }).join('');
+    } else {
+      sec.style.display = 'none';
+    }
+  } catch (e) {
+    console.warn('Load orders error:', e);
+  }
+}
+
+async function loadHistory() {
+  try {
+    const orders = await sbRest('orders', 'or=(requester_id.eq.' + currentUser.id + ',courier_id.eq.' + currentUser.id + ')&select=*&order=created_at.desc&limit=20');
+    const list = document.getElementById('historyList');
+    if (orders.length > 0) {
+      list.innerHTML = orders.map(o => {
+        const isReq = o.requester_id === currentUser.id;
+        const dt = new Date(o.created_at);
+        const timeStr = dt.toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' }) + ' · ' + dt.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+        return `<div class="order-item">
+          <div class="order-icon ${isReq ? 'in' : 'out'}">${isReq ? '💷' : '🚀'}</div>
+          <div class="order-info">
+            <div class="top">${isReq ? 'Cash Delivery' : 'Delivered Cash'}</div>
+            <div class="bot">${timeStr} · ${o.status}</div>
+          </div>
+          <div class="order-amount" style="color:${isReq ? 'var(--emerald)' : 'var(--amber)'}">£${o.amount}</div>
+        </div>`;
+      }).join('');
+    } else {
+      list.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div class="title">No orders yet</div><div class="sub">Your completed deliveries will appear here</div></div>';
+    }
+  } catch (e) {
+    console.warn('Load history error:', e);
+  }
+}
+
+// ---- Toast ----
+function showToast(title, sub, icon = '✓') {
+  const t = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastSub').textContent = sub;
+  document.getElementById('toastIcon').textContent = icon;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ---- Init ----
+updateFees();
+</script>
 </body>
 </html>
