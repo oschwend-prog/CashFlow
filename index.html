@@ -305,15 +305,29 @@ const FIXED=5,SVC=.05,PCUT=.25;
 let S={
   user:null,email:'',screen:'auth',tab:'home',
   amt:100,addr:null,coords:null,payMethod:'apple',
-  role:null,subRole:null, // 'courier' or 'cashpoint'
+  role:null,subRole:null,
   cashOnHand:200,courierFee:10,online:false,
   order:null,orderStep:0,courierHasCash:true,
   matchedCouriers:[],selectedCourier:null,
-  // CashPoint
   cpOpen:false,cpName:'',cpAddress:'',cpFloat:200,
-  // Verification
   verifyChecks:[false,false,false],
   handoverCode:'',
+  // NEW: saved addresses
+  savedAddresses:[
+    {name:'Home',addr:'42 Brick Lane, London E1 6RF',lat:51.5215,lng:-0.0717},
+    {name:'Office',addr:'15 Worship St, London EC2A 2DT',lat:51.5225,lng:-0.0835},
+  ],
+  // NEW: chat
+  chatMessages:[],chatInput:'',
+  // NEW: tip & rating
+  tipAmount:0,rating:0,
+  // NEW: tier & KYC
+  tier:'Silver',kycStatus:'verified',
+  // NEW: earnings data
+  earnData:{today:0,week:0,allTime:0,deliveries:0,tips:0,hours:0},
+  recentDeliveries:[
+    {amt:50,earn:7.50,time:'1h ago'},{amt:150,earn:11.25,time:'1d ago'},{amt:80,earn:7.50,time:'2d ago'}
+  ],
 };
 let maps={},polls={};
 const $=id=>document.getElementById(id);
@@ -353,13 +367,16 @@ function render(){
     case 'cpSetup': a.innerHTML=renderCashPoint(); break;
     case 'courDel': a.innerHTML=renderCourierDelivery(); break;
     case 'courQR': a.innerHTML=renderCourierQR(); break;
+    case 'chat': a.innerHTML=renderChat(); break;
+    case 'tip': a.innerHTML=renderTip(); break;
+    case 'rate': a.innerHTML=renderRating(); break;
     case 'earn': a.innerHTML=renderEarnings(); break;
     case 'history': a.innerHTML=renderHistory(); break;
     case 'profile': a.innerHTML=renderProfile(); break;
   }
   
   // Tab bar
-  const noTab=['auth','matching','tracking','verify','courDel','courQR','subRole','couriers','cpSetup'];
+  const noTab=['auth','matching','tracking','verify','courDel','courQR','subRole','couriers','cpSetup','chat','tip','rate'];
   $('tabBar').classList.toggle('hide',noTab.includes(S.screen)||!S.user);
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('on',t.dataset.t===S.tab));
   
@@ -489,6 +506,10 @@ function renderRequest(){
     <div class="amt-pre">${[20,50,100,200,500].map(v=>`<button class="amt-p ${S.amt===v?'on':''}" onclick="S.amt=${v};render()">£${v}</button>`).join('')}</div>
     <div class="addr">
       <div class="sec-t" style="padding:0;margin-bottom:10px">Delivery Address</div>
+      <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap">
+        <div style="padding:8px 14px;border-radius:20px;background:var(--em2);color:var(--em);font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:4px" onclick="detectGPS()">📍 Use my location</div>
+        ${S.savedAddresses.map(sa=>`<div style="padding:8px 14px;border-radius:20px;background:var(--sf2);color:var(--gr);font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bd2)" onclick="pickAddr('${sa.addr.replace(/'/g,"\\'")}',${sa.lng},${sa.lat})">${sa.name}</div>`).join('')}
+      </div>
       <div class="addr-wrap"><span class="pin">📍</span><input type="text" id="addrInp" placeholder="Search address..." value="${S.addr||''}" oninput="searchAddr(this.value)" autocomplete="off"></div>
       <div class="addr-res" id="addrRes"></div>
     </div>
@@ -564,6 +585,7 @@ function renderTracking(){
       <div style="font-size:12px;color:var(--mu)">Courier will scan this to verify the handover</div>
     </div>`:''}
     ${S.orderStep>=totalSteps-1?`<button class="btn btn-em" onclick="go('verify')">Verify Banknotes →</button>`:''}
+    <button class="btn btn-ghost" style="margin:0 20px 20px" onclick="go('chat')">💬 Message Courier</button>
   </div>`;
 }
 
@@ -673,20 +695,59 @@ function renderCourierQR(){
 // ---- Earnings ----
 function renderEarnings(){
   const heatData=Array.from({length:28},()=>Math.floor(Math.random()*5));
+  const sparkData=[8.5,12,6.75,15.5,19.25,11,18.75];
+  const W=260,H=50,p=4,mx=Math.max(...sparkData),mn=Math.min(...sparkData);
+  const pts=sparkData.map((v,i)=>[p+i*((W-2*p)/(sparkData.length-1)),H-p-(v-mn)/(mx-mn)*(H-2*p)]);
+  const line=pts.map((pt,i)=>`${i===0?'M':'L'}${pt[0]} ${pt[1]}`).join(' ');
+  const area=line+` L${pts[pts.length-1][0]} ${H} L${pts[0][0]} ${H} Z`;
+  const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  const tierColor=S.tier==='Gold'?'var(--am)':S.tier==='Silver'?'var(--gr)':'#CD7F32';
   return`<div class="scr on">
     <div class="hdr"><div><div class="hdr-n">Earnings</div></div></div>
-    <div class="earn-hero"><div class="earn-lbl">This Week</div><div class="earn-val">£0.00</div></div>
+    <div class="earn-hero">
+      <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px">
+        <span style="font-size:12px;font-weight:700;color:${tierColor};padding:2px 10px;border-radius:6px;background:${S.tier==='Gold'?'var(--am2)':'rgba(255,255,255,.06)'}">${S.tier}</span>
+      </div>
+      <div class="earn-lbl">This Week</div>
+      <div class="earn-val" style="animation:countUp .5s ease">£${S.earnData.week.toFixed(2)}</div>
+    </div>
     <div class="earn-stats">
-      <div class="earn-stat"><div class="v">0</div><div class="l">Deliveries</div></div>
-      <div class="earn-stat"><div class="v">£0</div><div class="l">Tips</div></div>
-      <div class="earn-stat"><div class="v">0h</div><div class="l">Hours</div></div>
+      <div class="earn-stat"><div class="v" style="animation:countUp .5s .1s ease both">${S.earnData.deliveries}</div><div class="l">Deliveries</div></div>
+      <div class="earn-stat"><div class="v" style="animation:countUp .5s .2s ease both">£${S.earnData.tips.toFixed(0)}</div><div class="l">Tips</div></div>
+      <div class="earn-stat"><div class="v" style="animation:countUp .5s .3s ease both">${S.earnData.hours}h</div><div class="l">Hours</div></div>
+    </div>
+    <div class="card" style="margin:16px 20px 0">
+      <div class="cs-lbl">7-Day Chart</div>
+      <svg viewBox="0 0 ${W} ${H}" width="100%" height="50" style="margin-top:8px">
+        <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--em)" stop-opacity=".3"/><stop offset="100%" stop-color="var(--em)" stop-opacity="0"/></linearGradient></defs>
+        <path d="${area}" fill="url(#sg)"/>
+        <path d="${line}" fill="none" stroke="var(--em)" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-size:9px;color:var(--mu);padding:4px 0">${days.map(d=>`<span>${d}</span>`).join('')}</div>
+    </div>
+    <div class="card" style="margin:10px 20px 0">
+      <div class="cs-lbl">Recent Deliveries</div>
+      ${S.recentDeliveries.map(d=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)">
+        <div><div style="font-size:15px;font-weight:700">£${d.amt}</div><div style="font-size:11px;color:var(--mu)">${d.time}</div></div>
+        <div style="font-size:18px;font-weight:700;color:var(--am)">+£${d.earn.toFixed(2)}</div>
+      </div>`).join('')}
     </div>
     <div class="heatmap">
       <div class="heatmap-title">Activity (last 4 weeks)</div>
       <div class="heatmap-grid">${heatData.map(v=>`<div class="heatmap-cell ${v>=4?'l4':v>=3?'l3':v>=2?'l2':v>=1?'l1':''}"></div>`).join('')}</div>
     </div>
-    <div class="card"><div class="cs-lbl">Peak Hours</div><div class="cs-sub">Based on your area — best times to go online</div>
+    <div class="card" style="margin:12px 20px 0"><div class="cs-lbl">Peak Hours</div><div class="cs-sub">Best times to go online in your area</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">${['Fri 10pm','Sat 8pm','Sun 12pm','Wed 6pm'].map(t=>`<span style="padding:6px 12px;border-radius:8px;background:var(--am2);color:var(--am);font-size:12px;font-weight:600">${t}</span>`).join('')}</div>
+    </div>
+    <div class="card" style="margin:12px 20px 0"><div class="cs-lbl">Goals</div>
+      <div style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Weekly target</span><span style="color:var(--em)">£${S.earnData.week}/£200</span></div>
+        <div style="height:6px;background:var(--sf3);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.min(100,S.earnData.week/200*100)}%;background:var(--em);border-radius:3px;transition:width .5s"></div></div>
+      </div>
+      <div style="margin-top:12px">
+        <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Next tier: Gold</span><span style="color:var(--am)">${S.earnData.deliveries}/50 deliveries</span></div>
+        <div style="height:6px;background:var(--sf3);border-radius:3px;overflow:hidden"><div style="height:100%;width:${Math.min(100,S.earnData.deliveries/50*100)}%;background:var(--am);border-radius:3px;transition:width .5s"></div></div>
+      </div>
     </div>
   </div>`;
 }
@@ -700,9 +761,14 @@ function renderHistory(){
 // ---- Profile ----
 function renderProfile(){
   const n=S.user?.display_name||S.email.split('@')[0];
+  const tierColor=S.tier==='Gold'?'var(--am)':S.tier==='Silver'?'var(--gr)':'#CD7F32';
   return`<div class="scr on">
     <div class="prof-hdr"><div class="prof-av">${n.charAt(0).toUpperCase()}</div><div class="prof-name">${n}</div>
-      <div class="prof-email">${S.user?.email||S.email}</div><div class="prof-ver">✓ Verified</div>
+      <div class="prof-email">${S.user?.email||S.email}</div>
+      <div style="display:flex;align-items:center;gap:8px;justify-content:center;margin-top:10px">
+        <div class="prof-ver">✓ Verified</div>
+        <span style="padding:4px 14px;border-radius:20px;font-size:12px;font-weight:600;background:${S.tier==='Gold'?'var(--am2)':'rgba(255,255,255,.06)'};color:${tierColor}">${S.tier} Tier</span>
+      </div>
       <div class="prof-since">Member since ${new Date().toLocaleDateString('en-GB',{month:'long',year:'numeric'})}</div></div>
     <div class="earn-stats" style="margin-top:16px">
       <div class="earn-stat"><div class="v" id="pOrd">0</div><div class="l">Orders</div></div>
@@ -711,16 +777,114 @@ function renderProfile(){
     </div>
     <div class="prof-ml">Display Name</div>
     <div class="edit-row"><input type="text" id="pNameInp" value="${n}" placeholder="Your name"><button onclick="saveName()">Save</button></div>
-    <div class="prof-ml" style="margin-top:12px">Account</div>
+    <div class="prof-ml" style="margin-top:12px">Verification</div>
+    <div class="prof-item"><span class="pi">🛡</span><span class="pt">KYC Status</span><span class="pa" style="color:var(--em);font-size:13px;font-weight:600">${S.kycStatus==='verified'?'✓ Verified':'Pending'}</span></div>
+    <div class="prof-item"><span class="pi">⭐</span><span class="pt">Trust Score</span><span class="pa" style="color:var(--am);font-size:13px;font-weight:600">4.9</span></div>
+    <div class="prof-ml">Account</div>
     <div class="prof-item" onclick="showTab('history')"><span class="pi">📋</span><span class="pt">Order History</span><span class="pa">›</span></div>
+    <div class="prof-item" onclick="showTab('earn')"><span class="pi">💰</span><span class="pt">Earnings</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','Payment methods at launch','💳')"><span class="pi">💳</span><span class="pt">Payment Methods</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','Notifications coming soon','🔔')"><span class="pi">🔔</span><span class="pt">Notifications</span><span class="pa">›</span></div>
+    <div class="prof-ml">Saved Addresses</div>
+    ${S.savedAddresses.map(sa=>`<div class="prof-item"><span class="pi">📍</span><span class="pt">${sa.name} — ${sa.addr.substring(0,25)}...</span><span class="pa">›</span></div>`).join('')}
+    <div class="prof-item" onclick="toast('Coming soon','Add new address','📍')"><span class="pi">➕</span><span class="pt">Add Address</span><span class="pa">›</span></div>
     <div class="prof-ml">Support</div>
-    <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🛡</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
+    <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🔒</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','','❓')"><span class="pi">❓</span><span class="pt">Help & Support</span><span class="pa">›</span></div>
     <div class="prof-item danger" onclick="signOut()"><span class="pi">🚪</span><span class="pt">Sign Out</span><span class="pa"></span></div>
     <div class="app-foot"><span style="color:var(--em)">Cash</span><span>Flow</span> v1.0 · London E1<br>© 2026 CashFlow Ltd</div>
   </div>`;
+}
+
+// ---- Chat ----
+function renderChat(){
+  const c=S.selectedCourier||MOCK_COURIERS[0];
+  const quickMsgs=["I'm outside","Running 2 min late","Which door?","On my way!"];
+  return`<div class="scr on nt">
+    <div class="hdr"><div class="hdr-back" onclick="go('tracking')">← Back</div><div class="hdr-title">Chat with ${c.name}</div><div style="width:44px"></div></div>
+    <div style="flex:1;overflow-y:auto;padding:12px 20px">
+      <div style="text-align:center;font-size:12px;color:var(--mu);margin-bottom:16px">Messages are end-to-end encrypted</div>
+      ${S.chatMessages.length===0?`<div style="text-align:center;padding:32px 0"><div style="font-size:32px;margin-bottom:8px">💬</div><div style="font-size:14px;color:var(--gr)">Send a message to your courier</div></div>`:''}
+      ${S.chatMessages.map(m=>`<div style="display:flex;justify-content:${m.from==='me'?'flex-end':'flex-start'};margin-bottom:8px">
+        <div style="max-width:75%;padding:10px 14px;border-radius:${m.from==='me'?'14px 14px 4px 14px':'14px 14px 14px 4px'};background:${m.from==='me'?'var(--em)':'var(--sf2)'};color:${m.from==='me'?'var(--bg)':'var(--wh)'};font-size:14px">
+          ${m.text}<div style="font-size:10px;opacity:.6;margin-top:4px;text-align:right">${m.time}</div>
+        </div>
+      </div>`).join('')}
+    </div>
+    <div style="padding:8px 20px 20px">
+      <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">${quickMsgs.map(m=>`<div style="padding:6px 12px;border-radius:16px;background:var(--sf2);color:var(--gr);font-size:12px;cursor:pointer;border:1px solid var(--bd2)" onclick="sendChat('${m}')">${m}</div>`).join('')}</div>
+      <div style="display:flex;gap:8px">
+        <input type="text" id="chatInp" placeholder="Type a message..." value="${S.chatInput}" style="flex:1;padding:12px 16px;background:var(--sf);border:1px solid var(--bd2);border-radius:24px;color:var(--wh);font-size:14px;outline:none" oninput="S.chatInput=this.value">
+        <button style="width:44px;height:44px;border-radius:50%;background:var(--em);border:none;color:var(--bg);font-size:18px;cursor:pointer" onclick="sendChat()">→</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ---- Tip ----
+function renderTip(){
+  const c=S.selectedCourier||MOCK_COURIERS[0];
+  return`<div class="scr on nt">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+      <div style="font-size:56px;margin-bottom:16px">🎉</div>
+      <div style="font-size:24px;font-weight:800;margin-bottom:6px">Cash Delivered!</div>
+      <div style="font-size:14px;color:var(--gr);margin-bottom:32px">£${S.amt} from ${c.name}</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:16px">Add a tip?</div>
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        ${[0,1,2,5].map(v=>`<div style="width:60px;height:60px;border-radius:16px;background:${S.tipAmount===v?'var(--em)':'var(--sf)'};border:1px solid ${S.tipAmount===v?'var(--em)':'var(--bd2)'};display:flex;align-items:center;justify-content:center;font-size:${v===0?'14px':'18px'};font-weight:700;color:${S.tipAmount===v?'var(--bg)':'var(--wh)'};cursor:pointer" onclick="S.tipAmount=${v};render()">${v===0?'None':'£'+v}</div>`).join('')}
+      </div>
+      <button class="btn btn-em" style="width:100%;margin:20px 0 0" onclick="submitTip()">
+        ${S.tipAmount>0?'Tip £'+S.tipAmount+' →':'Continue without tip →'}
+      </button>
+    </div>
+  </div>`;
+}
+
+// ---- Rating ----
+function renderRating(){
+  const c=S.selectedCourier||MOCK_COURIERS[0];
+  return`<div class="scr on nt">
+    <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+      <div style="font-size:48px;margin-bottom:16px">⭐</div>
+      <div style="font-size:22px;font-weight:700;margin-bottom:6px">Rate ${c.name}</div>
+      <div style="font-size:14px;color:var(--gr);margin-bottom:28px">How was your delivery experience?</div>
+      <div style="display:flex;gap:8px;margin-bottom:32px">
+        ${[1,2,3,4,5].map(v=>`<div style="font-size:36px;cursor:pointer;opacity:${v<=S.rating?'1':'.25'};transition:all .15s;transform:${v<=S.rating?'scale(1.1)':'scale(1)'}" onclick="S.rating=${v};render()">${v<=S.rating?'⭐':'☆'}</div>`).join('')}
+      </div>
+      <div style="font-size:14px;color:var(--gr);margin-bottom:24px">${S.rating===0?'Tap to rate':S.rating<=2?'We\'ll do better next time':S.rating<=3?'Thanks for your feedback':S.rating===4?'Glad you liked it!':'Amazing — thank you! 🎉'}</div>
+      <button class="btn btn-em" style="width:100%;margin:0" ${S.rating===0?'disabled':''} onclick="submitRating()">
+        Submit Rating →
+      </button>
+      <button class="btn btn-ghost" style="width:100%;margin:12px 0 0" onclick="submitRating()">Skip</button>
+    </div>
+  </div>`;
+}
+
+// ---- Chat Logic ----
+function sendChat(quickMsg){
+  const text=quickMsg||S.chatInput;if(!text)return;
+  const now=new Date();const time=now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+  S.chatMessages.push({from:'me',text,time});S.chatInput='';render();
+  // Simulate courier reply
+  setTimeout(()=>{const replies=['Got it!','On my way 👍','See you soon','Nearly there!'];
+    S.chatMessages.push({from:'courier',text:replies[Math.floor(Math.random()*replies.length)],time});render()},1500);
+}
+
+// ---- Tip & Rating Logic ----
+function submitTip(){if(S.tipAmount>0)toast('Tip sent!','£'+S.tipAmount+' sent to your courier','💰');go('rate')}
+function submitRating(){S.order=null;S.addr=null;S.coords=null;S.orderStep=0;S.chatMessages=[];
+  if(S.rating>0)toast('Thanks!','Rating submitted','⭐');go('home','home')}
+
+// ---- GPS Detect ----
+function detectGPS(){
+  if(!navigator.geolocation){toast('No GPS','Location not available','📍');return}
+  toast('Detecting...','Finding your location','📍');
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const{latitude:lat,longitude:lng}=pos.coords;
+    try{const r=await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${lng},${lat}.json?access_token=${MBT}&limit=1`);
+      const d=await r.json();if(d.features?.[0]){const f=d.features[0];S.addr=f.place_name;S.coords=[lng,lat];render();toast('Found!',f.place_name.substring(0,30),'✅');}
+    }catch(e){toast('Error','Could not detect address','❌')}
+  },()=>toast('Denied','Allow location access in settings','📍'));
 }
 
 // ---- Auth Logic ----
@@ -777,7 +941,7 @@ async function submitOrder(){
 function cancelReq(){if(S.order)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'CANCELLED'})}).catch(()=>{});
   S.order=null;go('request')}
 function confirmHandover(){if(S.order)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'CONFIRMED'})}).catch(()=>{});
-  toast('Cash received!','£'+S.amt+' delivered','✅');S.order=null;S.addr=null;S.coords=null;S.orderStep=0;go('home','home')}
+  toast('Cash received!','£'+S.amt+' delivered','✅');S.tipAmount=0;S.rating=0;go('tip')}
 
 // ---- Courier Logic ----
 function toggleOnline(){if(!S.online&&S.cashOnHand<20){toast('Set cash','Need at least £20','⚠️');return}
