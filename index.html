@@ -366,7 +366,7 @@ input,button,select,textarea{font-family:inherit}
 </div>
 
 <script>
-const DEMO=false; // Preview mode — bypasses Supabase/Mapbox
+const DEMO=new URLSearchParams(location.search).has('demo'); // Preview mode — bypasses Supabase/Mapbox
 const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
 const MBT='pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
