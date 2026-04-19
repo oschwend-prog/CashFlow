@@ -893,7 +893,7 @@ input,button,select,textarea{font-family:inherit}
 .earn-preview .ep-row b{color:var(--cour);font-weight:800;font-variant-numeric:tabular-nums}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — SLEEK REBUILD: amount hero, number pad, match screen
+   v7.2 — SLEEK REBUILD: amount hero, number pad, match screen
    ═════════════════════════════════════════════════════════════════ */
 
 /* Tighter sheet — never blocks the map */
@@ -908,7 +908,7 @@ input,button,select,textarea{font-family:inherit}
 .amt-hero-val .ahv-tap{font-size:11px;color:var(--mu);font-weight:600;display:block;margin-top:4px;letter-spacing:.06em;text-transform:uppercase}
 .amt-hero:active{transform:scale(.98)}
 
-/* v7.1: Pulsing setup frame — emerald outline around courier setup block while offline, calm when live */
+/* v7.2: Pulsing setup frame — emerald outline around courier setup block while offline, calm when live */
 .setup-frame{position:relative;padding:14px;margin:0 0 12px;border-radius:20px;background:rgba(11,18,33,.4);border:1.5px solid rgba(0,232,184,.55);box-shadow:0 0 0 0 rgba(0,232,184,.4),0 10px 30px rgba(0,0,0,.4);transition:border-color .4s,box-shadow .4s}
 .setup-frame.pulse{animation:setupPulse 2.2s ease-in-out infinite}
 @keyframes setupPulse{
@@ -918,7 +918,7 @@ input,button,select,textarea{font-family:inherit}
 .setup-frame.live{border-color:rgba(0,232,184,.25);box-shadow:0 0 0 0 rgba(0,232,184,0),0 8px 24px rgba(0,0,0,.35);animation:none}
 .setup-frame > *:last-child{margin-bottom:0}
 
-/* v7.1: Courier-side float/fee hero — same tap-to-edit pattern as Get Cash amt-hero */
+/* v7.2: Courier-side float/fee hero — same tap-to-edit pattern as Get Cash amt-hero */
 .float-hero{padding:14px 18px;margin:0 0 10px;border-radius:16px;background:linear-gradient(180deg,rgba(0,232,184,.08),rgba(0,232,184,.02));border:1px solid var(--cour-border);cursor:pointer;user-select:none;transition:transform .15s,background .2s;text-align:center}
 .float-hero:active{transform:scale(.985);background:linear-gradient(180deg,rgba(0,232,184,.12),rgba(0,232,184,.04))}
 .float-hero .fh-lbl{font-size:10px;color:var(--mu);font-weight:800;text-transform:uppercase;letter-spacing:.12em;margin-bottom:4px}
@@ -931,7 +931,7 @@ input,button,select,textarea{font-family:inherit}
 .float-hero.fee .fh-cur{color:#FFB800}
 .float-hero.fee:active{background:linear-gradient(180deg,rgba(255,184,0,.12),rgba(255,184,0,.04))}
 
-/* v7.1: Title above the numpad modal display */
+/* v7.2: Title above the numpad modal display */
 .np-title{font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--mu);text-transform:uppercase;text-align:center;margin-bottom:6px;margin-top:4px}
 
 /* Fulfillment chips — minimal, inline */
@@ -961,13 +961,13 @@ input,button,select,textarea{font-family:inherit}
 .np-key:active{background:rgba(255,255,255,.1);transform:scale(.96)}
 .np-key.action{font-size:15px;color:var(--accent);font-weight:800}
 .np-done{margin-top:12px;width:100%;padding:16px;border:none;border-radius:14px;background:var(--accent-grad);color:var(--accent-ink);font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 8px 22px var(--accent-glow)}
-/* v7.1: Preset bill grid — replaces numpad input */
+/* v7.2: Preset bill grid — replaces numpad input */
 .bill-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;max-height:360px;overflow-y:auto;padding:4px 2px 4px 0}
 .bill-chip{padding:14px 0;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);font-size:15px;font-weight:800;cursor:pointer;text-align:center;user-select:none;transition:all .15s;color:var(--wh);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
 .bill-chip:active{transform:scale(.94)}
 .bill-chip.on{background:var(--accent-tint-2);border-color:var(--accent);color:var(--accent);box-shadow:0 4px 14px var(--accent-glow),0 0 0 1px var(--accent) inset}
 
-/* v7.1: Sub-role toggle — always visible at top of courier sheet */
+/* v7.2: Sub-role toggle — always visible at top of courier sheet */
 .subrole-toggle{display:flex;gap:6px;padding:4px;margin-bottom:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
 .srt-opt{flex:1;padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s cubic-bezier(.2,.8,.2,1);user-select:none}
 .srt-opt:active{transform:scale(.97)}
@@ -1057,7 +1057,7 @@ input,button,select,textarea{font-family:inherit}
 .addr-line .al-chg{font-size:11px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — CLEAN CHROME: mode switch lives in Profile only,
+   v7.2 — CLEAN CHROME: mode switch lives in Profile only,
    home/match/request/courier all get the same simple top bar
    ═════════════════════════════════════════════════════════════════ */
 
@@ -1066,7 +1066,7 @@ input,button,select,textarea{font-family:inherit}
 .home-chrome > *{pointer-events:auto}
 .hc-avatar{width:40px;height:40px;border-radius:50%;background:rgba(5,10,18,.82);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);color:var(--wh);transition:transform .12s}
 .hc-avatar:active{transform:scale(.92)}
-/* v7.1: unread notification indicator on avatar */
+/* v7.2: unread notification indicator on avatar */
 .hc-av-dot{position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:var(--cour);border:2px solid rgba(5,10,18,.95);box-shadow:0 2px 6px var(--cour-glow);animation:pulseLive 2s ease-in-out infinite}
 .hc-avatar{position:relative}
 /* Mode-scoped avatar tint (accent color + tint ring) */
@@ -1116,7 +1116,7 @@ input,button,select,textarea{font-family:inherit}
 .wli-rad.on::after{content:'';position:absolute;top:3px;left:3px;width:8px;height:8px;border-radius:50%;background:var(--accent-ink)}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — MATCHING SOPHISTICATION + POLISH
+   v7.2 — MATCHING SOPHISTICATION + POLISH
    ═════════════════════════════════════════════════════════════════ */
 
 /* Reliability meter inside best-match sheet */
@@ -1190,7 +1190,7 @@ input,button,select,textarea{font-family:inherit}
 @keyframes scrEnter{from{opacity:.7;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — SAFETY & TRUST FEATURES
+   v7.2 — SAFETY & TRUST FEATURES
    ═════════════════════════════════════════════════════════════════ */
 
 /* Safety FAB cluster — top-right of tracking/delivery maps */
@@ -1245,39 +1245,12 @@ input,button,select,textarea{font-family:inherit}
 .rate-both-star.on{opacity:1;filter:drop-shadow(0 0 6px rgba(255,184,0,.6))}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — RUGGED SCROLL WHEELS (cash float + fee)
+   v7.2 — RUGGED SCROLL WHEELS (cash float + fee)
    Tactile horizontal ticker with center needle, detents, haptic
    ═════════════════════════════════════════════════════════════════ */
-.wheel-card{margin:0 0 14px;padding:16px 0 14px;border-radius:18px;background:linear-gradient(180deg,rgba(8,14,26,.75) 0%,rgba(5,10,18,.85) 100%);border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 22px rgba(0,0,0,.35),0 1px 0 rgba(255,255,255,.04) inset}
-.wheel-hdr{display:flex;justify-content:space-between;align-items:baseline;padding:0 20px 10px}
-.wheel-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.14em;color:var(--mu)}
-.wheel-val{font-size:28px;font-weight:900;letter-spacing:-.02em;color:var(--cour);font-variant-numeric:tabular-nums;filter:drop-shadow(0 0 10px var(--cour-glow));transition:color .12s}
-.wheel-val.snap{animation:wheelValSnap .28s cubic-bezier(.2,.8,.2,1)}
-@keyframes wheelValSnap{0%{transform:scale(1)}40%{transform:scale(1.08)}100%{transform:scale(1)}}
-
-.wheel-outer{position:relative;height:76px;overflow:hidden;margin:0 0 10px;background:repeating-linear-gradient(90deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px),linear-gradient(180deg,rgba(0,0,0,.18) 0%,transparent 50%,rgba(0,0,0,.18) 100%)}
-.wheel-needle{position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:linear-gradient(180deg,var(--cour) 0%,var(--cour) 70%,transparent 100%);box-shadow:0 0 12px var(--cour-glow),0 0 3px var(--cour);z-index:3;pointer-events:none}
-.wheel-needle::before,.wheel-needle::after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:0;height:0;border-style:solid}
-.wheel-needle::before{top:-1px;border-width:8px 6px 0 6px;border-color:var(--cour) transparent transparent transparent;filter:drop-shadow(0 0 6px var(--cour-glow))}
-.wheel-needle::after{bottom:-1px;border-width:0 6px 8px 6px;border-color:transparent transparent var(--cour) transparent;filter:drop-shadow(0 0 6px var(--cour-glow))}
-
-.wheel-outer::before,.wheel-outer::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
-.wheel-outer::before{left:0;background:linear-gradient(90deg,rgba(5,10,18,.95) 0%,transparent 100%)}
-.wheel-outer::after{right:0;background:linear-gradient(270deg,rgba(5,10,18,.95) 0%,transparent 100%)}
-
-.wheel-track{position:absolute;inset:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain}
-.wheel-track::-webkit-scrollbar{display:none}
-
-.wheel-inner{display:flex;align-items:flex-end;padding:14px 50% 6px;min-width:min-content;height:100%}
-.wheel-tick{flex:0 0 10px;height:14px;position:relative;scroll-snap-align:center;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
-.wheel-tick::before{content:'';width:2px;height:10px;background:rgba(255,255,255,.22);border-radius:1px;transition:background .15s,height .15s}
-.wheel-tick.major::before{height:18px;background:rgba(255,255,255,.42);width:2px}
-.wheel-tick-lbl{position:absolute;bottom:-12px;font-size:9px;font-weight:700;color:var(--mu);letter-spacing:.02em;white-space:nowrap;transform:translateX(0)}
-
-.wheel-sub{font-size:11px;color:var(--gr);font-weight:600;text-align:center;padding:0 20px;letter-spacing:-.005em}
 
 /* ═════════════════════════════════════════════════════════════════
-   v7.1 — TWO-BUTTON MODE BAR + DRAWERS + FULL-SCREEN SHEETS
+   v7.2 — TWO-BUTTON MODE BAR + DRAWERS + FULL-SCREEN SHEETS
    ═════════════════════════════════════════════════════════════════ */
 
 /* The two-button mode bar (replaces the 4-tab footer) */
@@ -1299,7 +1272,7 @@ input,button,select,textarea{font-family:inherit}
 .mb-btn.on.flow .mb-t{color:var(--cour)}
 .mb-btn.on.flow .mb-s{color:var(--cour);opacity:.75}
 
-/* v7.1: inactive-side hint badges on the mode bar buttons */
+/* v7.2: inactive-side hint badges on the mode bar buttons */
 .mb-hint{position:absolute;top:8px;right:10px;min-width:8px;height:8px;padding:0;border-radius:50%;background:transparent;font-size:0;font-weight:800;color:transparent;display:flex;align-items:center;justify-content:center;letter-spacing:.02em;transition:all .22s cubic-bezier(.2,.8,.2,1)}
 .mb-hint.on{padding:2px 7px;font-size:9px;height:auto;min-width:auto;border-radius:10px;background:var(--cour);color:var(--cour-ink);box-shadow:0 3px 10px var(--cour-glow)}
 .mb-btn.cash .mb-hint.on{background:var(--cour);color:var(--cour-ink);box-shadow:0 3px 10px var(--cour-glow)}
@@ -1338,7 +1311,7 @@ input,button,select,textarea{font-family:inherit}
 .sheet-peek-t{font-size:12px;font-weight:700;color:var(--wh);flex:1}
 .sheet-peek-a{font-size:11px;color:var(--accent);font-weight:800}
 
-/* v7.1: Sub-role toggle — Mobile Courier vs CashPoint, always-visible on courier home */
+/* v7.2: Sub-role toggle — Mobile Courier vs CashPoint, always-visible on courier home */
 .subrole-toggle{display:flex;gap:8px;margin:0 0 12px;padding:4px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
 .srt-opt{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 12px;border-radius:10px;font-size:13px;font-weight:700;color:var(--gr);cursor:pointer;transition:all .18s cubic-bezier(.2,.8,.2,1)}
 .srt-opt:active{transform:scale(.98)}
@@ -1350,7 +1323,7 @@ input,button,select,textarea{font-family:inherit}
 </head>
 <body>
 <div class="toast" id="toast"><span class="toast-i" id="tI">✓</span><div class="toast-t"><div class="t1" id="tT"></div><div class="t2" id="tS"></div></div></div>
-<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.1</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
+<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.2</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
 
 <!-- Floating order pill -->
 <div class="order-pill" id="orderPill" onclick="resumeOrder()"><span class="op-dot"></span><span class="op-txt" id="pillTxt">Order in progress</span><span class="op-amt" id="pillAmt"></span></div>
@@ -1380,13 +1353,13 @@ input,button,select,textarea{font-family:inherit}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CashFlow v7.1 — build 2026.04.18
+// CashFlow v7.2 — build 2026.04.18
 // Features: wordmark, glass UI, gradient buttons, premium home sheet,
 // demand heatmap, animated route maps, fee toggle + ruler, demo mode,
 // local CashPoints browse + pickup mode
 // ═══════════════════════════════════════════════════════════════════
-console.log('%cCashFlow v7.1','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
-window.__CASHFLOW_VERSION__='7.1';
+console.log('%cCashFlow v7.2','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
+window.__CASHFLOW_VERSION__='7.2';
 
 const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
@@ -1418,7 +1391,7 @@ function calcFees(amt, _unused, courPct){
 
 // v6: pick the best courier for a given request — weighted score
 // Lower is better: price × 0.4 + ETA × 2 − reliability × 0.35 − cashReadyBonus
-// v7.1: reliability now dominates over pure star rating
+// v7.2: reliability now dominates over pure star rating
 function autoMatch(amt){
   const candidates = MOCK_COURIERS.filter(c=>c.cash>=amt||c.cash===0).map(c=>{
     const hasCash = c.cash>=amt;
@@ -1436,7 +1409,7 @@ function autoMatch(amt){
 let S={
   user:null,email:'',screen:'auth',tab:'home',
   amt:100,addr:null,coords:null,payMethod:'apple',
-  speedTier:'standard',          // deprecated — kept for compat, unused in v7.1+
+  speedTier:'standard',          // deprecated — kept for compat, unused in v7.2+
   deliveryMode:'deliver',        // deliver | pickup (from cashpoint)
   selectedCashPoint:null,        // chosen cashpoint when deliveryMode==='pickup'
   showFeeDetail:false,           // toggle for expanded fee breakdown
@@ -1460,25 +1433,25 @@ let S={
   _alts:false,                   // alternatives drawer open on match screen
   _match:null,                   // {best, alternatives} computed on match entry
   _cpQuick:false,                // cashpoint quick-picker drawer
-  soundOn:false,                 // v7.1: sound effects toggle (muted by default)
+  soundOn:false,                 // v7.2: sound effects toggle (muted by default)
   _ptrPulling:false,             // pull-to-refresh visual state
   _ptrRefreshing:false,
   _welcomeDismissed:false,       // first-time welcome card shown once
-  _profileDrawer:false,          // v7.1: left-edge profile drawer open
-  _activitySheet:false,          // v7.1: activity full-screen sheet open
-  _walletSheet:false,            // v7.1: wallet full-screen sheet open
-  _notifSheet:false,             // v7.1: notifications full-screen sheet
-  _disputesSheet:false,          // v7.1: disputes full-screen sheet
-  _activeAlertRemain:15,         // v7.1: courier accept countdown
-  _activeDispute:null,           // v7.1: in-progress dispute
-  courRating:0,                  // v7.1: courier's rating of requester
+  _profileDrawer:false,          // v7.2: left-edge profile drawer open
+  _activitySheet:false,          // v7.2: activity full-screen sheet open
+  _walletSheet:false,            // v7.2: wallet full-screen sheet open
+  _notifSheet:false,             // v7.2: notifications full-screen sheet
+  _disputesSheet:false,          // v7.2: disputes full-screen sheet
+  _activeAlertRemain:15,         // v7.2: courier accept countdown
+  _activeDispute:null,           // v7.2: in-progress dispute
+  courRating:0,                  // v7.2: courier's rating of requester
   notifications:[
     {id:'n1',icon:'💰',title:'Payout released',body:'£14.25 · Shoreditch delivery',ts:'2h ago',unread:true,kind:'payout'},
     {id:'n2',icon:'⭐',title:'5-star rating',body:'Marcus J. rated you 5 stars on your last trip',ts:'Yesterday',unread:true,kind:'rating'},
     {id:'n3',icon:'📣',title:'Surge nearby',body:'Shoreditch has high demand — 3 requests waiting',ts:'Yesterday',unread:false,kind:'surge'},
     {id:'n4',icon:'🛡',title:'KYC verified',body:'Your identity was verified · Gold tier unlocked',ts:'3 days ago',unread:false,kind:'kyc'}
   ],
-  disputes:[],                   // v7.1: disputes list
+  disputes:[],                   // v7.2: disputes list
   // NEW: saved addresses
   savedAddresses:[
     {name:'Home',addr:'42 Brick Lane, London E1 6RF',lat:51.5215,lng:-0.0717},
@@ -1525,11 +1498,11 @@ function loadSettings(){
 }
 
 // ─── UX POLISH — haptics, number animation, mode switch ──────────────
-// v7.1: Pull-to-refresh — wired on any screen with .ptr element
+// v7.2: Pull-to-refresh — wired on any screen with .ptr element
 let _ptrStartY=0;
-// v7.1: Swipe-to-switch-modes — horizontal edge swipe on home screen
+// v7.2: Swipe-to-switch-modes — horizontal edge swipe on home screen
 let _swipeX0=null, _swipeY0=null, _swipeT0=0;
-// v7.1: Safety & trust features ════════════════════════════════════════
+// v7.2: Safety & trust features ════════════════════════════════════════
 function shareTrip(){
   // Generate a shareable tracking link
   const c = S.selectedCourier || MOCK_COURIERS[0];
@@ -1567,7 +1540,7 @@ function reportIssue(){
   toast('Issue reported','Support will contact you within 5 min','⚠️');
 }
 
-// v7.1: Notification + dispute helpers
+// v7.2: Notification + dispute helpers
 function markNotifRead(id){
   const n=(S.notifications||[]).find(x=>x.id===id);
   if(n){n.unread=false;render()}
@@ -1581,78 +1554,6 @@ function raiseDispute(){
   setTimeout(reportIssue,160);
 }
 // ═══════════════════════════════════════════════════════════════════════
-
-// v7.1: Bind scroll-wheel pickers. Each .wheel-outer becomes a scrollable
-// ruler whose center-aligned tick represents the current value.
-function bindWheels(){
-  document.querySelectorAll('.wheel-outer').forEach(outer=>{
-    if(outer.dataset.bound)return;
-    outer.dataset.bound='1';
-    const key = outer.dataset.wheel;
-    const min = parseInt(outer.dataset.min);
-    const max = parseInt(outer.dataset.max);
-    const step = parseInt(outer.dataset.step);
-    const current = parseInt(outer.dataset.value);
-    const track = outer.querySelector('.wheel-track');
-    const inner = outer.querySelector('.wheel-inner');
-    const valEl = document.getElementById(key==='cash'?'wheelValCash':'wheelValFee');
-    if(!track || !inner || !valEl) return;
-
-    // Center the initial value under the needle
-    requestAnimationFrame(()=>{
-      const ticks = inner.querySelectorAll('.wheel-tick');
-      if(!ticks.length) return;
-      const idx = Math.round((current - min) / step);
-      const tick = ticks[Math.max(0,Math.min(ticks.length-1,idx))];
-      if(tick){
-        const centerX = tick.offsetLeft + tick.offsetWidth/2;
-        track.scrollLeft = centerX - track.clientWidth/2;
-      }
-    });
-
-    let lastValue = current;
-    let scrollRAF = null;
-    let settleTimer = null;
-
-    const readValue = ()=>{
-      const ticks = inner.querySelectorAll('.wheel-tick');
-      if(!ticks.length) return null;
-      const centerX = track.scrollLeft + track.clientWidth/2;
-      let best = 0, bestDist = Infinity;
-      ticks.forEach((t,i)=>{
-        const tCenter = t.offsetLeft + t.offsetWidth/2;
-        const d = Math.abs(tCenter - centerX);
-        if(d < bestDist){bestDist = d; best = i}
-      });
-      return min + best*step;
-    };
-
-    track.addEventListener('scroll',()=>{
-      if(scrollRAF) return;
-      scrollRAF = requestAnimationFrame(()=>{
-        scrollRAF = null;
-        const v = readValue();
-        if(v === null || v === lastValue) return;
-        haptic('tick');
-        lastValue = v;
-        valEl.textContent = (key==='cash' ? '£'+v : v+'%');
-        valEl.classList.remove('snap');void valEl.offsetWidth;valEl.classList.add('snap');
-      });
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(()=>{
-        const v = readValue();
-        if(v === null) return;
-        if(key==='cash') S.cashOnHand = v;
-        else S.courierFee = v;
-        saveSettings();
-        const sub = outer.parentElement.querySelector('.wheel-sub');
-        if(sub && key==='fee'){
-          sub.textContent = `You keep 75% · +£${(100*v/100*0.75).toFixed(2)} per £100 delivered`;
-        }
-      }, 180);
-    }, {passive:true});
-  });
-}
 
 function bindModeSwipe(){
   const scr=document.querySelector('.scr.on.home-v2');
@@ -1763,7 +1664,7 @@ function animateNumber(el,from,to,dur=600,prefix='£',decimals=2){
   requestAnimationFrame(step);
 }
 // Primary mode switch — drives the horizontal slide transition + accent theme swap
-// v7.1: Per-mode state cache — preserves in-flight drafts across mode swaps
+// v7.2: Per-mode state cache — preserves in-flight drafts across mode swaps
 const _MODE_CACHE = {requester:{}, courier:{}};
 function _snapshotMode(mode){
   _MODE_CACHE[mode] = {
@@ -1780,7 +1681,7 @@ function _restoreMode(mode){
   });
 }
 
-// v7.1: Inactive-side hints — show a subtle dot/badge on the inactive mode button
+// v7.2: Inactive-side hints — show a subtle dot/badge on the inactive mode button
 // when the other mode has something worth attention (pending payout, cached state, etc.)
 function updateModeHints(){
   const cashHintEl = document.getElementById('mbHintCash');
@@ -1811,7 +1712,7 @@ function updateModeHints(){
 function setMode(newMode,viaSwipe){
   if(S.mode===newMode)return;
   feedback('medium','tick');
-  // v7.1: snapshot current mode state before swapping
+  // v7.2: snapshot current mode state before swapping
   _snapshotMode(S.mode);
   S._modeAnim = newMode==='courier' ? 'slide-to-courier' : 'slide-to-requester';
   S.mode=newMode;
@@ -1823,7 +1724,7 @@ function setMode(newMode,viaSwipe){
   if(newMode==='requester' && polls.reqSim) stopRequestSim();
   document.documentElement.setAttribute('data-mode',newMode);
   render();
-  // Clear the anim class after transition — v7.1: 240ms, not 650
+  // Clear the anim class after transition — v7.2: 240ms, not 650
   setTimeout(()=>{S._modeAnim=null},240);
 }
 
@@ -1905,7 +1806,7 @@ function render(){
   document.querySelectorAll('.mb-btn').forEach(b=>{
     b.classList.toggle('on', (b.classList.contains('cash')&&S.mode==='requester')||(b.classList.contains('flow')&&S.mode==='courier'));
   });
-  // v7.1: inactive-side hints
+  // v7.2: inactive-side hints
   updateModeHints();
 
   // Order pill
@@ -1919,16 +1820,15 @@ function render(){
     document.querySelectorAll('[data-map]').forEach(el=>{
       if(!el.dataset.init){el.dataset.init='1';initMapEl(el)}
     });
-    // v7.1: bind pull-to-refresh on Activity screen
+    // v7.2: bind pull-to-refresh on Activity screen
     if(S.screen==='activity')bindPTR();
-    // v7.1: bind swipe-to-switch-modes on home screens
+    // v7.2: bind swipe-to-switch-modes on home screens
     if(S.screen==='home')bindModeSwipe();
-    // v7.1: bind rugged scroll wheels on courier home
-    if(S.screen==='home' && S.mode==='courier') bindWheels();
-  });
+    // v7.2: bind rugged scroll wheels on courier home
+      });
 
   // NumPad overlay — appended at root so it layers above any screen
-  // v7.1: Bill picker — preset amounts only, matched to ATM-style bill denominations
+  // v7.2: Bill picker — preset amounts only, matched to ATM-style bill denominations
   if(S._numPad){
     const target = S._numPadTarget || 'amt';
     const isFloat = target === 'cashOnHand';
@@ -1965,7 +1865,7 @@ function render(){
     a.appendChild(npEl.firstChild);
   }
 
-  // v7.1: Profile drawer (left-edge slide-in)
+  // v7.2: Profile drawer (left-edge slide-in)
   if(S._profileDrawer){
     const dw=document.createElement('div');
     dw.innerHTML=`<div class="drawer-backdrop" onclick="haptic('tick');S._profileDrawer=false;render()"></div>
@@ -1976,7 +1876,7 @@ function render(){
     while(dw.firstChild)a.appendChild(dw.firstChild);
   }
 
-  // v7.1: Activity full-screen sheet
+  // v7.2: Activity full-screen sheet
   if(S._activitySheet){
     const isCour=S.mode==='courier';
     const sh=document.createElement('div');
@@ -1991,7 +1891,7 @@ function render(){
     while(sh.firstChild)a.appendChild(sh.firstChild);
   }
 
-  // v7.1: Wallet full-screen sheet
+  // v7.2: Wallet full-screen sheet
   if(S._walletSheet){
     const sh=document.createElement('div');
     sh.innerHTML=`<div class="fs-backdrop" onclick="haptic('tick');S._walletSheet=false;render()"></div>
@@ -2005,7 +1905,7 @@ function render(){
     while(sh.firstChild)a.appendChild(sh.firstChild);
   }
 
-  // v7.1: Notifications full-screen sheet
+  // v7.2: Notifications full-screen sheet
   if(S._notifSheet){
     const notifs=S.notifications||[];
     const unread=notifs.filter(n=>n.unread).length;
@@ -2032,7 +1932,7 @@ function render(){
     while(sh.firstChild)a.appendChild(sh.firstChild);
   }
 
-  // v7.1: Disputes full-screen sheet
+  // v7.2: Disputes full-screen sheet
   if(S._disputesSheet){
     const disputes=S.disputes||[];
     const sh=document.createElement('div');
@@ -2067,7 +1967,7 @@ function render(){
 }
 
 function go(screen,tab){
-  // v7.1: brief fade-in on screen change for perceived snappiness
+  // v7.2: brief fade-in on screen change for perceived snappiness
   S.screen=screen;if(tab)S.tab=tab;
   render();
   // Add subtle enter animation class
@@ -2076,7 +1976,7 @@ function go(screen,tab){
     if(scr){scr.classList.add('scr-enter');setTimeout(()=>scr.classList.remove('scr-enter'),320)}
   });
 }
-// v7.1: Primary navigation is now just the mode switch.
+// v7.2: Primary navigation is now just the mode switch.
 // Activity, Wallet, Profile are sheets/drawers inside the active mode.
 function modeSwitchBar(newMode){
   feedback('medium','tick');
@@ -2275,19 +2175,19 @@ function openAddressPicker(){
 
 // ═══ v6 FLOW FUNCTIONS ═══
 function openNumPad(){S._numPad=true;S._numPadTarget='amt';S._numPadBuf=String(S.amt);render()}
-// v7.1: reused for courier cash float editing
+// v7.2: reused for courier cash float editing
 function openCashPadForFloat(){S._numPad=true;S._numPadTarget='cashOnHand';S._numPadBuf=String(S.cashOnHand);render()}
-// v7.1: reused for courier transaction fee editing (integer %, 0-50)
+// v7.2: reused for courier transaction fee editing (integer %, 0-50)
 function openFeePad(){S._numPad=true;S._numPadTarget='courierFee';S._numPadBuf=String(S.courierFee);render()}
 function closeNumPad(){S._numPad=false;S._numPadBuf='';S._numPadTarget=null;render()}
-// v7.1: Pick a preset bill amount and update the buffer
+// v7.2: Pick a preset bill amount and update the buffer
 function pickBill(v){
   haptic('light');
   S._numPadBuf = String(v);
   render();
 }
 
-// v7.1: Swap courier sub-role (Mobile ↔ CashPoint) without losing other setup
+// v7.2: Swap courier sub-role (Mobile ↔ CashPoint) without losing other setup
 function swapSubRole(newRole){
   if(S.supplyMode===newRole)return;
   feedback('medium','tick');
@@ -2303,7 +2203,7 @@ function npPress(k){
   if(k==='done'){
     const v=parseInt(S._numPadBuf)||0;
     const target = S._numPadTarget || 'amt';
-    // v7.1: target-aware validation + commit
+    // v7.2: target-aware validation + commit
     if(target==='cashOnHand'){
       if(v<20){toast('Min £20','Need at least £20 float to go online','⚠️');haptic('warn');return}
       if(v>5000){toast('Max £5000','Keep your float under £5000 for safety','⚠️');haptic('warn');return}
@@ -2818,7 +2718,7 @@ function renderTracking(){
         <div class="ec-sep"></div>
         <div><div class="ec-v" style="color:var(--am)">${c.name.split(' ')[0]}</div><div class="ec-l">Courier</div></div>
       </div>
-      <!-- v7.1: Safety cluster — panic + share trip -->
+      <!-- v7.2: Safety cluster — panic + share trip -->
       <div class="safety-fab-group">
         <button class="safety-fab share" onclick="haptic('medium');shareTrip()" title="Share trip with a trusted contact">
           <span>🛡️</span><span class="sf-lbl">Share</span>
@@ -2979,7 +2879,7 @@ function renderCourierDash(){
         ` : `
           <!-- RETURNING: map-dominant, big Go Online, inline edits -->
 
-          <!-- v7.1: Always-visible sub-role toggle — swap Mobile ↔ CashPoint with one tap -->
+          <!-- v7.2: Always-visible sub-role toggle — swap Mobile ↔ CashPoint with one tap -->
           <div class="subrole-toggle">
             <div class="srt-opt ${S.supplyMode==='mobile'?'on':''}" onclick="swapSubRole('mobile')">
               <span class="srt-i">🚴</span>
@@ -3012,7 +2912,7 @@ function renderCourierDash(){
             <div class="cour-hero-l">${S.earnData.deliveries} deliveries · ${S.earnData.hours}h online · projected £${hrLo}–${hrHi}/hr</div>
           </div>
 
-          <!-- v6.9: Pulsing setup frame — draws attention while offline, calm when live -->
+          <!-- v7.2: Pulsing setup frame — draws attention while offline, calm when live -->
           <div class="setup-frame ${S.online?'live':'pulse'}">
             <!-- Sub-role switcher: Mobile Courier vs CashPoint -->
             <div class="subrole-toggle">
@@ -3081,7 +2981,7 @@ function renderCourierDelivery(){
         <div class="ec-sep"></div>
         <div><div class="ec-v">${hasCash?'Direct':'+ATM'}</div><div class="ec-l">${hasCash?'No stop':'Collect first'}</div></div>
       </div>
-      <!-- v7.1: Safety cluster — panic + share trip + report issue -->
+      <!-- v7.2: Safety cluster — panic + share trip + report issue -->
       <div class="safety-fab-group">
         <button class="safety-fab share" onclick="haptic('medium');shareTrip()" title="Share trip with a trusted contact">
           <span>🛡️</span><span class="sf-lbl">Share</span>
@@ -3105,7 +3005,7 @@ function renderCourierDelivery(){
     ${S.orderStep===(hasCash?1:2)?`<button class="btn btn-am" onclick="go('courQR')">Scan QR Code →</button>`:''}
     ${S.orderStep>=(hasCash?2:3)?`
       <div class="stat-card"><div class="step-info wait">⏳ Waiting for requester to verify banknotes...</div></div>
-      <!-- v7.1: Bidirectional rating — courier rates requester -->
+      <!-- v7.2: Bidirectional rating — courier rates requester -->
       <div class="rate-both">
         <div class="rate-both-lbl">Rate the requester</div>
         <div class="rate-both-stars">
@@ -3117,7 +3017,7 @@ function renderCourierDelivery(){
   </div>`;
 }
 
-// v7.1: Courier finishes delivery — submits rating + returns to home
+// v7.2: Courier finishes delivery — submits rating + returns to home
 function completeCourDelivery(){
   feedback('success','success');
   const earned = (S.order?.amount||0) * (S.courierFee/100) * (1-PCUT);
@@ -3327,7 +3227,7 @@ function renderWallet(){
   </div>`;
 }
 
-// v7.1: The Profile body — shared between full-screen Profile and left-edge drawer.
+// v7.2: The Profile body — shared between full-screen Profile and left-edge drawer.
 // Note: no mode switch card here anymore — the bottom bar IS the mode switch now.
 function renderProfileContent(){
   const n=S.user?.display_name||S.email.split('@')[0];
@@ -3376,7 +3276,7 @@ function renderProfileContent(){
     <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🔒</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','','❓')"><span class="pi">❓</span><span class="pt">Help & Support</span><span class="pa">›</span></div>
     <div class="prof-item danger" onclick="signOut()"><span class="pi">🚪</span><span class="pt">Sign Out</span><span class="pa"></span></div>
-    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.1 · London E1<br>© 2026 CashFlow Ltd</div>
+    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.2 · London E1<br>© 2026 CashFlow Ltd</div>
   `;
 }
 
@@ -3606,7 +3506,7 @@ async function submitOrder(){
   }catch(e){clearInterval(polls.matchCD);toast('Error',e.message,'❌');go('request')}
 }
 
-// v7.1: Live courier approach — simulates the selected courier moving toward requester
+// v7.2: Live courier approach — simulates the selected courier moving toward requester
 function startCourierApproach(){
   clearInterval(polls.courApproach);
   const c=S.selectedCourier;if(!c)return;
@@ -3700,7 +3600,7 @@ function expireLiveRequest(id){
 function showReqAlert(id){
   const r=S.liveRequests.find(x=>x.id===id); if(!r)return;
   S.activeAlert=id;
-  S._activeAlertRemain=15;            // v7.1: 15s countdown
+  S._activeAlertRemain=15;            // v7.2: 15s countdown
   const el=document.getElementById('reqAlert'); if(!el)return;
   feedback('medium','match');          // haptic + sound on incoming
   const renderCard=()=>{
