@@ -906,7 +906,7 @@ input,button,select,textarea{font-family:inherit}
 .earn-preview .ep-row b{color:var(--cour);font-weight:800;font-variant-numeric:tabular-nums}
 
 /* ═════════════════════════════════════════════════════════════════
-   v6.4 — SLEEK REBUILD: amount hero, number pad, match screen
+   v6.7 — SLEEK REBUILD: amount hero, number pad, match screen
    ═════════════════════════════════════════════════════════════════ */
 
 /* Tighter sheet — never blocks the map */
@@ -1029,7 +1029,7 @@ input,button,select,textarea{font-family:inherit}
 .addr-line .al-chg{font-size:11px;color:var(--accent);font-weight:800;text-transform:uppercase;letter-spacing:.05em}
 
 /* ═════════════════════════════════════════════════════════════════
-   v6.4 — CLEAN CHROME: mode switch lives in Profile only,
+   v6.7 — CLEAN CHROME: mode switch lives in Profile only,
    home/match/request/courier all get the same simple top bar
    ═════════════════════════════════════════════════════════════════ */
 
@@ -1038,6 +1038,9 @@ input,button,select,textarea{font-family:inherit}
 .home-chrome > *{pointer-events:auto}
 .hc-avatar{width:40px;height:40px;border-radius:50%;background:rgba(5,10,18,.82);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.45);color:var(--wh);transition:transform .12s}
 .hc-avatar:active{transform:scale(.92)}
+/* v6.7: unread notification indicator on avatar */
+.hc-av-dot{position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;background:var(--cour);border:2px solid rgba(5,10,18,.95);box-shadow:0 2px 6px var(--cour-glow);animation:pulseLive 2s ease-in-out infinite}
+.hc-avatar{position:relative}
 /* Mode-scoped avatar tint (accent color + tint ring) */
 [data-mode="requester"] .hc-avatar{color:#FFFFFF;border-color:rgba(255,255,255,.18)}
 [data-mode="courier"] .hc-avatar{color:var(--cour);border-color:var(--cour-border)}
@@ -1085,7 +1088,7 @@ input,button,select,textarea{font-family:inherit}
 .wli-rad.on::after{content:'';position:absolute;top:3px;left:3px;width:8px;height:8px;border-radius:50%;background:var(--accent-ink)}
 
 /* ═════════════════════════════════════════════════════════════════
-   v6.4 — MATCHING SOPHISTICATION + POLISH
+   v6.7 — MATCHING SOPHISTICATION + POLISH
    ═════════════════════════════════════════════════════════════════ */
 
 /* Reliability meter inside best-match sheet */
@@ -1159,7 +1162,62 @@ input,button,select,textarea{font-family:inherit}
 @keyframes scrEnter{from{opacity:.7;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═════════════════════════════════════════════════════════════════
-   v6.4 — TWO-BUTTON MODE BAR + DRAWERS + FULL-SCREEN SHEETS
+   v6.7 — SAFETY & TRUST FEATURES
+   ═════════════════════════════════════════════════════════════════ */
+
+/* Safety FAB cluster — top-right of tracking/delivery maps */
+.safety-fab-group{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:12}
+.safety-fab{border:none;padding:0;width:44px;height:44px;border-radius:50%;background:rgba(5,10,18,.88);backdrop-filter:blur(14px) saturate(160%);-webkit-backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.12);box-shadow:0 6px 16px rgba(0,0,0,.5);cursor:pointer;color:var(--wh);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;font-size:18px;transition:all .15s}
+.safety-fab:active{transform:scale(.92)}
+.safety-fab .sf-lbl{font-size:8px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin-top:-2px;opacity:.85}
+.safety-fab.share{background:rgba(0,232,184,.14);border-color:var(--cour-border);color:var(--cour)}
+.safety-fab.issue{background:rgba(255,184,0,.14);border-color:rgba(255,184,0,.3);color:var(--am)}
+
+/* Notification bell */
+.notif-bell{position:relative;cursor:pointer}
+.notif-count{position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:var(--rd);color:#fff;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center}
+
+/* Notification feed rows */
+.notif-row{display:flex;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.05);cursor:pointer;transition:background .15s}
+.notif-row:active{background:rgba(255,255,255,.03)}
+.notif-row.unread{background:rgba(0,232,184,.03);border-left:2px solid var(--cour)}
+.notif-i{width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.notif-l{flex:1;min-width:0}
+.notif-t{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.notif-s{font-size:11px;color:var(--gr);margin-top:2px;line-height:1.4}
+.notif-ts{font-size:10px;color:var(--mu);margin-top:4px;font-weight:600}
+
+/* Courier-side inbound request card */
+.req-card{position:absolute;top:72px;left:12px;right:12px;z-index:20;padding:18px;border-radius:20px;background:linear-gradient(180deg,rgba(11,18,33,.98) 0%,rgba(5,10,18,1) 100%);backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);border:1px solid var(--cour-border);box-shadow:0 14px 40px var(--cour-glow);animation:reqCardIn .32s cubic-bezier(.2,.8,.2,1)}
+@keyframes reqCardIn{from{transform:translateY(-24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.rc-hdr{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.rc-hdr-pulse{width:10px;height:10px;border-radius:50%;background:var(--cour);box-shadow:0 0 0 0 var(--cour-glow);animation:pulsePing 1.4s ease-out infinite}
+@keyframes pulsePing{0%{box-shadow:0 0 0 0 rgba(0,232,184,.4)}100%{box-shadow:0 0 0 10px rgba(0,232,184,0)}}
+.rc-hdr-lbl{font-size:10px;font-weight:900;letter-spacing:.12em;color:var(--cour);text-transform:uppercase}
+.rc-hdr-cd{margin-left:auto;font-size:11px;color:var(--am);font-weight:800;font-variant-numeric:tabular-nums}
+.rc-body{display:flex;gap:12px;align-items:center;margin-bottom:12px}
+.rc-amt{font-size:28px;font-weight:900;color:var(--cour);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rc-info{flex:1;min-width:0}
+.rc-addr{font-size:12px;color:var(--wh);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rc-meta{font-size:10px;color:var(--mu);margin-top:2px;font-weight:600}
+.rc-earn{text-align:right}
+.rc-earn-v{font-size:14px;font-weight:800;color:var(--am)}
+.rc-earn-l{font-size:9px;color:var(--mu);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.rc-actions{display:flex;gap:8px}
+.rc-btn{flex:1;padding:12px;border:none;border-radius:12px;font-size:13px;font-weight:800;cursor:pointer;transition:transform .12s}
+.rc-btn:active{transform:scale(.97)}
+.rc-btn.decline{background:rgba(255,255,255,.04);color:var(--gr);border:1px solid rgba(255,255,255,.08)}
+.rc-btn.accept{background:linear-gradient(180deg,var(--cour),#00C9A0);color:var(--cour-ink);box-shadow:0 6px 16px var(--cour-glow)}
+
+/* Rate-both (courier rating requester) */
+.rate-both{padding:20px;margin:0 20px 14px;border-radius:18px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06)}
+.rate-both-lbl{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:var(--mu);margin-bottom:10px}
+.rate-both-stars{display:flex;gap:10px;justify-content:center;font-size:28px;margin:8px 0 12px}
+.rate-both-star{cursor:pointer;opacity:.3;transition:all .15s}
+.rate-both-star.on{opacity:1;filter:drop-shadow(0 0 6px rgba(255,184,0,.6))}
+
+/* ═════════════════════════════════════════════════════════════════
+   v6.7 — TWO-BUTTON MODE BAR + DRAWERS + FULL-SCREEN SHEETS
    ═════════════════════════════════════════════════════════════════ */
 
 /* The two-button mode bar (replaces the 4-tab footer) */
@@ -1181,7 +1239,7 @@ input,button,select,textarea{font-family:inherit}
 .mb-btn.on.flow .mb-t{color:var(--cour)}
 .mb-btn.on.flow .mb-s{color:var(--cour);opacity:.75}
 
-/* v6.4: inactive-side hint badges on the mode bar buttons */
+/* v6.7: inactive-side hint badges on the mode bar buttons */
 .mb-hint{position:absolute;top:8px;right:10px;min-width:8px;height:8px;padding:0;border-radius:50%;background:transparent;font-size:0;font-weight:800;color:transparent;display:flex;align-items:center;justify-content:center;letter-spacing:.02em;transition:all .22s cubic-bezier(.2,.8,.2,1)}
 .mb-hint.on{padding:2px 7px;font-size:9px;height:auto;min-width:auto;border-radius:10px;background:var(--cour);color:var(--cour-ink);box-shadow:0 3px 10px var(--cour-glow)}
 .mb-btn.cash .mb-hint.on{background:var(--cour);color:var(--cour-ink);box-shadow:0 3px 10px var(--cour-glow)}
@@ -1224,7 +1282,7 @@ input,button,select,textarea{font-family:inherit}
 </head>
 <body>
 <div class="toast" id="toast"><span class="toast-i" id="tI">✓</span><div class="toast-t"><div class="t1" id="tT"></div><div class="t2" id="tS"></div></div></div>
-<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v6.4</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
+<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v6.7</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
 
 <!-- Floating order pill -->
 <div class="order-pill" id="orderPill" onclick="resumeOrder()"><span class="op-dot"></span><span class="op-txt" id="pillTxt">Order in progress</span><span class="op-amt" id="pillAmt"></span></div>
@@ -1254,13 +1312,13 @@ input,button,select,textarea{font-family:inherit}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CashFlow v6.4 — build 2026.04.18
+// CashFlow v6.7 — build 2026.04.18
 // Features: wordmark, glass UI, gradient buttons, premium home sheet,
 // demand heatmap, animated route maps, fee toggle + ruler, demo mode,
 // local CashPoints browse + pickup mode
 // ═══════════════════════════════════════════════════════════════════
-console.log('%cCashFlow v6.4','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
-window.__CASHFLOW_VERSION__='6.4';
+console.log('%cCashFlow v6.7','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
+window.__CASHFLOW_VERSION__='6.7';
 
 const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
@@ -1292,7 +1350,7 @@ function calcFees(amt, _unused, courPct){
 
 // v6: pick the best courier for a given request — weighted score
 // Lower is better: price × 0.4 + ETA × 2 − reliability × 0.35 − cashReadyBonus
-// v6.4: reliability now dominates over pure star rating
+// v6.7: reliability now dominates over pure star rating
 function autoMatch(amt){
   const candidates = MOCK_COURIERS.filter(c=>c.cash>=amt||c.cash===0).map(c=>{
     const hasCash = c.cash>=amt;
@@ -1310,7 +1368,7 @@ function autoMatch(amt){
 let S={
   user:null,email:'',screen:'auth',tab:'home',
   amt:100,addr:null,coords:null,payMethod:'apple',
-  speedTier:'standard',          // deprecated — kept for compat, unused in v6.4+
+  speedTier:'standard',          // deprecated — kept for compat, unused in v6.7+
   deliveryMode:'deliver',        // deliver | pickup (from cashpoint)
   selectedCashPoint:null,        // chosen cashpoint when deliveryMode==='pickup'
   showFeeDetail:false,           // toggle for expanded fee breakdown
@@ -1334,13 +1392,25 @@ let S={
   _alts:false,                   // alternatives drawer open on match screen
   _match:null,                   // {best, alternatives} computed on match entry
   _cpQuick:false,                // cashpoint quick-picker drawer
-  soundOn:false,                 // v6.4: sound effects toggle (muted by default)
+  soundOn:false,                 // v6.7: sound effects toggle (muted by default)
   _ptrPulling:false,             // pull-to-refresh visual state
   _ptrRefreshing:false,
   _welcomeDismissed:false,       // first-time welcome card shown once
-  _profileDrawer:false,          // v6.4: left-edge profile drawer open
-  _activitySheet:false,          // v6.4: activity full-screen sheet open
-  _walletSheet:false,            // v6.4: wallet full-screen sheet open
+  _profileDrawer:false,          // v6.7: left-edge profile drawer open
+  _activitySheet:false,          // v6.7: activity full-screen sheet open
+  _walletSheet:false,            // v6.7: wallet full-screen sheet open
+  _notifSheet:false,             // v6.7: notifications full-screen sheet
+  _disputesSheet:false,          // v6.7: disputes full-screen sheet
+  _activeAlertRemain:15,         // v6.7: courier accept countdown
+  _activeDispute:null,           // v6.7: in-progress dispute
+  courRating:0,                  // v6.7: courier's rating of requester
+  notifications:[
+    {id:'n1',icon:'💰',title:'Payout released',body:'£14.25 · Shoreditch delivery',ts:'2h ago',unread:true,kind:'payout'},
+    {id:'n2',icon:'⭐',title:'5-star rating',body:'Marcus J. rated you 5 stars on your last trip',ts:'Yesterday',unread:true,kind:'rating'},
+    {id:'n3',icon:'📣',title:'Surge nearby',body:'Shoreditch has high demand — 3 requests waiting',ts:'Yesterday',unread:false,kind:'surge'},
+    {id:'n4',icon:'🛡',title:'KYC verified',body:'Your identity was verified · Gold tier unlocked',ts:'3 days ago',unread:false,kind:'kyc'}
+  ],
+  disputes:[],                   // v6.7: disputes list
   // NEW: saved addresses
   savedAddresses:[
     {name:'Home',addr:'42 Brick Lane, London E1 6RF',lat:51.5215,lng:-0.0717},
@@ -1377,7 +1447,7 @@ function loadSettings(){
     Object.assign(S,{
       supplyMode:d.supplyMode||null,
       cashOnHand:d.cashOnHand||S.cashOnHand,
-      courierFee:Math.min(20,d.courierFee||S.courierFee),
+      courierFee:Math.max(0,Math.min(50,d.courierFee||S.courierFee)),
       cpName:d.cpName||'',cpAddress:d.cpAddress||'',cpFloat:d.cpFloat||200,
       payMethod:d.payMethod||S.payMethod,amt:d.savedAmt||S.amt,
       soundOn:d.soundOn||false,
@@ -1387,10 +1457,63 @@ function loadSettings(){
 }
 
 // ─── UX POLISH — haptics, number animation, mode switch ──────────────
-// v6.4: Pull-to-refresh — wired on any screen with .ptr element
+// v6.7: Pull-to-refresh — wired on any screen with .ptr element
 let _ptrStartY=0;
-// v6.4: Swipe-to-switch-modes — horizontal edge swipe on home screen
+// v6.7: Swipe-to-switch-modes — horizontal edge swipe on home screen
 let _swipeX0=null, _swipeY0=null, _swipeT0=0;
+// v6.7: Safety & trust features ════════════════════════════════════════
+function shareTrip(){
+  // Generate a shareable tracking link
+  const c = S.selectedCourier || MOCK_COURIERS[0];
+  const code = S.handoverCode || 'DEMO';
+  const shareUrl = `https://cash-flow-red.vercel.app/track/${code.toLowerCase()}`;
+  const shareText = `I'm receiving a cash delivery via CashFlow. Track me live: ${shareUrl}`;
+  // Use Web Share API where available
+  if(navigator.share){
+    navigator.share({title:'My CashFlow trip',text:shareText,url:shareUrl})
+      .then(()=>toast('Trip shared','Contact can now track you live','🛡️'))
+      .catch(()=>{});
+  } else {
+    // Fallback: copy to clipboard
+    try{
+      navigator.clipboard?.writeText(shareUrl);
+      toast('Link copied','Share with someone you trust','🛡️');
+    }catch(e){
+      toast('Share unavailable','Copy this: '+shareUrl,'🛡️');
+    }
+  }
+}
+
+function reportIssue(){
+  const issues = ['Can\'t find the requester','Wrong address','Requester not responding','Safety concern','Other'];
+  const issue = prompt('Report an issue:\n\n' + issues.map((t,i)=>`${i+1}. ${t}`).join('\n') + '\n\nEnter number 1-5:');
+  if(!issue) return;
+  const idx = parseInt(issue)-1;
+  if(idx<0||idx>=issues.length) return;
+  if(!Array.isArray(S.disputes))S.disputes=[];
+  const d={id:'d-'+Date.now(),type:issues[idx],orderId:S.order?.id,ts:Date.now(),status:'OPEN'};
+  S.disputes.unshift(d);
+  // Also push a notification
+  if(!Array.isArray(S.notifications))S.notifications=[];
+  S.notifications.unshift({id:'n-'+Date.now(),icon:'⚠️',title:'Dispute opened',body:`${issues[idx]} · Support will contact you within 24h`,ts:'Just now',unread:true,kind:'dispute'});
+  toast('Issue reported','Support will contact you within 5 min','⚠️');
+}
+
+// v6.7: Notification + dispute helpers
+function markNotifRead(id){
+  const n=(S.notifications||[]).find(x=>x.id===id);
+  if(n){n.unread=false;render()}
+}
+function markAllRead(){
+  (S.notifications||[]).forEach(n=>n.unread=false);
+  render();
+}
+function raiseDispute(){
+  S._disputesSheet=false;render();
+  setTimeout(reportIssue,160);
+}
+// ═══════════════════════════════════════════════════════════════════════
+
 function bindModeSwipe(){
   const scr=document.querySelector('.scr.on.home-v2');
   if(!scr || scr.dataset.swipeBound || !S.user) return;
@@ -1500,7 +1623,7 @@ function animateNumber(el,from,to,dur=600,prefix='£',decimals=2){
   requestAnimationFrame(step);
 }
 // Primary mode switch — drives the horizontal slide transition + accent theme swap
-// v6.4: Per-mode state cache — preserves in-flight drafts across mode swaps
+// v6.7: Per-mode state cache — preserves in-flight drafts across mode swaps
 const _MODE_CACHE = {requester:{}, courier:{}};
 function _snapshotMode(mode){
   _MODE_CACHE[mode] = {
@@ -1517,7 +1640,7 @@ function _restoreMode(mode){
   });
 }
 
-// v6.4: Inactive-side hints — show a subtle dot/badge on the inactive mode button
+// v6.7: Inactive-side hints — show a subtle dot/badge on the inactive mode button
 // when the other mode has something worth attention (pending payout, cached state, etc.)
 function updateModeHints(){
   const cashHintEl = document.getElementById('mbHintCash');
@@ -1548,7 +1671,7 @@ function updateModeHints(){
 function setMode(newMode,viaSwipe){
   if(S.mode===newMode)return;
   feedback('medium','tick');
-  // v6.4: snapshot current mode state before swapping
+  // v6.7: snapshot current mode state before swapping
   _snapshotMode(S.mode);
   S._modeAnim = newMode==='courier' ? 'slide-to-courier' : 'slide-to-requester';
   S.mode=newMode;
@@ -1560,7 +1683,7 @@ function setMode(newMode,viaSwipe){
   if(newMode==='requester' && polls.reqSim) stopRequestSim();
   document.documentElement.setAttribute('data-mode',newMode);
   render();
-  // Clear the anim class after transition — v6.4: 240ms, not 650
+  // Clear the anim class after transition — v6.7: 240ms, not 650
   setTimeout(()=>{S._modeAnim=null},240);
 }
 
@@ -1642,7 +1765,7 @@ function render(){
   document.querySelectorAll('.mb-btn').forEach(b=>{
     b.classList.toggle('on', (b.classList.contains('cash')&&S.mode==='requester')||(b.classList.contains('flow')&&S.mode==='courier'));
   });
-  // v6.4: inactive-side hints
+  // v6.7: inactive-side hints
   updateModeHints();
 
   // Order pill
@@ -1656,9 +1779,9 @@ function render(){
     document.querySelectorAll('[data-map]').forEach(el=>{
       if(!el.dataset.init){el.dataset.init='1';initMapEl(el)}
     });
-    // v6.4: bind pull-to-refresh on Activity screen
+    // v6.7: bind pull-to-refresh on Activity screen
     if(S.screen==='activity')bindPTR();
-    // v6.4: bind swipe-to-switch-modes on home screens
+    // v6.7: bind swipe-to-switch-modes on home screens
     if(S.screen==='home')bindModeSwipe();
   });
 
@@ -1686,7 +1809,7 @@ function render(){
     a.appendChild(npEl.firstChild);
   }
 
-  // v6.4: Profile drawer (left-edge slide-in)
+  // v6.7: Profile drawer (left-edge slide-in)
   if(S._profileDrawer){
     const dw=document.createElement('div');
     dw.innerHTML=`<div class="drawer-backdrop" onclick="haptic('tick');S._profileDrawer=false;render()"></div>
@@ -1697,7 +1820,7 @@ function render(){
     while(dw.firstChild)a.appendChild(dw.firstChild);
   }
 
-  // v6.4: Activity full-screen sheet
+  // v6.7: Activity full-screen sheet
   if(S._activitySheet){
     const isCour=S.mode==='courier';
     const sh=document.createElement('div');
@@ -1712,7 +1835,7 @@ function render(){
     while(sh.firstChild)a.appendChild(sh.firstChild);
   }
 
-  // v6.4: Wallet full-screen sheet
+  // v6.7: Wallet full-screen sheet
   if(S._walletSheet){
     const sh=document.createElement('div');
     sh.innerHTML=`<div class="fs-backdrop" onclick="haptic('tick');S._walletSheet=false;render()"></div>
@@ -1725,10 +1848,70 @@ function render(){
     </div>`;
     while(sh.firstChild)a.appendChild(sh.firstChild);
   }
+
+  // v6.7: Notifications full-screen sheet
+  if(S._notifSheet){
+    const notifs=S.notifications||[];
+    const unread=notifs.filter(n=>n.unread).length;
+    const sh=document.createElement('div');
+    sh.innerHTML=`<div class="fs-backdrop" onclick="haptic('tick');S._notifSheet=false;render()"></div>
+      <div class="fs-sheet">
+      <div class="fs-hdr">
+        <div class="fs-back" onclick="haptic('tick');S._notifSheet=false;render()">←</div>
+        <div><div class="fs-title">Notifications</div><div class="fs-sub">${unread?unread+' unread':'All caught up'}</div></div>
+        ${unread?`<div class="fs-back" style="width:auto;padding:0 14px;font-size:11px;font-weight:800" onclick="haptic('tick');markAllRead()">Mark all read</div>`:''}
+      </div>
+      ${notifs.length?notifs.map(n=>`
+        <div class="notif-row ${n.unread?'unread':''}" onclick="haptic('tick');markNotifRead('${n.id}')">
+          <div class="notif-i">${n.icon}</div>
+          <div class="notif-l">
+            <div class="notif-t">${n.title}</div>
+            <div class="notif-s">${n.body}</div>
+            <div class="notif-ts">${n.ts}</div>
+          </div>
+        </div>`).join(''):`
+        <div class="empty-v2"><div class="ev-i">🔔</div><div class="ev-t">No notifications</div><div class="ev-s">You'll see payout confirmations, ratings, and platform updates here.</div></div>
+      `}
+    </div>`;
+    while(sh.firstChild)a.appendChild(sh.firstChild);
+  }
+
+  // v6.7: Disputes full-screen sheet
+  if(S._disputesSheet){
+    const disputes=S.disputes||[];
+    const sh=document.createElement('div');
+    sh.innerHTML=`<div class="fs-backdrop" onclick="haptic('tick');S._disputesSheet=false;render()"></div>
+      <div class="fs-sheet">
+      <div class="fs-hdr">
+        <div class="fs-back" onclick="haptic('tick');S._disputesSheet=false;render()">←</div>
+        <div><div class="fs-title">Disputes</div><div class="fs-sub">${disputes.length?disputes.length+' open':'No open disputes'}</div></div>
+      </div>
+      <div style="padding:20px">
+        ${disputes.length?disputes.map(d=>`
+          <div class="wli">
+            <div class="wli-icn" style="background:rgba(255,184,0,.12);border-color:rgba(255,184,0,.3);color:var(--am)">⚠️</div>
+            <div class="wli-l">
+              <div class="wli-t">${d.type}</div>
+              <div class="wli-s">${d.note||'No additional details'} · ${new Date(d.ts).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
+            </div>
+            <div class="wli-v" style="color:var(--am);font-size:11px">${d.status||'OPEN'}</div>
+          </div>
+        `).join(''):`
+          <div class="empty-v2" style="padding:40px 20px">
+            <div class="ev-i">✅</div>
+            <div class="ev-t">No open disputes</div>
+            <div class="ev-s">If something goes wrong with a delivery — wrong amount, missing cash, or safety concerns — you can raise a dispute and our Trust & Safety team will investigate within 24 hours.</div>
+          </div>
+        `}
+        <button class="btn btn-em" style="margin:20px 0 0;width:100%" onclick="raiseDispute()">＋ Raise a new dispute</button>
+      </div>
+    </div>`;
+    while(sh.firstChild)a.appendChild(sh.firstChild);
+  }
 }
 
 function go(screen,tab){
-  // v6.4: brief fade-in on screen change for perceived snappiness
+  // v6.7: brief fade-in on screen change for perceived snappiness
   S.screen=screen;if(tab)S.tab=tab;
   render();
   // Add subtle enter animation class
@@ -1737,7 +1920,7 @@ function go(screen,tab){
     if(scr){scr.classList.add('scr-enter');setTimeout(()=>scr.classList.remove('scr-enter'),320)}
   });
 }
-// v6.4: Primary navigation is now just the mode switch.
+// v6.7: Primary navigation is now just the mode switch.
 // Activity, Wallet, Profile are sheets/drawers inside the active mode.
 function modeSwitchBar(newMode){
   feedback('medium','tick');
@@ -1814,7 +1997,7 @@ function renderHome(){
 
     <!-- TOP CHROME — avatar (left) + CashFlow brand mark (right) -->
     <div class="home-chrome">
-      <div class="hc-avatar" onclick="haptic('tick');showTab('profile')">${n.charAt(0).toUpperCase()}</div>
+      <div class="hc-avatar" onclick="haptic('tick');showTab('profile')">${n.charAt(0).toUpperCase()}${(S.notifications||[]).filter(x=>x.unread).length?`<span class="hc-av-dot"></span>`:''}</div>
       <div class="hc-brand wm"><span class="c">Cash</span><span class="f">Flow</span></div>
     </div>
 
@@ -2058,18 +2241,18 @@ function renderCashPoint(){
       <div class="cs-sub">Percentage charged on each pickup · 75% goes to you</div>
       <div class="ruler-wrap">
         <div class="ruler-ticks">
-          ${[1,3,5,8,10,13,15,18,20].map(v=>{
-            const major=[1,5,10,15,20].includes(v);
-            const pct=((v-1)/19)*100;
+          ${[0,5,10,15,20,25,30,35,40,45,50].map(v=>{
+            const major=[0,10,25,50].includes(v);
+            const pct=(v/50)*100;
             return`<div class="ruler-tick ${major?'major':''}" style="left:${pct}%"></div>${major?`<div class="ruler-tick-lbl" style="left:${pct}%">${v}%</div>`:''}`;
           }).join('')}
         </div>
         <div class="ruler-track"></div>
-        <input type="range" min="1" max="20" value="${S.courierFee}" class="ruler-slider" oninput="S.courierFee=parseInt(this.value);render()">
+        <input type="range" min="0" max="50" value="${S.courierFee}" class="ruler-slider" oninput="S.courierFee=parseInt(this.value);render()">
         <div class="ruler-readout">You keep: <b>£${(100*S.courierFee/100*(1-PCUT)).toFixed(2)}</b> per £100</div>
       </div>
       <div class="ruler-anchors">
-        ${[{v:5,l:'Budget'},{v:8,l:'Balanced'},{v:12,l:'Premium'},{v:18,l:'High'}].map(a=>`
+        ${[{v:0,l:'Free'},{v:5,l:'Budget'},{v:10,l:'Balanced'},{v:20,l:'Premium'},{v:35,l:'High'}].map(a=>`
           <div class="ruler-anchor ${S.courierFee===a.v?'on':''}" onclick="S.courierFee=${a.v};render()">${a.l}<br><span style="font-size:11px;font-weight:800">${a.v}%</span></div>
         `).join('')}
       </div>
@@ -2441,7 +2624,7 @@ function renderTracking(){
   const totalSteps=hasCash?4:5;
   const stepLabels=hasCash?['Matched','En route','Arrived','Verified']:['Matched','Collecting cash','En route','Arrived','Verified'];
   return`<div class="scr on nt">
-    <div class="hdr"><div class="hdr-title">Cash Delivery</div><div></div></div>
+    <div class="hdr"><div class="hdr-back" onclick="haptic('tick');go('home','home')">← Home</div><div class="hdr-title">Cash Delivery</div><div style="width:44px"></div></div>
     <div class="map-wrap" style="height:300px;margin:0 20px">
       <div class="map-c" style="height:100%;margin:0;border:none;border-radius:0"><div data-map="track" data-lat="${S.coords?S.coords[1]:51.5194}" data-lng="${S.coords?S.coords[0]:-0.0738}"></div></div>
       <div class="map-badge" style="border-color:rgba(0,232,184,.3);color:var(--em)"><span class="mb-dot" style="background:var(--em)"></span>Tracking</div>
@@ -2449,6 +2632,12 @@ function renderTracking(){
         <div><div class="ec-v">${hasCash?c.eta:c.eta+8} min</div><div class="ec-l">ETA</div></div>
         <div class="ec-sep"></div>
         <div><div class="ec-v" style="color:var(--am)">${c.name.split(' ')[0]}</div><div class="ec-l">Courier</div></div>
+      </div>
+      <!-- v6.7: Safety cluster — panic + share trip -->
+      <div class="safety-fab-group">
+        <button class="safety-fab share" onclick="haptic('medium');shareTrip()" title="Share trip with a trusted contact">
+          <span>🛡️</span><span class="sf-lbl">Share</span>
+        </button>
       </div>
     </div>
     <div class="stat-card">
@@ -2479,7 +2668,7 @@ function renderVerify(){
   const c=S.selectedCourier||MOCK_COURIERS[0];
   const canComplete = allChecked;
   return`<div class="scr on nt">
-    <div class="hdr"><div class="hdr-title">Cash Received</div><div></div></div>
+    <div class="hdr"><div class="hdr-back" onclick="haptic('tick');go('tracking')">← Back</div><div class="hdr-title">Cash Received</div><div style="width:44px"></div></div>
 
     <!-- Hero with courier and amount -->
     <div class="review-hero">
@@ -2563,7 +2752,7 @@ function renderCourierDash(){
 
     <!-- TOP CHROME — avatar (left) + CashFlow brand mark (right) -->
     <div class="home-chrome">
-      <div class="hc-avatar" onclick="haptic('tick');showTab('profile')">${n.charAt(0).toUpperCase()}</div>
+      <div class="hc-avatar" onclick="haptic('tick');showTab('profile')">${n.charAt(0).toUpperCase()}${(S.notifications||[]).filter(x=>x.unread).length?`<span class="hc-av-dot"></span>`:''}</div>
       <div class="hc-brand wm"><span class="c">Cash</span><span class="f">Flow</span></div>
     </div>
 
@@ -2672,17 +2861,17 @@ function renderCourierDash(){
               <div class="cs-sub">75% of each fee goes to you</div>
               <div class="ruler-wrap">
                 <div class="ruler-ticks">
-                  ${[1,3,5,8,10,13,15,18,20].map(v=>{
-                    const major=[1,5,10,15,20].includes(v);
-                    const pct=((v-1)/19)*100;
+                  ${[0,5,10,15,20,25,30,35,40,45,50].map(v=>{
+                    const major=[0,10,25,50].includes(v);
+                    const pct=(v/50)*100;
                     return`<div class="ruler-tick ${major?'major':''}" style="left:${pct}%"></div>${major?`<div class="ruler-tick-lbl" style="left:${pct}%">${v}%</div>`:''}`;
                   }).join('')}
                 </div>
                 <div class="ruler-track"></div>
-                <input type="range" min="1" max="20" value="${S.courierFee}" class="ruler-slider" oninput="S.courierFee=parseInt(this.value);saveSettings();render()">
+                <input type="range" min="0" max="50" value="${S.courierFee}" class="ruler-slider" oninput="S.courierFee=parseInt(this.value);saveSettings();render()">
               </div>
               <div class="ruler-anchors">
-                ${[{v:5,l:'Budget'},{v:8,l:'Balanced'},{v:12,l:'Premium'},{v:18,l:'High'}].map(a=>`
+                ${[{v:0,l:'Free'},{v:5,l:'Budget'},{v:10,l:'Balanced'},{v:20,l:'Premium'},{v:35,l:'High'}].map(a=>`
                   <div class="ruler-anchor ${S.courierFee===a.v?'on':''}" onclick="haptic('tick');S.courierFee=${a.v};saveSettings();render()">${a.l}<br><span style="font-size:11px;font-weight:800">${a.v}%</span></div>
                 `).join('')}
               </div>
@@ -2712,7 +2901,7 @@ function renderCourierDelivery(){
   const labels=hasCash?['Navigate to requester','Scan QR code','Waiting for verification']:['Collect cash from ATM','Navigate to requester','Scan QR code','Waiting for verification'];
   const earn=(o.amount*(S.courierFee/100)*(1-PCUT)).toFixed(2);
   return`<div class="scr on nt">
-    <div class="hdr"><div class="hdr-title">Active Delivery</div><div></div></div>
+    <div class="hdr"><div class="hdr-back" onclick="haptic('tick');go('home','home')">← Home</div><div class="hdr-title">Active Delivery</div><div style="width:44px"></div></div>
     <div class="map-wrap" style="height:300px;margin:0 20px">
       <div class="map-c" style="height:100%;margin:0;border:none;border-radius:0"><div data-map="del" data-lat="${o.delivery_lat||51.5194}" data-lng="${o.delivery_lng||-0.0738}"></div></div>
       <div class="map-badge" style="border-color:rgba(0,232,184,.3);color:var(--em)"><span class="mb-dot" style="background:var(--em)"></span>Live route</div>
@@ -2720,6 +2909,15 @@ function renderCourierDelivery(){
         <div><div class="ec-v" style="color:var(--am)">${o.amount ? '£'+o.amount : '—'}</div><div class="ec-l">Payout</div></div>
         <div class="ec-sep"></div>
         <div><div class="ec-v">${hasCash?'Direct':'+ATM'}</div><div class="ec-l">${hasCash?'No stop':'Collect first'}</div></div>
+      </div>
+      <!-- v6.7: Safety cluster — panic + share trip + report issue -->
+      <div class="safety-fab-group">
+        <button class="safety-fab share" onclick="haptic('medium');shareTrip()" title="Share trip with a trusted contact">
+          <span>🛡️</span><span class="sf-lbl">Share</span>
+        </button>
+        <button class="safety-fab issue" onclick="haptic('warn');reportIssue()" title="Report an issue with this delivery">
+          <span>⚠️</span><span class="sf-lbl">Issue</span>
+        </button>
       </div>
     </div>
     <div class="stat-card">
@@ -2734,8 +2932,41 @@ function renderCourierDelivery(){
     </div>
     ${S.orderStep<(hasCash?1:2)?`<button class="btn btn-am" onclick="advDeliveryStep()">${S.orderStep===0&&!hasCash?'Cash collected ✓':'I\'ve arrived ✓'}</button>`:''}
     ${S.orderStep===(hasCash?1:2)?`<button class="btn btn-am" onclick="go('courQR')">Scan QR Code →</button>`:''}
-    ${S.orderStep>=(hasCash?2:3)?`<div class="stat-card"><div class="step-info wait">⏳ Waiting for requester to verify banknotes...</div></div>`:''}
+    ${S.orderStep>=(hasCash?2:3)?`
+      <div class="stat-card"><div class="step-info wait">⏳ Waiting for requester to verify banknotes...</div></div>
+      <!-- v6.7: Bidirectional rating — courier rates requester -->
+      <div class="rate-both">
+        <div class="rate-both-lbl">Rate the requester</div>
+        <div class="rate-both-stars">
+          ${[1,2,3,4,5].map(n=>`<span class="rate-both-star ${(S.courRating||0)>=n?'on':''}" onclick="haptic('tick');S.courRating=${n};render()">⭐</span>`).join('')}
+        </div>
+        <button class="btn btn-am" style="margin:0;width:100%" onclick="completeCourDelivery()">Complete Delivery →</button>
+      </div>
+    `:''}
   </div>`;
+}
+
+// v6.7: Courier finishes delivery — submits rating + returns to home
+function completeCourDelivery(){
+  feedback('success','success');
+  const earned = (S.order?.amount||0) * (S.courierFee/100) * (1-PCUT);
+  // Update courier stats
+  if(S.earnData){S.earnData.today += earned; S.earnData.deliveries++}
+  // Push a notification row
+  if(!Array.isArray(S.notifications))S.notifications=[];
+  S.notifications.unshift({
+    id:'n-'+Date.now(),
+    icon:'💰',
+    title:'Payout released',
+    body:`£${earned.toFixed(2)} · ${S.order?.delivery_address?.substring(0,30)||'delivery'}`,
+    ts:'Just now',
+    unread:true,
+    kind:'payout'
+  });
+  toast('Delivery complete!','£'+earned.toFixed(2)+' earned','✅');
+  S.order=null; S.orderStep=0; S.courRating=0;
+  go('home','home');
+  if(S.online)startRequestSim();
 }
 
 // ---- Courier QR Scan ----
@@ -2762,7 +2993,7 @@ function renderEarnings(){
   const days=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const tierColor=S.tier==='Gold'?'var(--am)':S.tier==='Silver'?'var(--gr)':'#CD7F32';
   return`<div class="scr on">
-    <div class="hdr"><div><div class="hdr-n">Earnings</div></div></div>
+    <div class="hdr"><div class="hdr-back" onclick="haptic('tick');S._activitySheet?(S._activitySheet=false,render()):go('home','home')">← Back</div><div class="hdr-n" style="flex:1;text-align:left;padding-left:6px">Earnings</div><div style="width:44px"></div></div>
     <div class="earn-hero">
       <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:4px">
         <span style="font-size:12px;font-weight:700;color:${tierColor};padding:2px 10px;border-radius:6px;background:${S.tier==='Gold'?'var(--am2)':'rgba(255,255,255,.06)'}">${S.tier}</span>
@@ -2925,7 +3156,7 @@ function renderWallet(){
   </div>`;
 }
 
-// v6.4: The Profile body — shared between full-screen Profile and left-edge drawer.
+// v6.7: The Profile body — shared between full-screen Profile and left-edge drawer.
 // Note: no mode switch card here anymore — the bottom bar IS the mode switch now.
 function renderProfileContent(){
   const n=S.user?.display_name||S.email.split('@')[0];
@@ -2963,10 +3194,18 @@ function renderProfileContent(){
     ${S.savedAddresses.map(sa=>`<div class="prof-item"><span class="pi">📍</span><span class="pt">${sa.name} — ${sa.addr.substring(0,25)}...</span><span class="pa">›</span></div>`).join('')}
     <div class="prof-item" onclick="toast('Coming soon','Add new address','📍')"><span class="pi">➕</span><span class="pt">Add Address</span><span class="pa">›</span></div>
     <div class="prof-ml">Support</div>
+    <div class="prof-item" onclick="haptic('tick');S._profileDrawer=false;S._notifSheet=true;render()">
+      <span class="pi">🔔</span><span class="pt">Notifications</span>
+      <span class="pa">${(S.notifications||[]).filter(n=>n.unread).length?`<span class="notif-count" style="position:static;display:inline-flex">${(S.notifications||[]).filter(n=>n.unread).length}</span>`:'›'}</span>
+    </div>
+    <div class="prof-item" onclick="haptic('tick');S._profileDrawer=false;S._disputesSheet=true;render()">
+      <span class="pi">⚠️</span><span class="pt">Disputes</span>
+      <span class="pa">${(S.disputes||[]).length?`<span style="color:var(--am);font-size:12px;font-weight:800">${(S.disputes||[]).length} open</span>`:'›'}</span>
+    </div>
     <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🔒</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','','❓')"><span class="pi">❓</span><span class="pt">Help & Support</span><span class="pa">›</span></div>
     <div class="prof-item danger" onclick="signOut()"><span class="pi">🚪</span><span class="pt">Sign Out</span><span class="pa"></span></div>
-    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v6.4 · London E1<br>© 2026 CashFlow Ltd</div>
+    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v6.7 · London E1<br>© 2026 CashFlow Ltd</div>
   `;
 }
 
@@ -3196,7 +3435,7 @@ async function submitOrder(){
   }catch(e){clearInterval(polls.matchCD);toast('Error',e.message,'❌');go('request')}
 }
 
-// v6.4: Live courier approach — simulates the selected courier moving toward requester
+// v6.7: Live courier approach — simulates the selected courier moving toward requester
 function startCourierApproach(){
   clearInterval(polls.courApproach);
   const c=S.selectedCourier;if(!c)return;
@@ -3281,7 +3520,8 @@ function expireLiveRequest(id){
   }
   if(S.activeAlert===id){
     S.activeAlert=null;
-    const alertEl=document.getElementById('reqAlert'); if(alertEl)alertEl.classList.remove('show');
+    clearInterval(polls.alertTimer);
+    const alertEl=document.getElementById('reqAlert'); if(alertEl){alertEl.className='';alertEl.innerHTML=''}
     // Surface next pending request if any
     setTimeout(()=>{if(S.liveRequests[0]&&!S.activeAlert)showReqAlert(S.liveRequests[0].id)}, 400);
   }
@@ -3289,30 +3529,52 @@ function expireLiveRequest(id){
 function showReqAlert(id){
   const r=S.liveRequests.find(x=>x.id===id); if(!r)return;
   S.activeAlert=id;
+  S._activeAlertRemain=15;            // v6.7: 15s countdown
   const el=document.getElementById('reqAlert'); if(!el)return;
-  el.innerHTML=`
-    <div class="ra-i">💷</div>
-    <div class="ra-body">
-      <div class="ra-t">New Request</div>
-      <div class="ra-amt">£${r.amt} · ${r.dist}km</div>
-      <div class="ra-m">ETA ${r.eta} min · You earn <b>£${r.earn}</b></div>
-    </div>
-    <div class="ra-actions">
-      <button class="ra-btn accept" onclick="acceptLiveRequest('${id}')">Accept</button>
-      <button class="ra-btn decline" onclick="declineLiveRequest('${id}')">Pass</button>
-    </div>`;
-  el.classList.add('show');
-  // Highlight the matching marker
+  feedback('medium','match');          // haptic + sound on incoming
+  const renderCard=()=>{
+    el.className='req-card';
+    el.innerHTML=`
+      <div class="rc-hdr">
+        <span class="rc-hdr-pulse"></span>
+        <span class="rc-hdr-lbl">New request nearby</span>
+        <span class="rc-hdr-cd">${S._activeAlertRemain}s</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-amt">£${r.amt}</div>
+        <div class="rc-info">
+          <div class="rc-addr">${r.area||'Nearby drop'} · ${r.dist}km away</div>
+          <div class="rc-meta">ETA ${r.eta} min · ${r.hasCash?'⚡ You have cash':'🏧 ATM stop first'}</div>
+        </div>
+        <div class="rc-earn">
+          <div class="rc-earn-v">+£${r.earn}</div>
+          <div class="rc-earn-l">Earn</div>
+        </div>
+      </div>
+      <div class="rc-actions">
+        <button class="rc-btn decline" onclick="declineLiveRequest('${id}')">Pass</button>
+        <button class="rc-btn accept" onclick="acceptLiveRequest('${id}')">Accept →</button>
+      </div>`;
+  };
+  renderCard();
+  // Highlight matching marker
   const m=maps.cour;
-  m._liveReqMarkers?.forEach(mk=>{
+  m?._liveReqMarkers?.forEach(mk=>{
     const dom=mk.getElement();
     dom.classList.toggle('hot', mk._reqId===id);
   });
-  // Auto-dismiss after 12s if no action
-  clearTimeout(polls.alertTimer);
-  polls.alertTimer=setTimeout(()=>{
-    if(S.activeAlert===id){el.classList.remove('show');S.activeAlert=null}
-  }, 12000);
+  // Countdown ticker
+  clearInterval(polls.alertTimer);
+  polls.alertTimer=setInterval(()=>{
+    S._activeAlertRemain--;
+    if(S._activeAlertRemain<=0){
+      clearInterval(polls.alertTimer);
+      if(S.activeAlert===id){declineLiveRequest(id,true)}
+    } else {
+      const cd=el.querySelector('.rc-hdr-cd');
+      if(cd)cd.textContent=S._activeAlertRemain+'s';
+    }
+  },1000);
 }
 function acceptLiveRequest(id){
   const r=S.liveRequests.find(x=>x.id===id); if(!r)return;
@@ -3333,10 +3595,11 @@ function acceptLiveRequest(id){
   toast('Request accepted!','£'+r.amt+' · heading to pickup','✅');
   go('courDel');
 }
-function declineLiveRequest(id){
-  haptic('tick');
+function declineLiveRequest(id,wasTimeout){
+  clearInterval(polls.alertTimer);
+  haptic(wasTimeout?'warn':'tick');
   expireLiveRequest(id);
-  toast('Passed','Waiting for next request','👋');
+  toast(wasTimeout?'Request expired':'Passed','Waiting for next request','👋');
 }
 
 function toggleOnline(){
