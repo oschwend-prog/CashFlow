@@ -1069,7 +1069,7 @@ input,button,select,textarea{font-family:inherit}
 .wheel-card.req .wheel-needle::after{border-color:transparent transparent #fff transparent;filter:drop-shadow(0 0 5px rgba(255,255,255,.35))}
 .wheel-card.req .wheel-tick.major::before{background:rgba(255,255,255,.55)}
 
-/* v7.6: Primary confirm CTA inside wheel-card — replaces the addr-line.confirm pattern */
+/* v7.7: Primary confirm CTA inside wheel-card — replaces the addr-line.confirm pattern */
 .wheel-cta{display:block;width:calc(100% - 32px);margin:14px 16px 4px;padding:15px 18px;border:none;border-radius:14px;background:var(--accent-grad,linear-gradient(135deg,#FFFFFF 0%,#E8ECF2 55%,#C8CDD5 100%));color:var(--accent-ink,#05110D);font-family:inherit;font-size:15px;font-weight:800;letter-spacing:-.01em;cursor:pointer;box-shadow:0 8px 22px var(--accent-glow,rgba(255,255,255,.28)),0 1px 0 rgba(255,255,255,.25) inset;transition:transform .12s cubic-bezier(.2,.8,.2,1),box-shadow .2s}
 .wheel-cta:active{transform:scale(.98);box-shadow:0 4px 12px var(--accent-glow,rgba(255,255,255,.28)),0 1px 0 rgba(255,255,255,.18) inset}
 .wheel-cta:disabled{opacity:.5;cursor:not-allowed}
@@ -1373,7 +1373,7 @@ body.mode-requester .scr.home-v2 .hc-top-wm{filter:brightness(1)}
 </head>
 <body>
 <div class="toast" id="toast"><span class="toast-i" id="tI">✓</span><div class="toast-t"><div class="t1" id="tT"></div><div class="t2" id="tS"></div></div></div>
-<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.6</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
+<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.7</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
 
 <!-- Floating order pill -->
 <div class="order-pill" id="orderPill" onclick="resumeOrder()"><span class="op-dot"></span><span class="op-txt" id="pillTxt">Order in progress</span><span class="op-amt" id="pillAmt"></span></div>
@@ -1403,13 +1403,13 @@ body.mode-requester .scr.home-v2 .hc-top-wm{filter:brightness(1)}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CashFlow v7.6 — build 2026.04.20
+// CashFlow v7.7 — build 2026.04.20
 // Features: wordmark, glass UI, gradient buttons, premium home sheet,
 // demand heatmap, animated route maps, fee toggle + ruler, demo mode,
 // local CashPoints browse + pickup mode
 // ═══════════════════════════════════════════════════════════════════
-console.log('%cCashFlow v7.6','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
-window.__CASHFLOW_VERSION__='7.6';
+console.log('%cCashFlow v7.7','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
+window.__CASHFLOW_VERSION__='7.7';
 
 const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
@@ -2238,12 +2238,12 @@ function renderHome(){
 
         <!-- Fulfillment chips -->
         <div class="ff-chips">
-          <div class="ff-chip ${!isPickup?'on':''}" onclick="haptic('tick');S.deliveryMode='deliver';render()">
+          <div class="ff-chip ${!isPickup?'on':''}" onclick="haptic('tick');S.deliveryMode='deliver';refreshRequestMapMarkers();render()">
             <div class="ff-chip-i">🏠</div>
             <div class="ff-chip-t">Delivery</div>
             <div class="ff-chip-m">To your door · £${DELIVERY_FEE}</div>
           </div>
-          <div class="ff-chip ${isPickup?'on':''}" onclick="haptic('tick');S.deliveryMode='pickup';render()">
+          <div class="ff-chip ${isPickup?'on':''}" onclick="haptic('tick');S.deliveryMode='pickup';refreshRequestMapMarkers();render()">
             <div class="ff-chip-i">🏪</div>
             <div class="ff-chip-t">Pickup</div>
             <div class="ff-chip-m">${MOCK_CASHPOINTS.filter(c=>c.open).length} open · no delivery</div>
@@ -3436,7 +3436,7 @@ function renderProfileContent(){
     <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🔒</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','','❓')"><span class="pi">❓</span><span class="pt">Help & Support</span><span class="pa">›</span></div>
     <div class="prof-item danger" onclick="signOut()"><span class="pi">🚪</span><span class="pt">Sign Out</span><span class="pa"></span></div>
-    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.6 · London E1<br>© 2026 CashFlow Ltd</div>
+    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.7 · London E1<br>© 2026 CashFlow Ltd</div>
   `;
 }
 
@@ -3882,6 +3882,17 @@ function buildRoute(from,to,steps=64){
   return coords;
 }
 
+// v7.7: toggle courier vs cashpoint pins on the request-screen map based on deliveryMode
+function refreshRequestMapMarkers(){
+  ['home','homeFull','request','offers','match'].forEach(mapId=>{
+    const m=maps[mapId];
+    if(!m) return;
+    const isPickup = S.deliveryMode === 'pickup';
+    (m._cashpointMarkers||[]).forEach(({el})=>{el.style.display = isPickup ? '' : 'none'});
+    (m._courierMarkers||[]).forEach(({el})=>{el.style.display = isPickup ? 'none' : ''});
+  });
+}
+
 function initMapEl(el){
   const id=el.dataset.map;
   const lat=parseFloat(el.dataset.lat)||51.5194;
@@ -3941,7 +3952,9 @@ function initMapEl(el){
         if(!(id==='homeFull'||isRequest)){youEl.style.width='16px';youEl.style.height='16px'}
         new mapboxgl.Marker({element:youEl}).setLngLat(center).addTo(m);
 
-        // CashPoints
+        // CashPoints — on Request screen, only show when in pickup mode
+        m._cashpointMarkers = [];
+        const showCashpoints = !isRequest || S.deliveryMode === 'pickup';
         MOCK_CASHPOINTS.filter(c=>c.open||id==='cpmap').forEach(cp=>{
           const el=document.createElement('div');
           if(id==='homeFull'||isRequest){
@@ -3952,7 +3965,9 @@ function initMapEl(el){
             el.textContent='🏪';
           }
           el.title=cp.name;
-          new mapboxgl.Marker({element:el}).setLngLat([cp.lng,cp.lat]).addTo(m);
+          if(isRequest && !showCashpoints) el.style.display='none';
+          const marker=new mapboxgl.Marker({element:el}).setLngLat([cp.lng,cp.lat]).addTo(m);
+          m._cashpointMarkers.push({marker,el});
           el.addEventListener('click',()=>{
             if(id==='cpmap'){S.selectedCashPoint=cp;render()}
             else if(isRequest){S.deliveryMode='pickup';S.selectedCashPoint=cp;render()}
@@ -3960,8 +3975,10 @@ function initMapEl(el){
           });
         });
 
-        // Mobile couriers
+        // Mobile couriers — on Request screen, only show when in delivery mode
+        m._courierMarkers = [];
         if(showCouriers){
+          const showCouriersOnRequest = !isRequest || S.deliveryMode !== 'pickup';
           MOCK_COURIERS.filter(c=>c.cash>0).forEach(c=>{
             const el=document.createElement('div');
             if(id==='homeFull'||isRequest){
@@ -3970,7 +3987,9 @@ function initMapEl(el){
               el.className='hot-marker';
               el.style.width='14px';el.style.height='14px';
             }
-            new mapboxgl.Marker({element:el}).setLngLat([c.lng,c.lat]).addTo(m);
+            if(isRequest && !showCouriersOnRequest) el.style.display='none';
+            const marker=new mapboxgl.Marker({element:el}).setLngLat([c.lng,c.lat]).addTo(m);
+            m._courierMarkers.push({marker,el});
           });
         }
 
