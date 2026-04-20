@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050A12">
+<title>Support · CashFlow</title>
+<meta name="description" content="Get help with CashFlow. FAQs, contact, and account management.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='78' font-family='Instrument Serif' font-style='italic' font-size='90' text-anchor='middle' fill='%2300E8B8'%3EF%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#050A12; --sf:#0E1520; --sf2:#141B27;
+    --bd:#1A2230; --bd2:#2A3445;
+    --em:#00E8B8; --am:#FFB800; --am-soft:rgba(255,184,0,.08);
+    --wh:#F5F7FA; --gr:#8A94A6; --mu:#5A6478;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--wh);font-family:'Outfit',-apple-system,sans-serif;font-weight:400;line-height:1.65;overflow-x:hidden}
+  a{color:var(--em);text-decoration:none;border-bottom:1px solid rgba(0,232,184,.3);transition:border-color .15s}
+  a:hover{border-color:var(--em)}
+  .mark{font-family:'Instrument Serif',serif;font-weight:400;letter-spacing:-0.035em;display:inline-flex;align-items:baseline;line-height:1}
+  .mark .c{color:var(--wh);font-style:normal}
+  .mark .f{color:var(--em);font-style:italic;margin-left:-0.03em}
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(5,10,18,.8);border-bottom:1px solid rgba(26,34,48,.6)}
+  .nav-inner{max-width:900px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+  .nav-inner .mark{font-size:26px}
+  .back{font-size:14px;color:var(--gr);font-weight:500;border:none}
+  .wrap{max-width:800px;margin:0 auto;padding:48px 24px 96px}
+  .page-kick{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--em);margin-bottom:14px}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(40px,7vw,68px);line-height:1.05;letter-spacing:-0.025em;margin-bottom:16px}
+  h1 .em{font-style:italic;color:var(--em)}
+  .lead{font-size:17px;color:var(--gr);max-width:640px;line-height:1.6;margin-bottom:48px}
+  h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(26px,4vw,36px);line-height:1.15;letter-spacing:-0.015em;margin:48px 0 16px;padding-top:24px;border-top:1px solid var(--bd)}
+  h2:first-of-type{border-top:none;padding-top:0}
+  h2 .em{font-style:italic;color:var(--em)}
+  h3{font-size:17px;font-weight:600;margin:24px 0 10px;color:var(--wh)}
+  p{font-size:16px;color:var(--gr);margin-bottom:14px}
+  p strong{color:var(--wh);font-weight:600}
+  ul,ol{margin:0 0 16px 0;padding-left:22px}
+  li{font-size:16px;color:var(--gr);margin-bottom:8px;line-height:1.6}
+  li strong{color:var(--wh);font-weight:600}
+
+  /* Contact cards */
+  .contact-grid{display:grid;grid-template-columns:1fr;gap:16px;margin:24px 0 40px}
+  .contact-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:24px;transition:border-color .25s;display:block;border:1px solid var(--bd)}
+  .contact-card:hover{border-color:var(--em)}
+  .contact-i{width:44px;height:44px;border-radius:12px;background:rgba(0,232,184,.08);border:1px solid rgba(0,232,184,.2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+  .contact-t{font-size:17px;font-weight:600;color:var(--wh);margin-bottom:4px}
+  .contact-d{font-size:14px;color:var(--gr);margin-bottom:10px}
+  .contact-v{font-size:15px;color:var(--em);font-weight:500}
+
+  /* Status */
+  .status-card{background:var(--sf);border:1px solid var(--bd);border-radius:16px;padding:24px;margin-bottom:32px;display:flex;align-items:center;gap:16px}
+  .status-dot{width:10px;height:10px;border-radius:50%;background:var(--am);box-shadow:0 0 12px var(--am);flex-shrink:0}
+  .status-t{font-size:15px;font-weight:600;color:var(--wh)}
+  .status-d{font-size:14px;color:var(--gr);margin-top:2px}
+
+  /* FAQ */
+  .faq-item{border-bottom:1px solid var(--bd);padding:20px 0}
+  .faq-item:first-child{border-top:1px solid var(--bd)}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;font-size:17px;font-weight:500;width:100%;text-align:left;padding:0;color:var(--wh);background:none;border:none;font-family:inherit}
+  .faq-q .ic{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--em);flex-shrink:0;transition:transform .3s,background .2s}
+  .faq-item.open .faq-q .ic{transform:rotate(45deg);background:rgba(0,232,184,.08)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease;color:var(--gr);font-size:15px;line-height:1.65}
+  .faq-item.open .faq-a{max-height:600px;padding-top:14px}
+  .faq-a p{margin-bottom:10px}
+  .faq-a p:last-child{margin-bottom:0}
+
+  /* Callout */
+  .callout{background:var(--sf);border:1px solid var(--bd);border-left:3px solid var(--em);border-radius:12px;padding:20px 24px;margin:24px 0}
+  .callout p{margin-bottom:8px}
+  .callout p:last-child{margin-bottom:0}
+  .callout strong{color:var(--wh)}
+
+  footer{border-top:1px solid var(--bd);padding:40px 0 32px;margin-top:48px;color:var(--mu);font-size:13px;line-height:1.7}
+  footer a{color:var(--gr)}
+
+  @media(min-width:640px){
+    .contact-grid{grid-template-columns:1fr 1fr}
+  }
+  @media(max-width:640px){
+    .wrap{padding:32px 20px 64px}
+    h1{font-size:44px}
+    h2{font-size:26px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="mark" style="border:none"><span class="c">Cash</span><span class="f">Flow</span></a>
+    <a href="/couriers.html" class="back">← Back to app</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <div class="page-kick">Help Centre</div>
+  <h1>How can <span class="em">we help</span>?</h1>
+  <p class="lead">Answers to common questions and how to get in touch if you need a human.</p>
+
+  <!-- Service status -->
+  <div class="status-card">
+    <div class="status-dot"></div>
+    <div>
+      <div class="status-t">Service status: Pre-launch waitlist</div>
+      <div class="status-d">CashFlow is not yet live. You can join the courier waitlist today. London onboarding opens Spring 2026.</div>
+    </div>
+  </div>
+
+  <!-- Contact -->
+  <h2 id="contact">Get in <span class="em">touch</span></h2>
+  <p>We're a small team and we read every email. Expect a reply within 1 working day.</p>
+  <div class="contact-grid">
+    <a href="mailto:hello@cashflow.app" class="contact-card">
+      <div class="contact-i">✉</div>
+      <div class="contact-t">General enquiries</div>
+      <div class="contact-d">Questions about the service, partnerships, media</div>
+      <div class="contact-v">hello@cashflow.app</div>
+    </a>
+    <a href="mailto:couriers@cashflow.app" class="contact-card">
+      <div class="contact-i">🚴</div>
+      <div class="contact-t">Courier support</div>
+      <div class="contact-d">Waitlist, onboarding, earnings</div>
+      <div class="contact-v">couriers@cashflow.app</div>
+    </a>
+    <a href="mailto:privacy@cashflow.app" class="contact-card">
+      <div class="contact-i">🔒</div>
+      <div class="contact-t">Privacy &amp; data</div>
+      <div class="contact-d">Data access, deletion, GDPR requests</div>
+      <div class="contact-v">privacy@cashflow.app</div>
+    </a>
+    <a href="mailto:legal@cashflow.app" class="contact-card">
+      <div class="contact-i">⚖</div>
+      <div class="contact-t">Legal</div>
+      <div class="contact-d">Regulatory, compliance, formal notices</div>
+      <div class="contact-v">legal@cashflow.app</div>
+    </a>
+  </div>
+
+  <!-- Waitlist FAQs -->
+  <h2>About the <span class="em">waitlist</span></h2>
+  <div id="faq1">
+    <div class="faq-item">
+      <button class="faq-q"><span>I signed up but haven't received a welcome email</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Check your spam/junk folder first — our welcome email sometimes lands there. Mark it "not spam" to future-proof your delivery.</p>
+        <p>If it's not there after 30 minutes, email <a href="mailto:couriers@cashflow.app">couriers@cashflow.app</a> with the email address you used and we'll look it up manually.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>What does my queue position mean?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Your position reflects the order in which you joined the waitlist. When London onboarding opens, we'll invite couriers to complete verification starting from position #1.</p>
+        <p>Positions are by signup timestamp, but referrers who bring in 3 or more sign-ups move ahead of non-referrers — so referring friends is the fastest way to get invited early.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>When does London launch?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>We're targeting Spring 2026 for the first closed cohort in E1, E14, EC, WC, and W1 postcodes. Exact date depends on finalising our regulatory position with UK authorities.</p>
+        <p>You'll get an email notification the moment onboarding opens in your postcode.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>Can I change my signup details?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Email <a href="mailto:couriers@cashflow.app">couriers@cashflow.app</a> with the email you signed up with and the changes you need. We'll update your record and confirm.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>How do I delete my signup?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Email <a href="mailto:privacy@cashflow.app">privacy@cashflow.app</a> from the email address you signed up with, subject line "Delete my data". We'll delete your record and confirm within 7 working days.</p>
+        <p>Alternatively, any waitlist email we send you includes an unsubscribe link that also triggers deletion.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Courier FAQs -->
+  <h2 style="margin-top:48px">About being a <span class="em">courier</span></h2>
+  <div id="faq2">
+    <div class="faq-item">
+      <button class="faq-q"><span>How much can I earn?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Typical couriers in Zone 1 earn £25–40/hour during peak hours. Earnings depend on: your cash float, the fees you set, how busy your area is, and how long you stay online.</p>
+        <p>A typical Friday night in Zone 1: 6 deliveries × £14 average fee × 75% courier share = £63/hr. Add tips and surge pricing and peak earnings cross £35/hr regularly.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>How do I get paid?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Every completed delivery pays into a digital wallet managed by our licensed payment partner. You can withdraw to your UK bank account any time, or let automatic weekly payouts run.</p>
+        <p>You'll receive a year-end earnings statement to simplify your tax return.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>Am I an employee?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>No. CashFlow couriers are self-employed independent contractors. You choose when to work and how much to work. You're responsible for registering with HMRC as self-employed and for your own income tax and National Insurance.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>What ID do I need to onboard?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>When onboarding opens, you'll need:</p>
+        <ul>
+          <li>A valid government-issued photo ID (passport or UK driving licence)</li>
+          <li>Proof of right to work in the UK (BRP, settled status, or passport)</li>
+          <li>A UK bank account in your name</li>
+          <li>A smartphone (iOS 14+ or Android 9+)</li>
+        </ul>
+        <p>Verification runs in 5 minutes via our identity partner. No paperwork, no in-person appointments.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>Is it safe?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Customers pay upfront through our licensed payment partner before a courier is dispatched, so you're never chasing payment. Every cash handover uses a two-factor QR and banknote verification. GPS tracking, in-app chat, and live support run throughout each delivery.</p>
+        <p>In the rare case of a dispute, we run a full review using transaction data, GPS trail, and chat history before deciding any outcome.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- App FAQs -->
+  <h2 style="margin-top:48px">Using the <span class="em">app</span></h2>
+  <div id="faq3">
+    <div class="faq-item">
+      <button class="faq-q"><span>Which devices are supported?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>CashFlow runs on iPhone (iOS 14 or later) and Android (9 or later). You can also use CashFlow in any modern browser on desktop or mobile.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>The app isn't loading for me</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Try these in order:</p>
+        <ol>
+          <li>Pull down to refresh the screen</li>
+          <li>Check your internet connection</li>
+          <li>Close the app completely and reopen it</li>
+          <li>Uninstall and reinstall from the App Store</li>
+        </ol>
+        <p>If none of these work, email <a href="mailto:hello@cashflow.app">hello@cashflow.app</a> with your device model, OS version, and a screenshot. We'll respond within 1 working day.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>Why does the app ask for camera/location permissions?</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p><strong>Location</strong> — used to match couriers and customers nearby, show the right delivery area, and navigate. Only used when the app is in use; we do not track you in the background.</p>
+        <p><strong>Camera</strong> — used for secure QR-code handover verification and to scan banknotes for authenticity checks. Not used otherwise.</p>
+        <p>You can decline either and the app will still work in limited mode, but some features require them. You can change permissions anytime in iOS Settings → CashFlow.</p>
+      </div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q"><span>I got an error message I don't understand</span><span class="ic">+</span></button>
+      <div class="faq-a">
+        <p>Screenshot the error, note what you were doing just before, and email it to <a href="mailto:hello@cashflow.app">hello@cashflow.app</a>. Include your device model and iOS/Android version. We aim to respond within 1 working day.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account deletion callout -->
+  <h2 id="delete" style="margin-top:48px">Delete your <span class="em">account</span> or data</h2>
+  <p>You have the right to delete your CashFlow account and all associated data at any time. Under UK GDPR we'll process the request within 7 working days.</p>
+  <div class="callout">
+    <p><strong>How to delete your data</strong></p>
+    <p>Email <a href="mailto:privacy@cashflow.app">privacy@cashflow.app</a> from the email address on your account. Subject line: <strong>"Delete my account"</strong>.</p>
+    <p>We'll delete your waitlist entry (or account, once CashFlow is operational) and confirm by reply. Where we must retain some information for legal reasons (e.g. accounting records for 6 years), we'll tell you what and why.</p>
+  </div>
+
+  <!-- Links -->
+  <h2 style="margin-top:48px">Other <span class="em">resources</span></h2>
+  <ul>
+    <li><a href="/privacy.html">Privacy Policy</a></li>
+    <li><a href="/terms.html">Terms of Service</a></li>
+    <li><a href="/couriers.html">Courier waitlist</a></li>
+    <li><a href="mailto:hello@cashflow.app">Email us</a></li>
+  </ul>
+
+  <footer>
+    <div><span class="mark" style="font-size:24px"><span class="c">Cash</span><span class="f">Flow</span></span></div>
+    <div style="margin-top:12px">© 2026 Azure IM Ltd. Registered in England &amp; Wales. CashFlow is a trading name of Azure IM Ltd.</div>
+    <div style="margin-top:12px"><a href="/couriers.html">Couriers</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a> · <a href="/support.html">Support</a></div>
+  </footer>
+
+</div>
+
+<script>
+  document.querySelectorAll('.faq-item').forEach(i=>{
+    i.querySelector('.faq-q').addEventListener('click', ()=>i.classList.toggle('open'));
+  });
+</script>
+
+</body>
+</html>

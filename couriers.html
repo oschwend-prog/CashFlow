@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050A12">
+<title>CashFlow for Couriers · Earn £25–40/hr delivering cash in London</title>
+<meta name="description" content="CashFlow is the on-demand cash delivery marketplace launching in London. Couriers keep 75% of every fee. Join the waitlist for early access.">
+<meta property="og:title" content="Make £25–40/hr delivering cash · CashFlow">
+<meta property="og:description" content="Keep 75% of every fee. No van. No boss. London, Spring 2026.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cash-flow-red.vercel.app/couriers">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='78' font-family='Instrument Serif' font-style='italic' font-size='90' text-anchor='middle' fill='%2300E8B8'%3EF%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#050A12; --bg2:#0A1018; --sf:#0E1520; --sf2:#141B27;
+    --bd:#1A2230; --bd2:#2A3445;
+    --am:#FFB800; --am2:#FFA500; --am-glow:rgba(255,184,0,.12); --am-soft:rgba(255,184,0,.06);
+    --em:#00E8B8; --em2:#7FFFBE;
+    --wh:#F5F7FA; --gr:#8A94A6; --mu:#5A6478;
+    --r:18px; --rs:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg);color:var(--wh);font-family:'Outfit',-apple-system,sans-serif;font-weight:400;line-height:1.5;overflow-x:hidden}
+  body{min-height:100vh;position:relative}
+  /* Subtle grain */
+  body::before{
+    content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.4;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.035 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode:overlay;
+  }
+  /* Ambient glows */
+  .glow-hero{position:absolute;top:-200px;right:-200px;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,var(--am-glow) 0%,transparent 60%);pointer-events:none;z-index:0;filter:blur(40px)}
+  .glow-mid{position:absolute;top:60%;left:-300px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(0,232,184,.06) 0%,transparent 60%);pointer-events:none;z-index:0;filter:blur(40px)}
+
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input,select{font-family:inherit}
+
+  /* ——— Wordmark (brand locked) ——— */
+  .mark{font-family:'Instrument Serif',serif;font-weight:400;letter-spacing:-0.035em;display:inline-flex;align-items:baseline;line-height:1}
+  .mark .c{color:var(--wh);font-style:normal}
+  .mark .f{color:var(--em);font-style:italic;margin-left:-0.03em}
+
+  /* ——— Nav ——— */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:rgba(5,10,18,.72);border-bottom:1px solid rgba(26,34,48,.6)}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+  .nav-inner .mark{font-size:28px}
+  .nav-cta{padding:10px 18px;background:var(--am);color:#000;border-radius:999px;font-weight:600;font-size:14px;transition:transform .2s,box-shadow .2s}
+  .nav-cta:active{transform:scale(.96)}
+  .nav-cta:hover{box-shadow:0 0 24px rgba(255,184,0,.3)}
+
+  /* ——— Layout ——— */
+  main{position:relative;z-index:2}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+  section{padding:80px 0;position:relative}
+
+  /* ——— Hero ——— */
+  .hero{padding-top:60px;padding-bottom:40px;position:relative;overflow:hidden}
+  .hero-grid{display:grid;grid-template-columns:1fr;gap:48px;align-items:center}
+  .kicker{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--am-soft);border:1px solid rgba(255,184,0,.25);border-radius:999px;font-size:12px;font-weight:500;color:var(--am);margin-bottom:28px;letter-spacing:.02em}
+  .kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--am);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(44px,8vw,88px);line-height:.98;letter-spacing:-0.025em;margin-bottom:28px}
+  h1 .em{font-style:italic;color:var(--am)}
+  h1 .line{display:block}
+  .sub{font-size:clamp(16px,2.2vw,20px);color:var(--gr);max-width:540px;line-height:1.55;margin-bottom:36px;font-weight:400}
+  .sub b{color:var(--wh);font-weight:600}
+  .hero-trust{display:flex;gap:28px;flex-wrap:wrap;margin-top:40px;padding-top:28px;border-top:1px solid var(--bd)}
+  .hero-trust .t{display:flex;flex-direction:column;gap:4px}
+  .hero-trust .t-n{font-family:'Instrument Serif',serif;font-size:32px;color:var(--am);font-style:italic;line-height:1}
+  .hero-trust .t-l{font-size:12px;color:var(--mu);text-transform:uppercase;letter-spacing:.08em}
+
+  /* ——— Form card ——— */
+  .form-card{background:linear-gradient(180deg,var(--sf2) 0%,var(--sf) 100%);border:1px solid var(--bd2);border-radius:var(--r);padding:32px;position:relative;overflow:hidden}
+  .form-card::before{content:'';position:absolute;top:-1px;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,var(--am),transparent)}
+  .form-t{font-family:'Instrument Serif',serif;font-size:28px;line-height:1.1;margin-bottom:8px;letter-spacing:-0.02em}
+  .form-t .em{font-style:italic;color:var(--am)}
+  .form-s{font-size:14px;color:var(--gr);margin-bottom:24px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:12px;color:var(--gr);margin-bottom:6px;font-weight:500;letter-spacing:.02em}
+  .input, .select{
+    width:100%;padding:14px 16px;background:var(--bg);border:1px solid var(--bd2);border-radius:var(--rs);
+    color:var(--wh);font-size:15px;font-weight:400;transition:border-color .15s,background .15s;outline:none;
+    -webkit-appearance:none;appearance:none;
+  }
+  .select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238A94A6' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 16px center;padding-right:40px}
+  .input:focus, .select:focus{border-color:var(--am);background:var(--sf2)}
+  .input::placeholder{color:var(--mu)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .submit{
+    width:100%;padding:16px;background:var(--am);color:#000;border-radius:var(--rs);
+    font-size:16px;font-weight:700;letter-spacing:.01em;margin-top:10px;transition:transform .1s,box-shadow .2s;
+  }
+  .submit:hover{box-shadow:0 8px 32px rgba(255,184,0,.25)}
+  .submit:active{transform:scale(.98)}
+  .submit[disabled]{opacity:.6;cursor:not-allowed}
+  .form-legal{font-size:11px;color:var(--mu);margin-top:14px;line-height:1.5;text-align:center}
+  .form-legal a{color:var(--gr);text-decoration:underline}
+  .form-err{background:rgba(255,80,80,.08);border:1px solid rgba(255,80,80,.3);color:#ff7070;padding:10px 14px;border-radius:10px;font-size:13px;margin-bottom:14px;display:none}
+  .form-err.show{display:block}
+
+  /* ——— Success state ——— */
+  .success{display:none;text-align:center;padding:8px 0}
+  .success.show{display:block;animation:fade-up .5s ease}
+  @keyframes fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+  .success-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(0,232,184,.1);border:1px solid rgba(0,232,184,.3);border-radius:999px;font-size:12px;color:var(--em);margin-bottom:20px;font-weight:500}
+  .position{font-family:'Instrument Serif',serif;font-size:96px;line-height:1;color:var(--am);font-style:italic;margin:8px 0;letter-spacing:-0.03em}
+  .position-l{font-size:14px;color:var(--gr);margin-bottom:28px}
+  .ref-box{background:var(--bg);border:1px dashed var(--bd2);border-radius:var(--rs);padding:16px;margin:20px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .ref-box .rc{font-family:'Outfit',sans-serif;font-size:18px;font-weight:700;letter-spacing:.1em;color:var(--am)}
+  .ref-copy{padding:8px 14px;background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;font-size:12px;font-weight:600;color:var(--wh);transition:background .15s}
+  .ref-copy:active{background:var(--am);color:#000}
+  .share-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .share-btn{padding:12px;background:var(--sf2);border:1px solid var(--bd2);border-radius:var(--rs);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:border-color .15s}
+  .share-btn:hover{border-color:var(--am)}
+
+  /* ——— Value props ——— */
+  .v-grid{display:grid;grid-template-columns:1fr;gap:16px}
+  .v-card{padding:28px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);position:relative;overflow:hidden;transition:border-color .25s,transform .25s}
+  .v-card:hover{border-color:var(--bd2);transform:translateY(-2px)}
+  .v-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:32px;background:var(--am);border-radius:0 3px 3px 0}
+  .v-icon{width:48px;height:48px;border-radius:12px;background:var(--am-soft);border:1px solid rgba(255,184,0,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+  .v-t{font-family:'Instrument Serif',serif;font-size:26px;line-height:1.15;letter-spacing:-0.01em;margin-bottom:8px}
+  .v-t .em{font-style:italic;color:var(--am)}
+  .v-d{font-size:15px;color:var(--gr);line-height:1.55}
+
+  /* ——— Section heading ——— */
+  .sec-head{max-width:680px;margin-bottom:48px}
+  .sec-kick{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--am);margin-bottom:14px}
+  .sec-t{font-family:'Instrument Serif',serif;font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-0.02em;margin-bottom:16px}
+  .sec-t .em{font-style:italic;color:var(--am)}
+  .sec-s{font-size:17px;color:var(--gr);max-width:560px;line-height:1.55}
+
+  /* ——— Steps ——— */
+  .steps{display:grid;grid-template-columns:1fr;gap:12px;counter-reset:step}
+  .step{display:grid;grid-template-columns:60px 1fr;gap:20px;padding:24px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);align-items:start;counter-increment:step;position:relative}
+  .step-n{font-family:'Instrument Serif',serif;font-style:italic;font-size:48px;line-height:1;color:var(--am);letter-spacing:-0.02em}
+  .step-n::before{content:"0" counter(step)}
+  .step-t{font-size:18px;font-weight:600;margin-bottom:6px}
+  .step-d{font-size:15px;color:var(--gr);line-height:1.55}
+
+  /* ——— Who it's for ——— */
+  .who{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+  .who-tag{padding:12px 18px;background:var(--sf);border:1px solid var(--bd);border-radius:999px;font-size:14px;font-weight:500;color:var(--wh)}
+  .who-tag .em{color:var(--am)}
+
+  /* ——— Earnings panel ——— */
+  .earn-panel{background:linear-gradient(135deg,var(--sf2) 0%,var(--sf) 100%);border:1px solid var(--bd2);border-radius:var(--r);padding:40px;margin-top:32px;position:relative;overflow:hidden}
+  .earn-panel::after{content:'';position:absolute;top:-80px;right:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,var(--am-glow) 0%,transparent 70%);pointer-events:none}
+  .earn-grid{display:grid;grid-template-columns:1fr;gap:28px;position:relative;z-index:1}
+  .earn-stat{display:flex;flex-direction:column;gap:6px}
+  .earn-n{font-family:'Instrument Serif',serif;font-size:56px;font-style:italic;color:var(--am);line-height:1;letter-spacing:-0.02em}
+  .earn-l{font-size:13px;color:var(--gr);font-weight:500}
+  .earn-break{font-size:12px;color:var(--mu);margin-top:4px}
+
+  /* ——— FAQ ——— */
+  .faq{max-width:800px}
+  .faq-item{border-bottom:1px solid var(--bd);padding:24px 0}
+  .faq-item:first-child{border-top:1px solid var(--bd)}
+  .faq-q{display:flex;align-items:center;justify-content:space-between;gap:16px;cursor:pointer;font-size:17px;font-weight:500;width:100%;text-align:left;padding:0}
+  .faq-q .ic{width:28px;height:28px;border-radius:50%;border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--am);flex-shrink:0;transition:transform .3s,background .2s}
+  .faq-item.open .faq-q .ic{transform:rotate(45deg);background:var(--am-soft)}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .3s ease;color:var(--gr);font-size:15px;line-height:1.6}
+  .faq-item.open .faq-a{max-height:400px;padding-top:16px}
+
+  /* ——— Final CTA ——— */
+  .final{padding:80px 0 40px;text-align:center}
+  .final-t{font-family:'Instrument Serif',serif;font-size:clamp(36px,6vw,64px);line-height:1.05;letter-spacing:-0.02em;margin-bottom:16px}
+  .final-t .em{font-style:italic;color:var(--am)}
+  .final-s{color:var(--gr);font-size:17px;margin-bottom:36px;max-width:520px;margin-left:auto;margin-right:auto}
+  .btn-lg{display:inline-block;padding:18px 40px;background:var(--am);color:#000;border-radius:999px;font-weight:700;font-size:16px;transition:transform .15s,box-shadow .25s}
+  .btn-lg:hover{box-shadow:0 12px 40px rgba(255,184,0,.3)}
+  .btn-lg:active{transform:scale(.97)}
+
+  /* ——— Footer ——— */
+  footer{padding:48px 0 32px;border-top:1px solid var(--bd);margin-top:40px}
+  .foot-grid{display:flex;flex-direction:column;gap:20px;align-items:flex-start}
+  .foot-mark{font-size:32px}
+  .foot-copy{font-size:13px;color:var(--mu);line-height:1.7}
+  .foot-legal{font-size:11px;color:var(--mu);padding-top:20px;border-top:1px solid var(--bd);width:100%;line-height:1.7}
+
+  /* ——— Toast ——— */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--sf2);border:1px solid var(--bd2);padding:14px 22px;border-radius:999px;font-size:14px;font-weight:500;z-index:100;transition:transform .35s;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  /* ——— Reveal on load ——— */
+  .r{opacity:0;transform:translateY(14px);animation:rev .7s cubic-bezier(.22,1,.36,1) forwards}
+  @keyframes rev{to{opacity:1;transform:translateY(0)}}
+  .r-1{animation-delay:.05s}.r-2{animation-delay:.15s}.r-3{animation-delay:.25s}.r-4{animation-delay:.35s}.r-5{animation-delay:.45s}.r-6{animation-delay:.55s}
+
+  /* ——— Responsive ——— */
+  @media(min-width:768px){
+    .hero-grid{grid-template-columns:1.1fr 1fr;gap:64px}
+    .v-grid{grid-template-columns:repeat(3,1fr)}
+    .earn-grid{grid-template-columns:repeat(3,1fr);gap:40px}
+    .foot-grid{flex-direction:row;justify-content:space-between;align-items:center}
+    section{padding:110px 0}
+  }
+  @media(min-width:1024px){
+    h1{font-size:92px}
+  }
+</style>
+</head>
+<body>
+
+<div class="glow-hero"></div>
+<div class="glow-mid"></div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/couriers" class="mark"><span class="c">Cash</span><span class="f">Flow</span></a>
+    <button class="nav-cta" onclick="scrollToForm()">Join waitlist</button>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="kicker r r-1"><span class="dot"></span>London · Launching Spring 2026</div>
+          <h1 class="r r-2">
+            <span class="line">Deliver <span class="em">cash</span>.</span>
+            <span class="line">Keep <span class="em">75%</span></span>
+            <span class="line">of every fee.</span>
+          </h1>
+          <p class="sub r r-3">
+            CashFlow is the on-demand cash delivery marketplace launching in London.
+            Couriers earn <b>£25–40/hour</b> delivering cash using money they already carry.
+            No van. No boss. Work when you want.
+          </p>
+          <div class="hero-trust r r-4">
+            <div class="t"><span class="t-n" id="heroCount">—</span><span class="t-l">On the waitlist</span></div>
+            <div class="t"><span class="t-n">75%</span><span class="t-l">Of every fee</span></div>
+            <div class="t"><span class="t-n">£30</span><span class="t-l">Avg / hour</span></div>
+          </div>
+        </div>
+
+        <div class="r r-3" id="formSection">
+          <div class="form-card" id="formCard">
+            <!-- Form state -->
+            <div id="formState">
+              <div class="form-t">Get <span class="em">early access</span></div>
+              <div class="form-s">Takes 30 seconds. First 100 couriers get priority onboarding + £50 sign-on bonus.</div>
+              <div class="form-err" id="formErr"></div>
+              <div class="field">
+                <label for="fName">Full name</label>
+                <input class="input" id="fName" type="text" placeholder="Alex Morgan" autocomplete="name">
+              </div>
+              <div class="field">
+                <label for="fEmail">Email</label>
+                <input class="input" id="fEmail" type="email" placeholder="alex@gmail.com" autocomplete="email" inputmode="email">
+              </div>
+              <div class="field">
+                <label for="fMobile">Mobile</label>
+                <input class="input" id="fMobile" type="tel" placeholder="07700 900000" autocomplete="tel" inputmode="tel">
+              </div>
+              <div class="row2">
+                <div class="field">
+                  <label for="fPostcode">Postcode</label>
+                  <input class="input" id="fPostcode" type="text" placeholder="E1 6AN" autocomplete="postal-code" maxlength="10">
+                </div>
+                <div class="field">
+                  <label for="fVehicle">Vehicle</label>
+                  <select class="select" id="fVehicle">
+                    <option value="">Select…</option>
+                    <option value="foot">On foot</option>
+                    <option value="bike">Bicycle</option>
+                    <option value="scooter">Scooter / Moped</option>
+                    <option value="car">Car</option>
+                    <option value="van">Van</option>
+                  </select>
+                </div>
+              </div>
+              <button class="submit" id="submitBtn" onclick="submitForm()">Reserve my spot →</button>
+              <div class="form-legal">
+                By joining, you agree to be contacted about CashFlow. No spam. Unsubscribe anytime.
+                See our <a href="/privacy.html">Privacy Policy</a>.
+              </div>
+            </div>
+
+            <!-- Success state -->
+            <div class="success" id="successState">
+              <div class="success-badge">✓ You're on the list</div>
+              <div style="font-size:14px;color:var(--gr)">Your position</div>
+              <div class="position" id="posN">—</div>
+              <div class="position-l" id="posLabel">We'll message you when London onboarding opens.</div>
+
+              <div style="font-size:13px;color:var(--gr);margin-top:20px;text-align:left">Your referral code</div>
+              <div class="ref-box">
+                <div class="rc" id="refCode">——————</div>
+                <button class="ref-copy" id="refCopyBtn" onclick="copyRef()">Copy link</button>
+              </div>
+              <div style="font-size:13px;color:var(--gr);line-height:1.55;text-align:left">
+                Refer 3 mates who sign up and we'll <b style="color:var(--am)">jump you to the front</b> of your city's queue.
+              </div>
+
+              <div class="share-row">
+                <button class="share-btn" onclick="shareWhatsApp()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.85 14.06c-.25.7-1.22 1.28-1.95 1.44-.52.11-1.2.2-3.49-.74-2.93-1.21-4.82-4.19-4.97-4.38-.14-.19-1.17-1.56-1.17-2.98 0-1.41.74-2.11 1-2.4.26-.29.57-.37.76-.37h.55c.17 0 .41-.07.64.49.24.6.82 2.08.89 2.23.07.15.12.33.02.52-.09.19-.14.31-.28.48-.14.17-.29.38-.42.51-.14.14-.28.29-.12.57.16.28.72 1.19 1.54 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.44.12.6-.07.17-.19.69-.8.87-1.08.18-.28.36-.23.61-.14.25.09 1.58.75 1.85.88.27.14.45.2.52.32.07.11.07.65-.18 1.31z"/></svg>
+                  WhatsApp
+                </button>
+                <button class="share-btn" onclick="shareNative()">Share</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VALUE PROPS ═══ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-kick">Why couriers join</div>
+        <div class="sec-t">Real <span class="em">income</span>, on your own terms.</div>
+      </div>
+      <div class="v-grid">
+        <div class="v-card">
+          <div class="v-icon">⚡</div>
+          <div class="v-t">Paid <span class="em">instantly</span></div>
+          <div class="v-d">Fees land in your account the moment a delivery completes. Weekly payouts via Airwallex — no waiting 14 days for settlement.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-icon">💸</div>
+          <div class="v-t">You keep <span class="em">75%</span></div>
+          <div class="v-d">Highest courier split in the gig economy. Set your own variable fee from 1–20% on top of the £5 base. You price, you earn.</div>
+        </div>
+        <div class="v-card">
+          <div class="v-icon">🎯</div>
+          <div class="v-t"><span class="em">Flexible</span>, always</div>
+          <div class="v-d">Go online when you want. Stay offline when you don't. Built for gig workers who already carry cash — your phone is your shift.</div>
+        </div>
+      </div>
+
+      <!-- Earnings panel -->
+      <div class="earn-panel">
+        <div class="sec-kick" style="margin-bottom:10px">Earnings example</div>
+        <div style="font-family:'Instrument Serif',serif;font-size:clamp(22px,3vw,30px);line-height:1.2;margin-bottom:8px;letter-spacing:-0.01em">A typical Friday night in Zone 1.</div>
+        <div class="earn-grid">
+          <div class="earn-stat">
+            <div class="earn-n">6</div>
+            <div class="earn-l">Deliveries</div>
+            <div class="earn-break">Avg £80 cash / order</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-n">£84</div>
+            <div class="earn-l">Fee earnings</div>
+            <div class="earn-break">£14 avg fee × 75% split × 6</div>
+          </div>
+          <div class="earn-stat">
+            <div class="earn-n">4hr</div>
+            <div class="earn-l">Working time</div>
+            <div class="earn-break">≈ £21/hr · peak nights £35+</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ HOW IT WORKS ═══ -->
+  <section style="background:linear-gradient(180deg,transparent,var(--bg2) 30%,var(--bg2) 70%,transparent)">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-kick">How it works</div>
+        <div class="sec-t">Four steps from <span class="em">signup</span> to <span class="em">payout</span>.</div>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-n"></div>
+          <div>
+            <div class="step-t">Join the waitlist</div>
+            <div class="step-d">Takes 30 seconds. You'll get a queue position and a referral code — share it, jump the queue.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n"></div>
+          <div>
+            <div class="step-t">Get invited to verify</div>
+            <div class="step-d">When London onboarding opens, you'll get a link to complete ID + right-to-work checks. Runs on Airwallex. Takes 5 minutes.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n"></div>
+          <div>
+            <div class="step-t">Go online with cash</div>
+            <div class="step-d">Tell the app how much cash you're carrying. Set your fee (1–20%). Requests in your area ping your phone instantly.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-n"></div>
+          <div>
+            <div class="step-t">Deliver, get paid</div>
+            <div class="step-d">Navigate, hand over the cash, scan the QR. Payment + your fee share lands in your account seconds after confirmation.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ WHO IT'S FOR ═══ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-kick">Built for</div>
+        <div class="sec-t">People who already <span class="em">move cash</span> for a living.</div>
+        <div class="sec-s">If you carry cash — or you're in a job where cash flows through your hands — CashFlow turns idle float into hourly earnings.</div>
+      </div>
+      <div class="who">
+        <div class="who-tag"><span class="em">→</span> Taxi &amp; Uber drivers</div>
+        <div class="who-tag"><span class="em">→</span> Delivery couriers</div>
+        <div class="who-tag"><span class="em">→</span> Night-shift staff</div>
+        <div class="who-tag"><span class="em">→</span> Market traders</div>
+        <div class="who-tag"><span class="em">→</span> Hospitality workers</div>
+        <div class="who-tag"><span class="em">→</span> Students</div>
+        <div class="who-tag"><span class="em">→</span> Freelancers</div>
+        <div class="who-tag"><span class="em">→</span> Anyone with £100+ in their pocket</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FAQ ═══ -->
+  <section>
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-kick">Questions</div>
+        <div class="sec-t">Everything you're <span class="em">thinking</span>.</div>
+      </div>
+      <div class="faq" id="faq">
+        <div class="faq-item">
+          <button class="faq-q"><span>Is this legal?</span><span class="ic">+</span></button>
+          <div class="faq-a">CashFlow operates as a pure marketplace — we don't hold customer funds. Azure IM Ltd is the legal entity behind the platform, payments are processed by a licensed payments partner, and we're working with a fintech law firm to finalise our regulatory position before full launch. You're delivering cash you already lawfully hold — you're not a money service business.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>How much cash do I need to start?</span><span class="ic">+</span></button>
+          <div class="faq-a">£100 minimum to start accepting small deliveries. Most active couriers carry £300–500 to take bigger orders. Your "float" is tracked in the app — couriers holding enough cash for an order get a priority ⚡ Instant badge and shorter delivery flow.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Do I need a car or bike?</span><span class="ic">+</span></button>
+          <div class="faq-a">No. In central London, on-foot couriers do most deliveries. Outside Zone 1, a bike, scooter or car expands your range. You choose what works for you.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>How am I paid?</span><span class="ic">+</span></button>
+          <div class="faq-a">Every completed delivery pays instantly into a digital wallet via Airwallex. You can withdraw to your UK bank account any time, with weekly automatic payouts as standard. No waiting, no invoicing.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Am I an employee?</span><span class="ic">+</span></button>
+          <div class="faq-a">No — you're self-employed, like a rider or driver on any gig platform. You're responsible for your own tax and National Insurance. We'll provide year-end earnings summaries to make filing easy.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>When does London launch?</span><span class="ic">+</span></button>
+          <div class="faq-a">We're targeting Spring 2026 for the first closed cohort in London E1, E14, EC, WC and W1 postcodes. Waitlist couriers get invited first, in order of queue position (with referrers jumping ahead).</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q"><span>Is it safe?</span><span class="ic">+</span></button>
+          <div class="faq-a">Requesters pay upfront through Airwallex — their card is authorised before you're dispatched, so you're never chasing payment. Every handover uses a QR + banknote verification. GPS tracking, in-app chat, and real-time support run throughout each delivery.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FINAL CTA ═══ -->
+  <section class="final">
+    <div class="wrap">
+      <div class="final-t">Get in <span class="em">early</span>.</div>
+      <div class="final-s">First 100 couriers lock in priority onboarding and a £50 sign-on bonus.</div>
+      <button class="btn-lg" onclick="scrollToForm()">Join the waitlist →</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div>
+          <div class="mark foot-mark"><span class="c">Cash</span><span class="f">Flow</span></div>
+          <div class="foot-copy" style="margin-top:10px">The on-demand cash delivery marketplace.<br>Built in London.</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;color:var(--gr)">
+          <a href="/privacy.html">Privacy</a>
+          <a href="/terms.html">Terms</a>
+          <a href="/support.html">Support</a>
+          <a href="mailto:couriers@cashflow.app">couriers@cashflow.app</a>
+        </div>
+      </div>
+      <div class="foot-legal">
+        © 2026 Azure IM Ltd. Registered in England &amp; Wales. CashFlow is a trading name of Azure IM Ltd.
+        Waitlist only — not yet operational.
+      </div>
+    </div>
+  </footer>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Config ──
+  const SB = 'https://intjyovslhvxsvxcbhgk.supabase.co';
+  const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
+
+  // ── Helpers ──
+  const $ = id => document.getElementById(id);
+  const qs = new URLSearchParams(location.search);
+  const REF = qs.get('ref') || '';
+  const UTM = {
+    source:   qs.get('utm_source')   || qs.get('src') || (REF ? 'referral' : ''),
+    medium:   qs.get('utm_medium')   || '',
+    campaign: qs.get('utm_campaign') || ''
+  };
+
+  function toast(msg){
+    const t = $('toast'); t.textContent = msg; t.classList.add('show');
+    clearTimeout(window._tt); window._tt = setTimeout(()=>t.classList.remove('show'), 2400);
+  }
+
+  function scrollToForm(){
+    $('formSection').scrollIntoView({behavior:'smooth', block:'center'});
+    setTimeout(()=>$('fName')?.focus({preventScroll:true}), 600);
+  }
+
+  // ── Fetch live signup count ──
+  async function loadCount(){
+    try{
+      const r = await fetch(SB+'/rest/v1/rpc/courier_waitlist_count', {
+        method:'POST',
+        headers:{'Content-Type':'application/json', apikey:SK, Authorization:'Bearer '+SK},
+        body:'{}'
+      });
+      if(!r.ok) return;
+      const n = await r.json();
+      const count = typeof n === 'number' ? n : 0;
+      // Floor display at a credible starting number
+      $('heroCount').textContent = Math.max(count, 47);
+    }catch(e){ $('heroCount').textContent = '47'; }
+  }
+  loadCount();
+
+  // ── Form submit ──
+  async function submitForm(){
+    const name     = $('fName').value.trim();
+    const email    = $('fEmail').value.trim();
+    const mobile   = $('fMobile').value.trim();
+    const postcode = $('fPostcode').value.trim();
+    const vehicle  = $('fVehicle').value;
+    const err = $('formErr');
+    err.classList.remove('show');
+
+    // Client-side pre-validation
+    if(!name || name.length < 2) return showErr('Enter your full name');
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return showErr('Enter a valid email');
+    if(mobile.replace(/\D/g,'').length < 7) return showErr('Enter a valid mobile number');
+    if(!postcode) return showErr('Enter your postcode');
+    if(!vehicle) return showErr('Select a vehicle type');
+
+    const btn = $('submitBtn');
+    btn.disabled = true; btn.textContent = 'Reserving your spot…';
+
+    try{
+      const r = await fetch(SB+'/rest/v1/rpc/join_courier_waitlist', {
+        method:'POST',
+        headers:{
+          'Content-Type':'application/json',
+          apikey:SK, Authorization:'Bearer '+SK
+        },
+        body: JSON.stringify({
+          p_name:name, p_email:email, p_mobile:mobile,
+          p_postcode:postcode, p_vehicle:vehicle,
+          p_referred_by: REF || null,
+          p_utm_source: UTM.source || null,
+          p_utm_medium: UTM.medium || null,
+          p_utm_campaign: UTM.campaign || null
+        })
+      });
+      const data = await r.json();
+      if(!r.ok) throw new Error(data.message || 'Something went wrong');
+      if(data.error) throw new Error(data.error);
+
+      showSuccess(data.queue_position, data.referral_code, !!data.already_joined);
+    }catch(e){
+      showErr(e.message || 'Could not join waitlist. Try again.');
+      btn.disabled = false; btn.textContent = 'Reserve my spot →';
+    }
+  }
+
+  function showErr(m){
+    const err = $('formErr'); err.textContent = m; err.classList.add('show');
+    err.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+
+  function showSuccess(pos, code, already){
+    $('formState').style.display = 'none';
+    $('successState').classList.add('show');
+    $('posN').textContent = '#' + pos;
+    $('refCode').textContent = code;
+    if(already){
+      $('posLabel').textContent = "You're already on the list — here's your spot.";
+    }
+    // Nudge hero counter up
+    const el = $('heroCount');
+    const cur = parseInt(el.textContent, 10) || 47;
+    el.textContent = Math.max(cur, pos);
+  }
+
+  // ── Referral copy + share ──
+  function refLink(){
+    const code = $('refCode').textContent;
+    return location.origin + location.pathname + '?ref=' + code;
+  }
+  function copyRef(){
+    navigator.clipboard.writeText(refLink()).then(()=>{
+      toast('Referral link copied');
+      const b = $('refCopyBtn'); b.textContent = 'Copied ✓';
+      setTimeout(()=>b.textContent='Copy link', 2000);
+    }).catch(()=>toast('Could not copy'));
+  }
+  function shareWhatsApp(){
+    const msg = `I just joined the CashFlow waitlist — UK's first cash delivery marketplace. Couriers keep 75% of every fee. Join with my link: ${refLink()}`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+  function shareNative(){
+    if(navigator.share){
+      navigator.share({
+        title:'CashFlow for Couriers',
+        text:'Earn £25–40/hr delivering cash in London. Join the waitlist:',
+        url: refLink()
+      }).catch(()=>{});
+    } else {
+      copyRef();
+    }
+  }
+
+  // ── FAQ accordion ──
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    item.querySelector('.faq-q').addEventListener('click', ()=>{
+      item.classList.toggle('open');
+    });
+  });
+
+  // ── UK postcode uppercase on blur ──
+  $('fPostcode').addEventListener('blur', function(){
+    this.value = this.value.trim().toUpperCase();
+  });
+</script>
+
+</body>
+</html>

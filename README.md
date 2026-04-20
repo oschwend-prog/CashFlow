@@ -1,70 +1,82 @@
-# CashFlow
+# CashFlow Web Deploy Bundle
 
-**The world's first instant cash delivery marketplace.**
-Bringing cash back to you — on-demand, anywhere in the city.
+Everything in `public/` is ready to push to your `cash-flow-red` Vercel repo on GitHub.
+Vercel will auto-deploy within 30 seconds of the push.
 
-🌐 **Live demo:** [cash-flow-red.vercel.app](https://cash-flow-red.vercel.app)
+## Contents
 
----
+| File | URL after deploy | Purpose |
+|---|---|---|
+| `public/index.html` | `cash-flow-red.vercel.app/` | Main CashFlow app (the full prototype) |
+| `public/couriers.html` | `cash-flow-red.vercel.app/couriers.html` | Courier waitlist landing page |
+| `public/privacy.html` | `cash-flow-red.vercel.app/privacy.html` | Privacy Policy (Apple-mandatory) |
+| `public/terms.html` | `cash-flow-red.vercel.app/terms.html` | Terms of Service |
+| `public/support.html` | `cash-flow-red.vercel.app/support.html` | Support / Help Centre (Apple-mandatory) |
 
-## What it is
+## What's in this version
 
-CashFlow is a peer-to-peer marketplace that connects people who need physical cash with verified couriers nearby who can deliver it to their door — usually within 10 minutes. Think "Uber for cash."
+All of the following are baked into these files:
 
-### For requesters
-Open the app, tap an amount (£20–£500), pick delivery or pickup, confirm. A nearby courier brings you cash. Pay with Apple Pay, saved card, or a new card at checkout. £5 delivery fee, plus a small transaction fee set by the courier.
+- **Fee cap at 20%** (was 50%) — both Courier dashboard and CashPoint slider
+- **Cash preset values**: £20, £40, £60, £80, £100, £150, £200, £300, £500 — applied to Request amount, Courier cash-on-hand, and CashPoint float
+- **CashPoint free-typing input removed** — presets are now the only way to set cash values
+- **Colour-scheme meta tag** — prevents browser auto-dark mode from messing with the rendering
+- **Footer FCA reference removed** + **FAQ regulatory language softened** (no overpromising pre-FCA)
+- **Footer legal links wired** — Privacy / Terms / Support links now work
+- **Terms of Service §7** reflects the new 1–20% fee range
 
-### For couriers
-Go online with cash already in your wallet, set your own transaction fee (0–50%), and accept nearby requests. You keep 75% of your fee — we take 25%. Weekly payouts to your bank account.
+## How to push this to GitHub (3 minutes)
 
-### For CashPoints (optional)
-Run a shop, pub, or newsagent? Become a fixed-location supplier. Customers walk in, collect cash, you earn a fee on every transaction. Zero equipment required — just your phone.
+### Option A — command line
+```bash
+# In your cash-flow-red repo
+cd /path/to/cash-flow-red
 
----
+# Copy all five files over
+cp /path/to/downloaded/public/*.html public/
 
-## The product
+# Commit and push
+git add public/*.html
+git commit -m "feat: 20% fee cap + preset cash values + legal pages"
+git push
+```
 
-- **Two-sided marketplace** — single app, two modes, bottom-bar switch
-- **Weighted courier matching** — reliability score blends rating, on-time rate, cancellation rate, and verification status
-- **Live GPS tracking** — requester watches the courier approach in real-time
-- **QR-code handover** — 6-digit verification between both parties
-- **Bidirectional rating** — requester rates courier, courier rates requester
-- **Bank-grade payments** — Airwallex payment processing + payout rails
-- **KYC-verified couriers** — Gold/Silver/Bronze tier progression
+### Option B — GitHub web UI
+1. Go to `github.com/YOUR_USERNAME/cash-flow-red`
+2. Navigate to the `public/` folder
+3. Drag and drop all five `.html` files from this bundle (GitHub accepts drag-and-drop)
+4. Commit message: `feat: 20% fee cap + preset cash values + legal pages`
+5. Commit directly to main
 
----
+Vercel will auto-deploy within ~30 seconds of either approach.
 
-## Tech stack
+## After the push — verify these URLs
 
-| Layer | Technology |
+Open each in your browser and confirm:
+
+- https://cash-flow-red.vercel.app/ → main app loads on dark background
+- https://cash-flow-red.vercel.app/couriers.html → waitlist page, amber accents
+- https://cash-flow-red.vercel.app/privacy.html → privacy policy
+- https://cash-flow-red.vercel.app/terms.html → terms of service
+- https://cash-flow-red.vercel.app/support.html → support page
+
+If any of them 404, your Vercel project root directory setting may need to be `public/` — check Vercel dashboard → Settings → Build & Development → Output Directory.
+
+## Files NOT in this bundle (they deploy elsewhere)
+
+These don't go to GitHub/Vercel — they go to other systems:
+
+| File | Deploys to |
 |---|---|
-| Frontend | Single-file HTML/CSS/JS, Mapbox GL dark maps |
-| Backend | Supabase (Postgres + Realtime + Edge Functions) |
-| Payments | Airwallex (payment intents + courier payouts + KYC) |
-| Auth | Supabase OTP (passwordless email) |
-| Hosting | Vercel (auto-deploy from this repo) |
+| `003_courier_waitlist.sql` | Supabase SQL Editor (one-time paste) |
+| `send-courier-welcome.ts` | Supabase Edge Function (`supabase functions deploy`) |
+| `cashflow-ios.zip` | Your local machine → EAS Build → App Store |
 
----
+## Spot-check before committing
 
-## Repo contents
+If you want belt-and-braces: open each file locally first by double-clicking.
 
-| File | Purpose |
-|---|---|
-| `index.html` | The live app (currently v6.7) |
-| `PROJECT-INDEX.md` | Full project documentation — schema, Edge Functions, brand, deploy runbook |
-| `README.md` | This file |
+- `public/index.html` should load with dark background and show the login screen
+- `public/couriers.html` should load with dark background, amber "Deliver cash" hero, and a sign-up form on the right
 
-For database migrations, Edge Functions, and deployment instructions, see `PROJECT-INDEX.md`.
-
----
-
-## Company
-
-**Azure IM Ltd** · London, UK
-Olivier Schwend — Founder & CEO
-
-Seeking £15M seed to launch in London and scale across the UK → Europe → APAC.
-
----
-
-© 2026 CashFlow · Azure IM Ltd
+If either looks wrong (e.g. white background), do a hard refresh (Cmd+Shift+R / Ctrl+Shift+R) — browser cache bug, not a file issue.
