@@ -1,0 +1,156 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>CashFlow — Earnings (v8)</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--ink:#050A12;--ink-raised:#0A111E;--paper:#F2EDD7;--paper-dim:#D6CDA8;--em:#00E8B8;--am:#FFB800;--em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);--line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.28);--text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;--f-display:'Instrument Serif',serif;--f-body:'Outfit',system-ui,sans-serif;--f-mono:'IBM Plex Mono',Menlo,monospace}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}body{overflow-x:hidden;position:relative}body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201;flex-wrap:wrap;justify-content:flex-end;max-width:60%}.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}.sample-nav a.on{background:var(--em)}.sec-head{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);font-weight:600;margin:26px 0 10px}.sec-head::before{content:'§';font-family:var(--f-display);font-size:15px;color:var(--em);font-style:italic;font-weight:400;line-height:1}.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}.sec-head .tag{font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase}
+main{padding:64px 20px 100px;position:relative;z-index:2;max-width:520px;margin:0 auto}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding:0 2px}
+.wordmark{font-family:var(--f-display);font-size:22px;letter-spacing:-.02em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+.live-pill{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--em);display:flex;align-items:center;gap:8px;font-weight:600;padding:6px 10px;border:1px solid var(--line-em);border-radius:2px;background:var(--em-wash)}
+.live-pill .dot{width:6px;height:6px;border-radius:50%;background:var(--em);box-shadow:0 0 8px var(--em);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero{padding:28px 20px;border:1px solid var(--line-em);border-radius:2px;background:linear-gradient(180deg,rgba(0,232,184,.04) 0%,transparent 100%);position:relative;margin-bottom:8px}
+.hero::before,.hero::after{content:'';position:absolute;width:20px;height:20px;border:1px solid var(--em)}
+.hero::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.hero::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.hero-eyebrow{font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--em);margin-bottom:4px;font-weight:600}
+.hero-v{font-family:var(--f-display);font-size:clamp(68px,18vw,92px);line-height:.95;color:var(--paper);letter-spacing:-.04em;font-weight:400;position:relative;display:inline-block;padding-bottom:6px}
+.hero-v::after{content:'';position:absolute;left:0;right:20%;bottom:0;height:1px;background:var(--em)}
+.hero-v .c{font-size:.42em;color:var(--mute);position:relative;top:-.55em;margin-right:.04em;font-style:normal;letter-spacing:0}
+.hero-delta{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--em);margin-top:6px;font-weight:500}
+.hero-delta em{font-family:var(--f-display);font-style:italic;font-size:14px;letter-spacing:-.01em;margin-right:2px}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.stat{padding:12px 8px;text-align:center;background:var(--ink)}
+.stat-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:4px;font-weight:500}
+.stat-v{font-family:var(--f-display);font-size:22px;color:var(--paper);letter-spacing:-.01em;line-height:1;font-weight:400}
+.stat-v em{font-style:italic;color:var(--em)}
+.heatmap{display:grid;grid-template-columns:auto repeat(7,1fr);gap:2px;font-family:var(--f-mono)}
+.hm-corner{font-size:9px;color:var(--faint);text-align:right;padding:2px 4px}
+.hm-day{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--mute);text-align:center;padding:4px 0;font-weight:500}
+.hm-hour{font-size:8px;color:var(--faint);text-align:right;padding:4px;font-weight:500}
+.hm-cell{aspect-ratio:1;background:rgba(242,237,215,.025);border-radius:1px;transition:transform .15s}
+.hm-cell:hover{transform:scale(1.2);outline:1px solid var(--em)}
+.hm-cell.l1{background:rgba(0,232,184,.08)}
+.hm-cell.l2{background:rgba(0,232,184,.18)}
+.hm-cell.l3{background:rgba(0,232,184,.35)}
+.hm-cell.l4{background:rgba(0,232,184,.6)}
+.hm-cell.l5{background:var(--em)}
+.legend{display:flex;align-items:center;gap:8px;justify-content:flex-end;margin-top:10px;font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.legend-scale{display:flex;gap:2px}
+.legend-scale span{width:14px;height:14px;border-radius:1px}
+.float-card{padding:18px 20px;border:1px solid var(--line-em);border-radius:2px;background:rgba(0,232,184,.04);margin-bottom:8px;position:relative}
+.float-row{display:flex;justify-content:space-between;align-items:flex-end}
+.float-left{flex:1}
+.float-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--em);font-weight:600;margin-bottom:4px}
+.float-v{font-family:var(--f-display);font-size:46px;line-height:.95;color:var(--paper);letter-spacing:-.03em;font-weight:400;margin-bottom:2px}
+.float-v .c{font-size:.42em;color:var(--mute);position:relative;top:-.55em;margin-right:.04em;font-style:normal;letter-spacing:0}
+.float-sub{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;color:var(--paper-dim);font-weight:400}
+.adjust-btn{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--em);background:rgba(5,10,18,.5);border:1px solid var(--line-em);padding:8px 14px;border-radius:2px;cursor:pointer;font-weight:600;transition:all .2s}
+.adjust-btn:hover{background:var(--em);color:var(--ink)}
+.float-progress{margin-top:14px}
+.float-bar{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.float-bar-fill{height:100%;width:50%;background:linear-gradient(90deg,var(--em),rgba(0,232,184,.6));border-radius:2px;animation:grow 1.2s cubic-bezier(.2,.8,.2,1) both}
+@keyframes grow{from{width:0}to{width:50%}}
+.float-markers{display:flex;justify-content:space-between;margin-top:5px;font-family:var(--f-mono);font-size:9px;color:var(--faint);letter-spacing:.08em;font-weight:500}
+.deliv-row{display:flex;align-items:center;gap:12px;padding:12px 2px;border-bottom:1px solid var(--line)}
+.deliv-row:last-child{border-bottom:none}
+.deliv-time{font-family:var(--f-mono);font-size:11px;color:var(--mute);width:56px;flex-shrink:0;letter-spacing:.04em;font-weight:500}
+.deliv-avatar{width:32px;height:32px;border-radius:50%;background:rgba(0,232,184,.08);border:1px solid var(--line-em);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:16px;color:var(--em);font-style:italic;flex-shrink:0}
+.deliv-info{flex:1;min-width:0}
+.deliv-amt{font-family:var(--f-display);font-size:15px;color:var(--paper);letter-spacing:-.01em;font-weight:400;line-height:1.2}
+.deliv-dur{font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;color:var(--mute);font-weight:400}
+.deliv-earn{font-family:var(--f-display);font-size:18px;color:var(--em);font-style:italic;letter-spacing:-.01em;font-weight:400;flex-shrink:0}
+.cta-online{position:fixed;bottom:0;left:0;right:0;padding:16px 20px 28px;background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line-strong);z-index:100}
+.cta-online::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5}
+.go-cta{width:100%;max-width:520px;margin:0 auto;display:flex;padding:18px;background:var(--em);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;border:none;border-radius:2px;cursor:pointer;transition:all .2s;justify-content:space-between;align-items:center}
+.go-cta:hover{filter:brightness(1.08)}
+.go-cta .dot{width:8px;height:8px;border-radius:50%;background:var(--ink);margin-right:8px;animation:pulse 1.5s ease-in-out infinite}
+.go-cta .arr{font-family:var(--f-mono);font-weight:400}
+</style></head><body>
+<div class="banner">— v8 Editorial · Earnings —</div>
+<div class="sample-nav"><a href="/sample-home.html">Home</a><a href="/sample-offers.html">Offers</a><a href="/sample-track.html">Track</a><a href="/sample-earnings.html" class="on">Earn</a><a href="/sample-profile.html">Profile</a><a href="/">Live →</a></div>
+
+<main>
+  <div class="topbar">
+    <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+    <div class="live-pill"><span class="dot"></span>Offline</div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-eyebrow">This Week · Mon–Sun</div>
+    <div class="hero-v"><span class="c">£</span>284<span style="font-family:var(--f-mono);font-size:.35em;color:var(--mute);letter-spacing:0;position:relative;top:-.85em">.50</span></div>
+    <div class="hero-delta"><em>+18%</em> vs. last week</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Deliveries</div><div class="stat-v">12</div></div>
+    <div class="stat"><div class="stat-l">Hours</div><div class="stat-v">8.2</div></div>
+    <div class="stat"><div class="stat-l">Avg</div><div class="stat-v"><em>£</em>23.70</div></div>
+  </div>
+
+  <div class="sec-head">Activity Heatmap <span class="tag">· Last 7 days</span></div>
+  <div class="heatmap" id="hm">
+    <div class="hm-corner"></div>
+    <div class="hm-day">M</div><div class="hm-day">T</div><div class="hm-day">W</div><div class="hm-day">T</div><div class="hm-day">F</div><div class="hm-day">S</div><div class="hm-day">S</div>
+  </div>
+  <div class="legend"><span>Less</span><div class="legend-scale"><span style="background:rgba(242,237,215,.025)"></span><span class="l1" style="background:rgba(0,232,184,.08)"></span><span class="l2" style="background:rgba(0,232,184,.18)"></span><span class="l3" style="background:rgba(0,232,184,.35)"></span><span class="l4" style="background:rgba(0,232,184,.6)"></span><span class="l5" style="background:var(--em)"></span></div><span>More</span></div>
+
+  <div class="sec-head">Cash Float <span class="tag">· On-hand</span></div>
+  <div class="float-card">
+    <div class="float-row">
+      <div class="float-left">
+        <div class="float-l">Available for instant</div>
+        <div class="float-v"><span class="c">£</span>500</div>
+        <div class="float-sub">Earn ⚡ Instant badge up to £500</div>
+      </div>
+      <button class="adjust-btn">Adjust</button>
+    </div>
+    <div class="float-progress">
+      <div class="float-bar"><div class="float-bar-fill"></div></div>
+      <div class="float-markers"><span>£0</span><span>£500 · 50%</span><span>£1,000</span></div>
+    </div>
+  </div>
+
+  <div class="sec-head">Recent Deliveries <span class="tag">· Today</span></div>
+  <div class="deliv-row"><div class="deliv-time">22:47</div><div class="deliv-avatar">O</div><div class="deliv-info"><div class="deliv-amt">£100.00 · Shoreditch</div><div class="deliv-dur">14 min · 1.2 km</div></div><div class="deliv-earn">+£19</div></div>
+  <div class="deliv-row"><div class="deliv-time">20:15</div><div class="deliv-avatar">S</div><div class="deliv-info"><div class="deliv-amt">£60.00 · Aldgate</div><div class="deliv-dur">9 min · 0.8 km</div></div><div class="deliv-earn">+£11</div></div>
+  <div class="deliv-row"><div class="deliv-time">18:32</div><div class="deliv-avatar">R</div><div class="deliv-info"><div class="deliv-amt">£250.00 · Spitalfields</div><div class="deliv-dur">22 min · 2.4 km</div></div><div class="deliv-earn">+£42</div></div>
+  <div class="deliv-row"><div class="deliv-time">15:48</div><div class="deliv-avatar">K</div><div class="deliv-info"><div class="deliv-amt">£80.00 · Liverpool Street</div><div class="deliv-dur">11 min · 1.1 km</div></div><div class="deliv-earn">+£14</div></div>
+  <div class="deliv-row"><div class="deliv-time">13:22</div><div class="deliv-avatar">A</div><div class="deliv-info"><div class="deliv-amt">£40.00 · Brick Lane</div><div class="deliv-dur">6 min · 0.5 km</div></div><div class="deliv-earn">+£7</div></div>
+</main>
+
+<div class="cta-online">
+  <button class="go-cta" onclick="location.href='/sample-home.html'">
+    <span><span class="dot" style="display:inline-block;vertical-align:middle"></span>Go Online <span class="arr">→</span></span>
+    <span style="font-family:var(--f-display);font-style:italic;font-size:17px">14 couriers active</span>
+  </button>
+</div>
+
+<script>
+(function(){
+  const hm = document.getElementById('hm');
+  // 7 days × 8 hour blocks (8am-midnight in 2h slots visualized as 24 cells per day)
+  const days = ['M','T','W','T','F','S','S'];
+  const rows = 12; // 12 hour blocks (8am to 8pm in 2h blocks? actually 12 cells per column)
+  // Generate a 12-row × 7-col grid that shows activity intensity
+  const patterns = [
+    [0,0,1,2,3,4,3,2,1,0,0,0], // Mon
+    [0,1,2,3,4,4,3,2,1,1,0,0], // Tue
+    [1,1,2,3,3,4,5,4,3,2,1,0], // Wed
+    [0,0,1,2,3,3,4,3,2,1,0,0], // Thu
+    [1,2,3,4,5,5,5,4,3,2,1,0], // Fri (busy)
+    [2,3,4,5,5,4,3,3,2,1,0,0], // Sat (busy)
+    [1,2,3,4,3,2,2,1,1,0,0,0], // Sun
+  ];
+  for(let r=0;r<rows;r++){
+    const hour = 8 + r;
+    const h12 = hour > 12 ? hour - 12 : hour;
+    hm.appendChild(Object.assign(document.createElement('div'),{className:'hm-hour',textContent:h12+(hour>=12?'p':'a')}));
+    for(let d=0;d<7;d++){
+      const level = patterns[d][r] || 0;
+      const cell = document.createElement('div');
+      cell.className = 'hm-cell' + (level > 0 ? ' l' + level : '');
+      hm.appendChild(cell);
+    }
+  }
+})();
+</script>
+</body></html>
