@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>CashFlow — Choose Courier (v8)</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--ink:#050A12;--ink-raised:#0A111E;--paper:#F2EDD7;--paper-dim:#D6CDA8;--em:#00E8B8;--am:#FFB800;--em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);--line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.28);--text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;--f-display:'Instrument Serif',serif;--f-body:'Outfit',system-ui,sans-serif;--f-mono:'IBM Plex Mono',Menlo,monospace}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}body{overflow-x:hidden;position:relative}body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201;flex-wrap:wrap;justify-content:flex-end}.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}.sample-nav a.on{background:var(--em)}.wordmark{font-family:var(--f-display);font-size:24px;letter-spacing:-.02em;line-height:1}.wordmark .c{color:var(--text)}.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}.sec-head{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);font-weight:600;margin:22px 0 10px}.sec-head::before{content:'§';font-family:var(--f-display);font-size:15px;color:var(--em);font-style:italic;font-weight:400;line-height:1}.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}.sec-head .tag{font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase}@keyframes reveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.topbar{padding:64px 20px 12px;display:flex;justify-content:space-between;align-items:center;gap:12px;position:relative;z-index:2}
+.back{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper);background:rgba(5,10,18,.7);border:1px solid var(--line-strong);padding:8px 12px;border-radius:2px;text-decoration:none;font-weight:500}
+.title-bar{text-align:center;flex:1}
+.title-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);font-weight:500;margin-bottom:2px}
+.title-v{font-family:var(--f-display);font-size:22px;line-height:1;color:var(--paper);letter-spacing:-.02em;font-weight:400}
+.title-v em{font-style:italic;color:var(--em)}
+.amt-pill{font-family:var(--f-display);font-size:22px;color:var(--em);font-style:italic;letter-spacing:-.01em;padding:4px 0;font-weight:400;min-width:70px;text-align:right}
+main{padding:0 20px 140px;position:relative;z-index:2;max-width:520px;margin:0 auto}
+.sort-tabs{display:flex;gap:4px;padding:8px 0 4px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.sort-tab{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);background:none;border:none;padding:10px 14px;cursor:pointer;font-weight:600;position:relative;transition:color .2s}
+.sort-tab.on{color:var(--em)}
+.sort-tab.on::after{content:'';position:absolute;left:14px;right:14px;bottom:-1px;height:1px;background:var(--em)}
+.sort-tab:not(.on):hover{color:var(--paper-dim)}
+.offer-card{display:grid;grid-template-columns:auto 1fr auto;gap:16px;padding:18px 16px;border:1px solid var(--line);border-radius:2px;cursor:pointer;transition:all .2s;margin-bottom:8px;align-items:center;position:relative;animation:reveal .5s cubic-bezier(.2,.8,.2,1) both}
+.offer-card:nth-child(1){animation-delay:.05s}.offer-card:nth-child(2){animation-delay:.12s}.offer-card:nth-child(3){animation-delay:.19s}.offer-card:nth-child(4){animation-delay:.26s}
+.offer-card:hover{border-color:var(--line-strong)}
+.offer-card.on{border-color:var(--em);background:var(--em-wash)}
+.offer-card.on::before{content:'';position:absolute;left:-1px;top:-1px;bottom:-1px;width:3px;background:var(--em);border-radius:2px 0 0 2px}
+.avatar{width:52px;height:52px;border-radius:50%;background:rgba(0,232,184,.08);border:1px solid var(--line-em);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:22px;color:var(--em);font-style:italic;font-weight:400}
+.avatar-stars{text-align:center;font-family:var(--f-mono);font-size:9px;letter-spacing:.06em;color:var(--em);margin-top:5px;font-weight:500}
+.info-main{display:flex;flex-direction:column;gap:4px;min-width:0}
+.c-name{font-family:var(--f-display);font-size:20px;color:var(--paper);letter-spacing:-.01em;line-height:1.1;font-weight:400}
+.c-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);font-weight:400;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.c-meta .dot{color:var(--faint)}
+.c-tags{display:flex;gap:6px;margin-top:4px}
+.tag-instant{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--em);background:var(--em-wash);border:1px solid var(--line-em);padding:3px 7px;border-radius:2px;font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.tag-eco{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim);background:rgba(242,237,215,.04);border:1px solid var(--line);padding:3px 7px;border-radius:2px;font-weight:500}
+.price{text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;min-width:70px}
+.p-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.p-v{font-family:var(--f-display);font-size:24px;color:var(--paper);letter-spacing:-.02em;line-height:1;font-weight:400}
+.offer-card.on .p-v{color:var(--em)}
+.p-sub{font-family:var(--f-mono);font-size:9px;color:var(--faint);letter-spacing:.08em;font-weight:500}
+.confirm-bar{position:fixed;bottom:0;left:0;right:0;padding:16px 20px 28px;background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line-strong);z-index:100}
+.confirm-bar::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5}
+.cta{width:100%;padding:18px;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;border:none;border-radius:2px;cursor:pointer;transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;max-width:520px;margin:0 auto;text-align:left}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.cta:hover::before{transform:translateX(0)}
+.cta span{position:relative;z-index:2;display:flex;align-items:center;gap:8px}
+.cta em{font-family:var(--f-display);font-style:italic;font-size:16px}
+.cta-total{font-family:var(--f-display);font-size:20px;font-style:italic;color:inherit;position:relative;z-index:2}
+</style></head><body>
+<div class="banner">— v8 Editorial · Choose Courier —</div>
+<div class="sample-nav"><a href="/sample-signin.html">Sign-in</a><a href="/sample-otp.html">OTP</a><a href="/sample-home.html">Home</a><a href="/sample-offers.html" class="on">Offers</a><a href="/sample-track.html">Track</a><a href="/sample-receipt.html">Receipt</a><a href="/">Live →</a></div>
+
+<header class="topbar">
+  <a href="/sample-home.html" class="back">← Home</a>
+  <div class="title-bar">
+    <div class="title-l">Choose a courier</div>
+    <div class="title-v">4 nearby</div>
+  </div>
+  <div class="amt-pill">£100</div>
+</header>
+
+<main>
+  <div class="sort-tabs">
+    <button class="sort-tab on">Fastest</button>
+    <button class="sort-tab">Cheapest</button>
+    <button class="sort-tab">Top rated</button>
+    <button class="sort-tab">Nearest</button>
+  </div>
+
+  <div class="offer-card on" onclick="sel(this,'Marcus',108)">
+    <div><div class="avatar">M</div><div class="avatar-stars">★ 4.92</div></div>
+    <div class="info-main">
+      <div class="c-name">Marcus T.</div>
+      <div class="c-meta">Honda PCX<span class="dot">·</span>1.2km<span class="dot">·</span>4 min ETA</div>
+      <div class="c-tags"><span class="tag-instant">⚡ Instant</span></div>
+    </div>
+    <div class="price"><div class="p-l">Courier Fee</div><div class="p-v">£8</div><div class="p-sub">14% · 147 trips</div></div>
+  </div>
+
+  <div class="offer-card" onclick="sel(this,'Alex',106.50)">
+    <div><div class="avatar">A</div><div class="avatar-stars">★ 4.88</div></div>
+    <div class="info-main">
+      <div class="c-name">Alex R.</div>
+      <div class="c-meta">E-bike<span class="dot">·</span>1.8km<span class="dot">·</span>7 min ETA</div>
+      <div class="c-tags"><span class="tag-eco">Eco</span></div>
+    </div>
+    <div class="price"><div class="p-l">Courier Fee</div><div class="p-v">£6.50</div><div class="p-sub">10% · 89 trips</div></div>
+  </div>
+
+  <div class="offer-card" onclick="sel(this,'Priya',109)">
+    <div><div class="avatar">P</div><div class="avatar-stars">★ 4.97</div></div>
+    <div class="info-main">
+      <div class="c-name">Priya K.</div>
+      <div class="c-meta">Honda Click<span class="dot">·</span>2.1km<span class="dot">·</span>8 min ETA</div>
+      <div class="c-tags"><span class="tag-instant">⚡ Instant</span></div>
+    </div>
+    <div class="price"><div class="p-l">Courier Fee</div><div class="p-v">£9</div><div class="p-sub">18% · 312 trips</div></div>
+  </div>
+
+  <div class="offer-card" onclick="sel(this,'James',105)">
+    <div><div class="avatar">J</div><div class="avatar-stars">★ 4.76</div></div>
+    <div class="info-main">
+      <div class="c-name">James W.</div>
+      <div class="c-meta">Walking<span class="dot">·</span>0.4km<span class="dot">·</span>14 min ETA</div>
+      <div class="c-tags"><span class="tag-eco">Eco</span></div>
+    </div>
+    <div class="price"><div class="p-l">Courier Fee</div><div class="p-v">£5</div><div class="p-sub">5% · 43 trips</div></div>
+  </div>
+</main>
+
+<div class="confirm-bar">
+  <button class="cta" onclick="location.href='/sample-track.html'">
+    <span>Confirm with <em id="ctaName">Marcus</em> <span style="font-family:var(--f-mono);font-weight:400">→</span></span>
+    <span class="cta-total" id="ctaTotal">£108.00</span>
+  </button>
+</div>
+
+<script>
+function sel(el,name,total){
+  document.querySelectorAll('.offer-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('ctaName').textContent=name;
+  document.getElementById('ctaTotal').textContent='£'+total.toFixed(2);
+}
+</script>
+</body></html>
