@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>CashFlow — Sign in (v8 preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#050A12;--paper:#F2EDD7;--paper-dim:#D6CDA8;--em:#00E8B8;--line:rgba(242,237,215,.14);--line-strong:rgba(242,237,215,.28);--text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;--f-display:'Instrument Serif','Times New Roman',serif;--f-body:'Outfit',system-ui,sans-serif;--f-mono:'IBM Plex Mono','SF Mono',Menlo,monospace}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden;position:relative;display:flex;flex-direction:column}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.55;mix-blend-mode:overlay}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 40%,transparent 50%,rgba(0,0,0,.35) 100%)}
+.masthead{display:flex;justify-content:space-between;align-items:center;padding:24px 28px;position:relative;z-index:2}
+.wordmark{font-family:var(--f-display);font-size:30px;letter-spacing:-.02em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+.mh-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:8px}
+.mh-dot{width:5px;height:5px;border-radius:50%;background:var(--em);box-shadow:0 0 6px var(--em);animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+main{flex:1;padding:60px 32px 40px;position:relative;z-index:2;display:flex;flex-direction:column;max-width:480px;margin:0 auto;width:100%}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:14px;margin-bottom:28px;font-weight:400}
+.eyebrow::before{content:'';width:32px;height:1px;background:var(--paper-dim)}
+h1.title{font-family:var(--f-display);font-size:clamp(64px,16vw,96px);line-height:.95;letter-spacing:-.035em;color:var(--text);margin-bottom:28px;font-weight:400;animation:reveal .9s cubic-bezier(.2,.8,.2,1) both}
+h1.title em{font-style:italic;color:var(--em);letter-spacing:-.045em}
+@keyframes reveal{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.lede{font-size:17px;line-height:1.55;color:var(--mute);max-width:360px;margin-bottom:56px;font-weight:300;animation:reveal .9s .2s cubic-bezier(.2,.8,.2,1) both}
+.lede em{color:var(--paper);font-style:italic;font-family:var(--f-display);font-size:20px;letter-spacing:-.01em}
+.field{animation:reveal .9s .4s cubic-bezier(.2,.8,.2,1) both}
+.f-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;display:block;font-weight:500}
+.f-input{width:100%;padding:16px 0 14px;background:transparent;border:none;border-bottom:1px solid var(--line-strong);color:var(--paper);font-family:var(--f-body);font-size:19px;font-weight:400;outline:none;transition:border-color .25s,color .25s;letter-spacing:-.01em}
+.f-input::placeholder{color:var(--faint);font-weight:300}
+.f-input:focus{border-bottom-color:var(--em)}
+.cta{width:100%;margin-top:40px;padding:20px;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;border:1px solid var(--paper);border-radius:2px;cursor:pointer;transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;animation:reveal .9s .55s cubic-bezier(.2,.8,.2,1) both}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.cta:hover::before{transform:translateX(0)}
+.cta span{position:relative;z-index:2}
+.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;transition:transform .3s;display:inline-block}
+.cta:hover .arr{transform:translateX(4px)}
+.or-row{display:flex;align-items:center;gap:16px;margin:36px 0 28px;animation:reveal .9s .7s cubic-bezier(.2,.8,.2,1) both}
+.or-row::before,.or-row::after{content:'';flex:1;height:1px;background:var(--line)}
+.or-row span{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+.demo-link{text-align:center;font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);text-decoration:none;display:inline-block;width:100%;padding:4px;transition:color .25s,letter-spacing .3s;cursor:pointer;border:none;background:none;animation:reveal .9s .85s cubic-bezier(.2,.8,.2,1) both}
+.demo-link:hover{color:var(--em);letter-spacing:.2em}
+.demo-link em{font-family:var(--f-display);color:var(--em);font-style:italic;margin-right:2px;text-transform:none;letter-spacing:-.02em;font-size:14px}
+.fine{margin-top:12px;text-align:center;font-size:12px;color:var(--faint);font-weight:300;max-width:300px;margin-left:auto;margin-right:auto;line-height:1.5;animation:reveal .9s 1s cubic-bezier(.2,.8,.2,1) both}
+footer{padding:24px 28px 32px;border-top:1px solid var(--line);position:relative;z-index:2;margin-top:auto}
+.foot-row{display:flex;justify-content:space-between;align-items:center;gap:16px;max-width:480px;margin:0 auto}
+.foot-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);line-height:1.5}
+.foot-l strong{color:var(--paper-dim);font-weight:400}
+.foot-r{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;color:var(--faint)}
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:8px 16px;z-index:100}
+a.back{position:fixed;top:40px;right:16px;font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:6px 12px;border-radius:2px;text-decoration:none;z-index:101}
+</style>
+</head>
+<body>
+<div class="banner">— Preview · v8 Editorial Sign-in · Not Live Yet —</div>
+<a class="back" href="/">Live app →</a>
+<header class="masthead" style="margin-top:32px">
+  <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+  <div class="mh-meta"><span class="mh-dot"></span> Waitlist Mode</div>
+</header>
+<main>
+  <div class="eyebrow">New Account · London</div>
+  <h1 class="title">Sign <em>in</em>.</h1>
+  <p class="lede">
+    Welcome to <em>CashFlow</em>. Enter your email and we'll send you an 8-digit verification code.
+  </p>
+  <div class="field">
+    <label class="f-label" for="em">Email Address</label>
+    <input id="em" class="f-input" type="email" placeholder="alex@gmail.com" autocomplete="email">
+  </div>
+  <button class="cta" onclick="document.querySelector('.cta span').innerHTML='Code sent ✓ (mockup)'">
+    <span>Continue <span class="arr">→</span></span>
+  </button>
+  <div class="or-row"><span>Or</span></div>
+  <button class="demo-link" onclick="location.href='/'">
+    <em>Explore</em> the demo →
+  </button>
+  <div class="fine">Preview the full experience · No sign-up required</div>
+</main>
+<footer>
+  <div class="foot-row">
+    <div class="foot-l"><strong>Azure IM Ltd</strong><br>London · Spring 2026</div>
+    <div class="foot-r">No. 001</div>
+  </div>
+</footer>
+</body>
+</html>
