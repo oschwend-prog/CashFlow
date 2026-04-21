@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>CashFlow — Home (v8.4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+<style>
+:root{
+  --ink:#050A12;--ink-raised:#0A111E;
+  --paper:#F2EDD7;--paper-dim:#D6CDA8;
+  --em:#00E8B8;--em-wash:rgba(0,232,184,.08);
+  --am:#FFB800;--am-wash:rgba(255,184,0,.08);
+  --line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);
+  --line-em:rgba(0,232,184,.22);--line-am:rgba(255,184,0,.22);
+  --text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;
+  --f-display:'Instrument Serif','Times New Roman',serif;
+  --f-body:'Outfit',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
+body{position:relative}
+
+/* Editorial: film grain + vignette on map */
+#map{position:fixed;inset:0;z-index:0;background:#050A12}
+#map::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 35%,transparent 20%,rgba(5,10,18,.55) 70%),
+    linear-gradient(180deg,rgba(5,10,18,.8) 0%,transparent 20%,transparent 50%,rgba(5,10,18,.4) 72%,rgba(5,10,18,.97) 88%,var(--ink) 100%)}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}
+
+/* Sample nav */
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}
+.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201}
+.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}
+.sample-nav a.on{background:var(--em)}
+
+/* ── TOP BAR — wordmark left, supply toggle right ── */
+.topbar{
+  position:fixed;top:32px;left:0;right:0;z-index:50;
+  padding:18px 20px;display:flex;justify-content:space-between;align-items:center;
+  gap:12px;pointer-events:none;
+}
+.topbar > *{pointer-events:auto}
+.wordmark{font-family:var(--f-display);font-size:26px;letter-spacing:-.02em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+
+/* Toggle — editorial-styled, glass + hairline frame */
+.supply-toggle{
+  display:flex;gap:0;
+  background:rgba(5,10,18,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line);border-radius:2px;overflow:hidden;
+}
+.supply-btn{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+  padding:9px 11px;color:var(--mute);background:transparent;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:color .15s,background .15s;
+  border-right:1px solid var(--line);
+}
+.supply-btn:last-child{border-right:none}
+.supply-btn .n{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.04em;opacity:.9}
+.supply-btn.on[data-t="cour"]{color:var(--em);background:var(--em-wash)}
+.supply-btn.on[data-t="cp"]{color:var(--am);background:var(--am-wash)}
+.supply-btn:not(.on):hover{color:var(--paper-dim)}
+
+/* ── FLOATING SPECIMEN (editorial kept) ── */
+.specimen{
+  position:fixed;top:100px;left:20px;z-index:40;
+  background:rgba(5,10,18,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border:1px solid var(--line-em);border-radius:2px;
+  padding:8px 12px;display:flex;align-items:center;gap:8px;
+  animation:fadeSlide .8s .3s cubic-bezier(.2,.8,.2,1) both;
+  transition:border-color .25s;
+}
+body.cp-mode .specimen{border-color:var(--line-am)}
+@keyframes fadeSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.spec-dot{width:5px;height:5px;border-radius:50%;background:var(--em);box-shadow:0 0 6px var(--em);animation:pulse 2s ease-in-out infinite;transition:background .25s,box-shadow .25s}
+body.cp-mode .spec-dot{background:var(--am);box-shadow:0 0 6px var(--am)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.spec-t{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);font-weight:500}
+.spec-t b{color:var(--em);font-weight:600;transition:color .25s}
+body.cp-mode .spec-t b{color:var(--am)}
+
+/* ── USER PIN ── */
+.you-marker{position:fixed;top:32%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none}
+.you-marker .ring{position:absolute;top:50%;left:50%;width:72px;height:72px;margin:-36px 0 0 -36px;border:1px solid var(--em);border-radius:50%;opacity:.4;animation:ringPulse 3s ease-in-out infinite;transition:border-color .25s}
+.you-marker .ring.ring-2{animation-delay:1.2s}
+body.cp-mode .you-marker .ring{border-color:var(--am)}
+@keyframes ringPulse{0%,100%{transform:scale(.8);opacity:.6}50%{transform:scale(1.2);opacity:.15}}
+.you-marker .dot{position:relative;width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 16px rgba(0,232,184,.6);transition:background .25s,box-shadow .25s}
+body.cp-mode .you-marker .dot{background:var(--am);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 16px rgba(255,184,0,.6)}
+
+/* ── BOTTOM SHEET — COMPRESSED ── */
+.sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:45;
+  background:linear-gradient(180deg,rgba(10,17,30,.4) 0%,rgba(5,10,18,.97) 8%,rgba(5,10,18,.98) 100%);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line-strong);
+  padding:0 20px 78px;
+  animation:slideUp .7s .1s cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
+.sheet::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5;transition:background .25s}
+body.cp-mode .sheet::before{background:linear-gradient(90deg,transparent,var(--am),transparent)}
+
+/* Mode row — compressed */
+.mode-row{
+  display:flex;padding:14px 0 12px;border-bottom:1px solid var(--line);
+  justify-content:space-between;align-items:center;gap:14px;
+}
+.mode-tabs{display:flex;gap:22px}
+.mode-tab{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+  padding:4px 0;color:var(--faint);position:relative;cursor:pointer;transition:color .15s;background:none;border:none;
+}
+.mode-tab.on{color:var(--em);transition:color .25s}
+body.cp-mode .mode-tab.on{color:var(--am)}
+.mode-tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--em);transition:background .25s}
+body.cp-mode .mode-tab.on::after{background:var(--am)}
+.mode-loc{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:6px}
+.mode-loc::before{content:'◉';color:var(--em);font-size:11px;transition:color .25s}
+body.cp-mode .mode-loc::before{color:var(--am)}
+
+/* ── AMOUNT — COMPRESSED. Label + tombstone on ONE LINE ── */
+.amt-row{
+  display:flex;align-items:baseline;justify-content:space-between;gap:16px;
+  padding:18px 0 8px;
+}
+.amt-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);font-weight:500;flex-shrink:0}
+.amt-v{
+  font-family:var(--f-display);font-size:clamp(52px,13vw,72px);line-height:1;
+  color:var(--paper);letter-spacing:-.035em;font-weight:400;
+  position:relative;padding-bottom:4px;
+}
+.amt-v::after{content:'';position:absolute;right:0;bottom:0;width:72px;height:1px;background:var(--em);transition:background .25s}
+body.cp-mode .amt-v::after{background:var(--am)}
+.amt-v .c{font-size:.5em;color:var(--mute);letter-spacing:0;position:relative;top:-.45em;margin-right:.04em;font-style:normal}
+
+/* Presets — editorial (hairline borders kept), compressed padding */
+.presets{display:flex;gap:6px;padding:14px 0 18px;overflow-x:auto;scrollbar-width:none}
+.presets::-webkit-scrollbar{display:none}
+.preset{
+  flex-shrink:0;padding:8px 14px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;
+  color:var(--paper-dim);background:transparent;border:1px solid var(--line);border-radius:2px;cursor:pointer;
+  font-weight:500;transition:all .15s;
+}
+.preset:hover{border-color:var(--line-strong);color:var(--paper)}
+.preset.on{border-color:var(--em);color:var(--em);background:var(--em-wash)}
+body.cp-mode .preset.on{border-color:var(--am);color:var(--am);background:var(--am-wash)}
+
+/* Address row — compressed */
+.addr-row{
+  display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);margin-bottom:18px;cursor:pointer;
+}
+.addr-icon{
+  width:26px;height:26px;border-radius:50%;border:1px solid var(--line-em);background:var(--em-wash);
+  display:flex;align-items:center;justify-content:center;color:var(--em);font-size:11px;flex-shrink:0;
+  transition:border-color .25s,background .25s,color .25s;
+}
+body.cp-mode .addr-icon{border-color:var(--line-am);background:var(--am-wash);color:var(--am)}
+.addr-text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.addr-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
+.addr-v{font-family:var(--f-display);font-size:17px;color:var(--paper);letter-spacing:-.01em;font-weight:400;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px}
+
+/* CTA */
+.cta{
+  width:100%;padding:18px;background:var(--paper);color:var(--ink);
+  font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  border:1px solid var(--paper);border-radius:2px;cursor:pointer;
+  transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;
+}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+body.cp-mode .cta::before{background:var(--am)}
+.cta:hover::before{transform:translateX(0)}
+.cta span{position:relative;z-index:2}
+.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;transition:transform .3s;display:inline-block}
+.cta:hover .arr{transform:translateX(4px)}
+.cta em{font-family:var(--f-display);font-style:italic;color:inherit;letter-spacing:-.02em}
+
+/* Tabs */
+.tabs{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(5,10,18,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--line);
+  padding:12px 0 22px;display:flex;justify-content:space-around;
+}
+.tab-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;
+  font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;
+  padding:6px 10px;transition:color .15s;position:relative;
+}
+.tab-item.on{color:var(--em);transition:color .25s}
+body.cp-mode .tab-item.on{color:var(--am)}
+.tab-item.on::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:14px;height:1px;background:var(--em);transition:background .25s}
+body.cp-mode .tab-item.on::before{background:var(--am)}
+</style>
+</head>
+<body>
+
+<div class="banner">— v8.4 · Editorial + Compressed —</div>
+<div class="sample-nav">
+  <a href="/sample-home.html">Ed v1</a>
+  <a href="/sample-home-v3.html">Min v3</a>
+  <a href="/sample-home-v4.html" class="on">v4</a>
+  <a href="/">Live →</a>
+</div>
+
+<div id="map"></div>
+
+<div class="you-marker" id="youMarker">
+  <div class="ring"></div>
+  <div class="ring ring-2"></div>
+  <div class="dot"></div>
+</div>
+
+<header class="topbar">
+  <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+  <div class="supply-toggle">
+    <button class="supply-btn on" data-t="cour" onclick="setSupply('cour')">Couriers <span class="n">14</span></button>
+    <button class="supply-btn" data-t="cp" onclick="setSupply('cp')">CashPoints <span class="n">7</span></button>
+  </div>
+</header>
+
+<div class="specimen">
+  <div class="spec-dot"></div>
+  <div class="spec-t" id="specT"><b>14</b> couriers · <b>3</b> &lt;500m</div>
+</div>
+
+<div class="sheet">
+  <div class="mode-row">
+    <div class="mode-tabs">
+      <button class="mode-tab on">Get Cash</button>
+      <button class="mode-tab">Supply</button>
+    </div>
+    <div class="mode-loc">Shoreditch · E1</div>
+  </div>
+
+  <div class="amt-row">
+    <div class="amt-l">Amount</div>
+    <div class="amt-v"><span class="c">£</span>100</div>
+  </div>
+
+  <div class="presets">
+    <button class="preset">20</button>
+    <button class="preset">40</button>
+    <button class="preset">60</button>
+    <button class="preset">80</button>
+    <button class="preset on">100</button>
+    <button class="preset">150</button>
+    <button class="preset">200</button>
+    <button class="preset">300</button>
+    <button class="preset">500</button>
+  </div>
+
+  <div class="addr-row">
+    <div class="addr-icon">◉</div>
+    <div class="addr-text">
+      <div class="addr-l" id="addrL">Deliver to</div>
+      <div class="addr-v" id="addrV">42 Brick Lane, London E1</div>
+    </div>
+    <div class="addr-chev">›</div>
+  </div>
+
+  <button class="cta"><span id="ctaTxt">Request <em>£100</em> <span class="arr">→</span></span></button>
+</div>
+
+<nav class="tabs">
+  <div class="tab-item on">Home</div>
+  <div class="tab-item">Orders</div>
+  <div class="tab-item">Earn</div>
+  <div class="tab-item">Profile</div>
+</nav>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v11',
+  center: [-0.0738, 51.5194], zoom: 14.5,
+  pitch: 35, bearing: -15,
+  attributionControl: false,
+});
+const COURIERS = [
+  [-0.0712,51.5202],[-0.0698,51.5155],[-0.0762,51.5221],[-0.0785,51.5175],[-0.0691,51.5184],
+  [-0.0744,51.5168],[-0.0705,51.5215],[-0.0780,51.5200],[-0.0720,51.5180],[-0.0768,51.5150],
+  [-0.0695,51.5230],[-0.0733,51.5145],[-0.0775,51.5240],[-0.0710,51.5163]
+];
+const CASHPOINTS = [
+  [-0.0725,51.5210],[-0.0755,51.5185],[-0.0700,51.5175],[-0.0770,51.5218],
+  [-0.0685,51.5195],[-0.0740,51.5160],[-0.0795,51.5205]
+];
+let markers = [];
+function drawMarkers(mode){
+  markers.forEach(m => m.remove());
+  markers = [];
+  if (mode === 'cour'){
+    COURIERS.forEach(c => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:9px;height:9px;border-radius:50%;background:#00E8B8;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(0,232,184,.55);';
+      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
+    });
+  } else {
+    CASHPOINTS.forEach(c => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:10px;height:10px;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(255,184,0,.55);';
+      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
+    });
+  }
+}
+function setSupply(mode){
+  document.body.classList.toggle('cp-mode', mode === 'cp');
+  document.querySelectorAll('.supply-btn').forEach(b => b.classList.toggle('on', b.dataset.t === mode));
+  if (mode === 'cp'){
+    document.getElementById('addrL').textContent = 'Pick up from';
+    document.getElementById('addrV').textContent = 'Brick Lane News · 42 Brick Lane';
+    document.getElementById('ctaTxt').innerHTML = 'Reserve <em>£100</em> <span class="arr">→</span>';
+    document.getElementById('specT').innerHTML = '<b>7</b> cashpoints · <b>2</b> &lt;500m';
+  } else {
+    document.getElementById('addrL').textContent = 'Deliver to';
+    document.getElementById('addrV').textContent = '42 Brick Lane, London E1';
+    document.getElementById('ctaTxt').innerHTML = 'Request <em>£100</em> <span class="arr">→</span>';
+    document.getElementById('specT').innerHTML = '<b>14</b> couriers · <b>3</b> &lt;500m';
+  }
+  drawMarkers(mode);
+}
+map.on('load', () => drawMarkers('cour'));
+</script>
+</body>
+</html>
