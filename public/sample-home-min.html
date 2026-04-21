@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>CashFlow — Home (v8 minimal)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+<style>
+:root{
+  --ink:#050A12;--ink-raised:#0A111E;
+  --paper:#F2EDD7;--paper-dim:#D6CDA8;
+  --em:#00E8B8;
+  --line:rgba(242,237,215,.10);--line-strong:rgba(242,237,215,.22);
+  --text:#F7F3E3;--mute:#8A8672;--faint:#44433B;
+  --f-display:'Instrument Serif',serif;
+  --f-body:'Outfit',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
+
+/* No grain. No vignette. Just the map. */
+#map{position:fixed;inset:0;z-index:0;background:#050A12}
+/* Only the bottom fade to make sheet edge clear */
+#map::after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(5,10,18,.55) 0,transparent 14%,transparent 48%,rgba(5,10,18,.94) 84%,var(--ink) 100%)}
+
+/* Sample nav (delete in real app) */
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}
+.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201}
+.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}
+.sample-nav a.on{background:var(--em)}
+
+/* ── TOP BAR — now includes inline courier count ── */
+.topbar{
+  position:fixed;top:32px;left:0;right:0;z-index:50;
+  padding:18px 20px;display:flex;justify-content:space-between;align-items:center;
+  pointer-events:none;gap:16px;
+}
+.topbar > *{pointer-events:auto}
+.wordmark{font-family:var(--f-display);font-size:24px;letter-spacing:-.02em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+
+.tb-meta{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--paper-dim);font-weight:500;line-height:1.5;text-align:right;
+}
+.tb-meta b{color:var(--em);font-weight:600}
+
+/* ── USER PIN — much more subtle ── */
+.you-marker{position:fixed;top:38%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none}
+.you-marker .dot{width:12px;height:12px;border-radius:50%;background:var(--em);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 14px rgba(0,232,184,.5)}
+
+/* ── BOTTOM SHEET — flatter, less decoration ── */
+.sheet{
+  position:fixed;bottom:0;left:0;right:0;z-index:45;
+  background:rgba(5,10,18,.98);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  padding:0 20px 80px;
+}
+
+/* Mode tabs — two text items, no separator, generous tap targets */
+.mode-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:22px 0 18px;border-bottom:1px solid var(--line);
+}
+.mode-tabs{display:flex;gap:28px}
+.mode-tab{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+  padding:0;color:var(--faint);cursor:pointer;transition:color .15s;background:none;border:none;position:relative;padding-bottom:4px;
+}
+.mode-tab.on{color:var(--paper)}
+.mode-tab.on::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--em)}
+
+.mode-loc{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+
+/* Amount — left-aligned, feels like an interface field, not a certificate */
+.amt-block{padding:32px 0 24px}
+.amt-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute);margin-bottom:6px;font-weight:500}
+.amt-v{
+  font-family:var(--f-display);font-size:clamp(84px,22vw,120px);line-height:.95;
+  color:var(--paper);letter-spacing:-.04em;font-weight:400;
+  display:inline-block;
+}
+.amt-v .c{font-size:.42em;color:var(--mute);letter-spacing:0;position:relative;top:-.55em;margin-right:.04em;font-style:normal}
+/* Subtle caret (live-input hint) */
+.amt-v::after{
+  content:'';display:inline-block;width:2px;height:.85em;background:var(--em);
+  margin-left:6px;vertical-align:middle;
+  animation:caret 1.1s steps(2) infinite;
+}
+@keyframes caret{50%{opacity:0}}
+
+/* Presets — no borders. Text only. */
+.presets{display:flex;gap:0;padding:4px 0 24px;overflow-x:auto;scrollbar-width:none}
+.presets::-webkit-scrollbar{display:none}
+.preset{
+  flex-shrink:0;padding:10px 16px;font-family:var(--f-mono);font-size:13px;letter-spacing:.04em;
+  color:var(--mute);background:transparent;border:none;cursor:pointer;font-weight:500;transition:color .15s;
+}
+.preset:hover{color:var(--paper)}
+.preset.on{color:var(--em)}
+
+/* Address — compressed: text + chev. No icon. */
+.addr-row{
+  display:flex;align-items:center;gap:16px;padding:16px 0;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);margin-bottom:22px;cursor:pointer;transition:background .15s;
+}
+.addr-text{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.addr-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);font-weight:500}
+.addr-v{font-family:var(--f-body);font-size:15px;color:var(--paper);font-weight:500;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px;flex-shrink:0}
+
+/* Primary CTA */
+.cta{
+  width:100%;padding:20px;background:var(--paper);color:var(--ink);
+  font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  border:1px solid var(--paper);border-radius:2px;cursor:pointer;
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.cta:hover::before{transform:translateX(0)}
+.cta span{position:relative;z-index:2}
+.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;display:inline-block;transition:transform .25s}
+.cta:hover .arr{transform:translateX(4px)}
+
+/* Bottom tab bar — same discipline, just cleaner */
+.tabs{
+  position:fixed;bottom:0;left:0;right:0;z-index:60;
+  background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid var(--line);
+  padding:14px 0 22px;display:flex;justify-content:space-around;
+}
+.tab-item{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;
+  padding:6px 10px;cursor:pointer;transition:color .15s;
+}
+.tab-item.on{color:var(--em)}
+</style>
+</head>
+<body>
+
+<div class="banner">— v8 Minimal — Refinement Pass —</div>
+<div class="sample-nav">
+  <a href="/sample-home.html">Editorial</a>
+  <a href="/sample-home-min.html" class="on">Minimal</a>
+  <a href="/">Live →</a>
+</div>
+
+<div id="map"></div>
+
+<div class="you-marker"><div class="dot"></div></div>
+
+<header class="topbar">
+  <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+  <div class="tb-meta">Shoreditch E1<br><b>14</b> nearby · <b>3</b> &lt;500m</div>
+</header>
+
+<div class="sheet">
+  <div class="mode-row">
+    <div class="mode-tabs">
+      <button class="mode-tab on">Get Cash</button>
+      <button class="mode-tab">Supply</button>
+    </div>
+    <div class="mode-loc">Zone 1</div>
+  </div>
+
+  <div class="amt-block">
+    <div class="amt-l">Amount</div>
+    <div class="amt-v"><span class="c">£</span>100</div>
+  </div>
+
+  <div class="presets">
+    <button class="preset">20</button>
+    <button class="preset">40</button>
+    <button class="preset">60</button>
+    <button class="preset">80</button>
+    <button class="preset on">100</button>
+    <button class="preset">150</button>
+    <button class="preset">200</button>
+    <button class="preset">300</button>
+    <button class="preset">500</button>
+  </div>
+
+  <div class="addr-row">
+    <div class="addr-text">
+      <div class="addr-l">Deliver to</div>
+      <div class="addr-v">42 Brick Lane, London E1</div>
+    </div>
+    <div class="addr-chev">›</div>
+  </div>
+
+  <button class="cta"><span>Request £100 <span class="arr">→</span></span></button>
+</div>
+
+<nav class="tabs">
+  <div class="tab-item on">Home</div>
+  <div class="tab-item">Orders</div>
+  <div class="tab-item">Earn</div>
+  <div class="tab-item">Profile</div>
+</nav>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
+const map = new mapboxgl.Map({
+  container: 'map',
+  style: 'mapbox://styles/mapbox/dark-v11',
+  center: [-0.0738, 51.5194], zoom: 14.5,
+  pitch: 0, bearing: 0,
+  attributionControl: false,
+});
+map.on('load', () => {
+  const couriers = [[-0.0712,51.5202],[-0.0698,51.5155],[-0.0762,51.5221],[-0.0785,51.5175],[-0.0691,51.5184]];
+  couriers.forEach(c => {
+    const el = document.createElement('div');
+    el.style.cssText = 'width:8px;height:8px;border-radius:50%;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8);';
+    new mapboxgl.Marker(el).setLngLat(c).addTo(map);
+  });
+});
+</script>
+</body>
+</html>
