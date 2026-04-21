@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en-GB"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>CashFlow — Profile (v8)</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet"><style>:root{--ink:#050A12;--ink-raised:#0A111E;--paper:#F2EDD7;--paper-dim:#D6CDA8;--em:#00E8B8;--am:#FFB800;--em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);--line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.28);--text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;--f-display:'Instrument Serif',serif;--f-body:'Outfit',system-ui,sans-serif;--f-mono:'IBM Plex Mono',Menlo,monospace}*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}body{overflow-x:hidden;position:relative}body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201;flex-wrap:wrap;justify-content:flex-end;max-width:60%}.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}.sample-nav a.on{background:var(--em)}.wordmark{font-family:var(--f-display);font-size:24px;letter-spacing:-.02em;line-height:1}.wordmark .c{color:var(--text)}.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}.sec-head{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);font-weight:600;margin:28px 0 4px}.sec-head::before{content:'§';font-family:var(--f-display);font-size:15px;color:var(--em);font-style:italic;font-weight:400;line-height:1}.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}
+main{padding:64px 20px 100px;position:relative;z-index:2;max-width:520px;margin:0 auto}
+.hero{text-align:center;padding:28px 20px 24px;border:1px solid var(--line);border-radius:2px;background:rgba(10,17,30,.3);position:relative;margin-bottom:14px}
+.hero::before,.hero::after{content:'';position:absolute;width:20px;height:20px;border:1px solid var(--em)}
+.hero::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.hero::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.avatar-xl{width:84px;height:84px;border-radius:50%;background:rgba(0,232,184,.1);border:1px solid var(--line-em);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:40px;color:var(--em);font-style:italic;margin:0 auto 14px;font-weight:400}
+.hero-name{font-family:var(--f-display);font-size:34px;line-height:1;color:var(--paper);letter-spacing:-.03em;font-weight:400;margin-bottom:4px}
+.hero-name em{font-style:italic;color:var(--em)}
+.hero-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
+.hero-meta .star{color:var(--em)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line-strong);border:1px solid var(--line-strong);border-radius:2px;margin-bottom:8px;overflow:hidden}
+.stat{padding:14px 10px;text-align:center;background:var(--ink)}
+.stat-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-bottom:4px;font-weight:500}
+.stat-v{font-family:var(--f-display);font-size:26px;color:var(--paper);letter-spacing:-.02em;line-height:1;font-weight:400}
+.stat-v em{font-style:italic;color:var(--em)}
+.stat-sub{font-family:var(--f-mono);font-size:9px;color:var(--faint);margin-top:3px;letter-spacing:.06em}
+.row{display:flex;align-items:center;gap:12px;padding:14px 2px;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.row:hover{background:rgba(242,237,215,.02)}
+.row:last-child{border-bottom:none}
+.row-icon{width:30px;height:30px;border-radius:50%;background:rgba(242,237,215,.04);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--paper);flex-shrink:0;font-family:var(--f-mono);font-weight:500}
+.row-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.row-l{font-family:var(--f-body);font-size:15px;color:var(--paper);font-weight:500;line-height:1.2}
+.row-v{font-family:var(--f-mono);font-size:11px;color:var(--mute);letter-spacing:.06em;font-weight:400}
+.row-v em{font-family:var(--f-display);font-style:italic;color:var(--em);font-size:13px;letter-spacing:-.01em}
+.row-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px;flex-shrink:0}
+.badge-verif{font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--em);background:var(--em-wash);border:1px solid var(--line-em);padding:3px 7px;border-radius:2px;font-weight:600}
+.toggle{position:relative;width:38px;height:22px;border-radius:12px;background:var(--line-strong);flex-shrink:0;cursor:pointer;transition:background .2s}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:var(--paper-dim);transition:all .2s}
+.toggle.on{background:var(--em-wash);border:1px solid var(--line-em)}
+.toggle.on::after{transform:translateX(14px);background:var(--em)}
+.row-danger .row-l{color:#E86D6D}
+.row-danger .row-icon{color:#E86D6D;border-color:rgba(232,109,109,.3);background:rgba(232,109,109,.05)}
+.foot{text-align:center;padding:32px 0 0;font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);line-height:1.8}
+.foot strong{color:var(--paper-dim);font-weight:400}
+.tabs-bar{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:12px 0 20px;display:flex;justify-content:space-around}
+.tab-item{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:6px 10px;cursor:pointer;transition:color .15s;position:relative;text-decoration:none}
+.tab-item.on{color:var(--em)}
+.tab-item.on::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:16px;height:1px;background:var(--em)}
+</style></head><body>
+<div class="banner">— v8 Editorial · Profile —</div>
+<div class="sample-nav"><a href="/sample-home.html">Home</a><a href="/sample-offers.html">Offers</a><a href="/sample-track.html">Track</a><a href="/sample-receipt.html">Receipt</a><a href="/sample-profile.html" class="on">Profile</a><a href="/">Live →</a></div>
+
+<main>
+  <div class="hero">
+    <div class="avatar-xl">O</div>
+    <div class="hero-name">Olivier <em>S.</em></div>
+    <div class="hero-meta"><span class="star">★</span> 4.89 &middot; Member since April 2026</div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-l">Orders</div><div class="stat-v">27</div><div class="stat-sub">Lifetime</div></div>
+    <div class="stat"><div class="stat-l">Total</div><div class="stat-v"><em>£</em>2,480</div><div class="stat-sub">Delivered</div></div>
+    <div class="stat"><div class="stat-l">Saved</div><div class="stat-v">18<span style="font-size:.5em;color:var(--mute);letter-spacing:.05em;margin-left:3px;position:relative;top:-.5em;font-family:var(--f-mono)">hrs</span></div><div class="stat-sub">vs. ATM runs</div></div>
+  </div>
+
+  <div class="sec-head">Payment <span class="tag">· 2 methods</span></div>
+  <div class="row"><div class="row-icon">V</div><div class="row-info"><div class="row-l">Visa ···· 4821</div><div class="row-v">Default · Expires 09/28</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">A</div><div class="row-info"><div class="row-l">Apple Pay</div><div class="row-v">iPhone · Touch ID</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">+</div><div class="row-info"><div class="row-l">Add payment method</div><div class="row-v">Card or bank transfer</div></div><div class="row-chev">›</div></div>
+
+  <div class="sec-head">Addresses <span class="tag">· 3 saved</span></div>
+  <div class="row"><div class="row-icon">⌂</div><div class="row-info"><div class="row-l">Home</div><div class="row-v">42 Brick Lane, London E1</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">⊞</div><div class="row-info"><div class="row-l">Work</div><div class="row-v">18 Old Street, London EC1Y</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">★</div><div class="row-info"><div class="row-l">Studio</div><div class="row-v">7 Redchurch Street, London E2</div></div><div class="row-chev">›</div></div>
+
+  <div class="sec-head">Notifications <span class="tag">· Preferences</span></div>
+  <div class="row"><div class="row-icon">⌁</div><div class="row-info"><div class="row-l">Push notifications</div><div class="row-v">Order updates &middot; Delivery alerts</div></div><div class="toggle on"></div></div>
+  <div class="row"><div class="row-icon">✉</div><div class="row-info"><div class="row-l">Email receipts</div><div class="row-v">After each delivery</div></div><div class="toggle on"></div></div>
+  <div class="row"><div class="row-icon">◉</div><div class="row-info"><div class="row-l">Location sharing</div><div class="row-v">While tracking active orders</div></div><div class="toggle on"></div></div>
+  <div class="row"><div class="row-icon">☐</div><div class="row-info"><div class="row-l">Marketing emails</div><div class="row-v">Product updates &middot; Offers</div></div><div class="toggle"></div></div>
+
+  <div class="sec-head">Account <span class="tag">· Identity</span></div>
+  <div class="row"><div class="row-icon">@</div><div class="row-info"><div class="row-l">Email</div><div class="row-v">olivier@cashflow.app · <em>Verified</em></div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">☏</div><div class="row-info"><div class="row-l">Phone</div><div class="row-v">+44 7700 900123 · <em>Verified</em></div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">⚿</div><div class="row-info"><div class="row-l">Identity verification</div><div class="row-v">Passport &middot; Completed April 2026</div></div><div class="badge-verif">✓ Verified</div></div>
+  <div class="row"><div class="row-icon">⟐</div><div class="row-info"><div class="row-l">Become a courier</div><div class="row-v">Earn by delivering cash</div></div><div class="row-chev">›</div></div>
+
+  <div class="sec-head">Support <span class="tag">· Legal</span></div>
+  <div class="row"><div class="row-icon">?</div><div class="row-info"><div class="row-l">Help centre</div><div class="row-v">FAQs &middot; Contact support</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">§</div><div class="row-info"><div class="row-l">Terms of service</div><div class="row-v">Last updated April 2026</div></div><div class="row-chev">›</div></div>
+  <div class="row"><div class="row-icon">◈</div><div class="row-info"><div class="row-l">Privacy policy</div><div class="row-v">How we handle your data</div></div><div class="row-chev">›</div></div>
+
+  <div class="sec-head">Account control</div>
+  <div class="row"><div class="row-icon">⏻</div><div class="row-info"><div class="row-l">Sign out</div><div class="row-v">End this session</div></div><div class="row-chev">›</div></div>
+  <div class="row row-danger"><div class="row-icon">⊘</div><div class="row-info"><div class="row-l">Delete account</div><div class="row-v">Permanent &middot; Cannot be undone</div></div><div class="row-chev">›</div></div>
+
+  <div class="foot"><strong>CashFlow</strong> · Version 8.6.0<br>Azure IM Ltd · London</div>
+</main>
+
+<nav class="tabs-bar">
+  <a href="/sample-home.html" class="tab-item">Home</a>
+  <a href="#" class="tab-item">Orders</a>
+  <a href="/sample-earnings.html" class="tab-item">Earn</a>
+  <a href="#" class="tab-item on">Profile</a>
+</nav>
+
+<script>
+document.querySelectorAll('.toggle').forEach(t=>t.addEventListener('click',e=>{e.stopPropagation();t.classList.toggle('on')}));
+</script>
+</body></html>
