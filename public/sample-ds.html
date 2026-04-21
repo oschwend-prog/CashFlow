@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>CashFlow — Design System v8.6</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050A12;--ink-raised:#0A111E;--ink-cut:#0D1623;
+  --paper:#F2EDD7;--paper-dim:#D6CDA8;
+  --em:#00E8B8;--am:#FFB800;
+  --em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);
+  --line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.28);
+  --text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;
+  --f-display:'Instrument Serif',serif;
+  --f-body:'Outfit',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',Menlo,monospace;
+  --accent:var(--paper);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{position:relative;overflow-x:hidden;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}
+
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}
+
+.sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201;flex-wrap:wrap;justify-content:flex-end}
+.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}
+.sample-nav a.on{background:var(--em)}
+
+.wrap{max-width:960px;margin:0 auto;padding:80px 32px 100px;position:relative;z-index:2}
+
+/* Masthead */
+.masthead{border-bottom:1px solid var(--line-strong);padding-bottom:40px;margin-bottom:60px}
+.masthead-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px}
+.wordmark{font-family:var(--f-display);font-size:38px;letter-spacing:-.035em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+.doc-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);text-align:right;line-height:1.8;font-weight:500}
+.doc-meta strong{color:var(--em);font-weight:600}
+.doc-title{font-family:var(--f-display);font-size:clamp(56px,10vw,104px);line-height:.95;letter-spacing:-.04em;color:var(--paper);font-weight:400;margin-bottom:16px}
+.doc-title em{font-style:italic;color:var(--em)}
+.doc-lede{font-size:17px;line-height:1.55;color:var(--mute);max-width:640px;font-weight:300}
+.doc-lede em{color:var(--paper);font-family:var(--f-display);font-style:italic;font-size:19px;letter-spacing:-.01em}
+
+/* Section */
+section{margin-bottom:72px}
+.sec-head{display:flex;align-items:center;gap:14px;font-family:var(--f-mono);font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--paper-dim);font-weight:600;margin-bottom:22px}
+.sec-head::before{content:'§';font-family:var(--f-display);font-size:20px;color:var(--em);font-style:italic;font-weight:400;line-height:1}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-head .num{font-family:var(--f-mono);font-size:10px;color:var(--faint);letter-spacing:.2em;font-weight:500}
+
+h2.sub{font-family:var(--f-display);font-size:32px;letter-spacing:-.02em;line-height:1.1;color:var(--paper);font-weight:400;margin-bottom:8px}
+h2.sub em{font-style:italic;color:var(--em)}
+.intro{color:var(--mute);font-size:15px;max-width:620px;margin-bottom:28px;font-weight:300}
+.intro em{font-family:var(--f-display);font-style:italic;color:var(--paper-dim);font-size:17px;letter-spacing:-.01em}
+.intro code{font-family:var(--f-mono);font-size:13px;color:var(--em);background:var(--em-wash);padding:2px 6px;border-radius:2px;font-weight:500}
+
+/* Color swatches */
+.swatches{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
+.swatch{border:1px solid var(--line);border-radius:2px;overflow:hidden;background:var(--ink-raised)}
+.swatch-chip{height:72px;display:flex;align-items:flex-end;padding:10px}
+.swatch-chip-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600}
+.swatch-info{padding:10px 12px;font-family:var(--f-mono);font-size:10px;letter-spacing:.08em;color:var(--mute);line-height:1.5}
+.swatch-info strong{color:var(--paper);font-weight:500}
+.swatch-info .hex{color:var(--em);font-weight:500}
+
+/* Type scale */
+.type-row{display:flex;align-items:baseline;gap:24px;padding:16px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.type-row:last-child{border-bottom:none}
+.type-spec{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);min-width:140px;font-weight:500;line-height:1.6}
+.type-spec strong{color:var(--paper);font-weight:500}
+.type-sample{flex:1;color:var(--paper)}
+.ts-84{font-family:var(--f-display);font-size:84px;line-height:1;letter-spacing:-.04em;font-weight:400}
+.ts-48{font-family:var(--f-display);font-size:48px;line-height:1;letter-spacing:-.03em;font-weight:400}
+.ts-28{font-family:var(--f-display);font-size:28px;line-height:1.1;letter-spacing:-.02em;font-weight:400}
+.ts-19{font-family:var(--f-body);font-size:19px;line-height:1.4;letter-spacing:-.01em;font-weight:400}
+.ts-15{font-family:var(--f-body);font-size:15px;line-height:1.5;font-weight:400}
+.ts-13{font-family:var(--f-body);font-size:13px;line-height:1.5;font-weight:400}
+.ts-11{font-family:var(--f-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
+.ts-10{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:500}
+
+/* Font card */
+.fonts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.font-card{border:1px solid var(--line);border-radius:2px;padding:28px 22px;background:var(--ink-raised);position:relative}
+.font-card::before,.font-card::after{content:'';position:absolute;width:18px;height:18px;border:1px solid var(--em);opacity:.6}
+.font-card::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.font-card::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.font-name{font-family:var(--f-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--em);margin-bottom:10px;font-weight:600}
+.font-spec{font-family:var(--f-mono);font-size:10px;color:var(--mute);margin-top:14px;letter-spacing:.04em;font-weight:400;line-height:1.6}
+.font-spec strong{color:var(--paper);font-weight:500}
+.font-demo-display{font-family:var(--f-display);font-size:56px;line-height:.95;letter-spacing:-.035em;color:var(--paper);font-weight:400}
+.font-demo-display em{font-style:italic;color:var(--em)}
+.font-demo-body{font-family:var(--f-body);font-size:15px;color:var(--paper);line-height:1.5}
+.font-demo-mono{font-family:var(--f-mono);font-size:12px;color:var(--paper);letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+
+/* Components grid */
+.components-grid{display:grid;grid-template-columns:1fr;gap:18px}
+.comp-card{border:1px solid var(--line);border-radius:2px;background:var(--ink-raised);overflow:hidden}
+.comp-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:600}
+.comp-head .cls{color:var(--em);font-size:10px;letter-spacing:.04em;text-transform:none}
+.comp-body{padding:24px}
+
+/* — Components: buttons — */
+.btn-cta{padding:18px;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;border:none;border-radius:2px;cursor:pointer;transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;display:inline-flex;align-items:center;gap:8px}
+.btn-cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.btn-cta:hover::before{transform:translateX(0)}
+.btn-cta span{position:relative;z-index:2}
+.btn-cta em{font-family:var(--f-display);font-style:italic;font-size:17px;color:inherit}
+
+.btn-mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper);background:rgba(5,10,18,.6);border:1px solid var(--line-strong);padding:10px 16px;border-radius:2px;cursor:pointer;font-weight:600;transition:all .2s}
+.btn-mono:hover{border-color:var(--em);color:var(--em);background:var(--em-wash)}
+
+.btn-link{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);background:none;border:none;cursor:pointer;font-weight:500;padding:6px 4px;transition:all .25s}
+.btn-link em{font-family:var(--f-display);font-style:italic;color:var(--em);text-transform:none;letter-spacing:-.02em;font-size:13px;margin-right:3px}
+.btn-link:hover{color:var(--em);letter-spacing:.2em}
+
+.btn-emerald{padding:16px 22px;background:var(--em);color:var(--ink);font-family:var(--f-body);font-size:14px;font-weight:600;letter-spacing:-.01em;border:none;border-radius:2px;cursor:pointer;transition:all .2s}
+.btn-emerald:hover{filter:brightness(1.08)}
+
+.btn-grid{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* — Tombstone numeral demo — */
+.tomb-row{display:flex;align-items:flex-end;gap:28px;flex-wrap:wrap}
+.tomb{font-family:var(--f-display);font-size:72px;line-height:.95;color:var(--paper);letter-spacing:-.04em;font-weight:400;position:relative;padding-bottom:8px;display:inline-block}
+.tomb::after{content:'';position:absolute;left:15%;right:15%;bottom:0;height:1px;background:var(--em)}
+.tomb .c{font-size:.42em;color:var(--mute);position:relative;top:-.55em;margin-right:.04em;font-style:normal;letter-spacing:0}
+
+/* — Section header demo — */
+.sh-demo{display:flex;align-items:center;gap:10px;font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--paper-dim);font-weight:600;margin-bottom:8px}
+.sh-demo::before{content:'§';font-family:var(--f-display);font-size:15px;color:var(--em);font-style:italic;font-weight:400;line-height:1}
+.sh-demo::after{content:'';flex:1;height:1px;background:var(--line)}
+
+/* — Card / input / row — */
+.input-field{display:flex;flex-direction:column;gap:10px}
+.input-label{font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
+.input-el{width:100%;padding:14px 0;background:transparent;border:none;border-bottom:1px solid var(--line-strong);color:var(--paper);font-family:var(--f-body);font-size:18px;outline:none;letter-spacing:-.01em;font-weight:400;transition:border-color .25s}
+.input-el:focus{border-bottom-color:var(--em)}
+.input-el::placeholder{color:var(--faint);font-weight:300}
+
+.row-demo{display:flex;align-items:center;gap:14px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.row-icon{width:30px;height:30px;border-radius:50%;background:var(--em-wash);border:1px solid var(--line-em);display:flex;align-items:center;justify-content:center;color:var(--em);font-size:12px;flex-shrink:0}
+.row-info{flex:1}
+.row-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
+.row-v{font-family:var(--f-display);font-size:17px;color:var(--paper);letter-spacing:-.01em;font-weight:400}
+.row-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px}
+
+/* — Badge demo — */
+.badge-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.tag-instant{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--em);background:var(--em-wash);border:1px solid var(--line-em);padding:4px 8px;border-radius:2px;font-weight:600}
+.tag-cp{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--am);background:var(--am-wash);border:1px solid rgba(255,184,0,.28);padding:4px 8px;border-radius:2px;font-weight:600}
+.tag-mute{font-family:var(--f-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--paper-dim);background:rgba(242,237,215,.04);border:1px solid var(--line);padding:4px 8px;border-radius:2px;font-weight:500}
+
+/* — Segmented control — */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:0;background:rgba(242,237,215,.04);border:1px solid var(--line);border-radius:2px;padding:3px;position:relative;max-width:400px}
+.seg-ind{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);background:var(--paper);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.3);transition:all .3s}
+.seg-btn{font-family:var(--f-body);font-size:14px;font-weight:600;letter-spacing:-.01em;padding:12px;color:var(--mute);background:transparent;border:none;cursor:pointer;position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px}
+.seg-btn.on{color:var(--ink)}
+.seg-btn em{font-family:var(--f-display);font-style:italic;font-size:16px;color:inherit;font-weight:400}
+
+/* Avatar circle */
+.av-row{display:flex;gap:10px;align-items:center}
+.av{width:44px;height:44px;border-radius:50%;background:var(--em-wash);border:1px solid var(--line-em);display:flex;align-items:center;justify-content:center;font-family:var(--f-display);font-size:20px;color:var(--em);font-style:italic}
+
+/* Code spec block */
+.spec{font-family:var(--f-mono);font-size:11px;line-height:1.7;color:var(--paper-dim);background:var(--ink-cut);border:1px solid var(--line);border-radius:2px;padding:16px 18px;overflow-x:auto;letter-spacing:.02em}
+.spec .k{color:var(--em)}
+.spec .v{color:var(--paper)}
+.spec .c{color:var(--faint);font-style:italic}
+
+/* Rules block */
+.rules{list-style:none;padding:0}
+.rules li{font-size:15px;color:var(--paper);line-height:1.7;padding:10px 0;border-bottom:1px solid var(--line);display:flex;gap:16px;align-items:baseline}
+.rules li:last-child{border-bottom:none}
+.rules li::before{content:counter(rule);counter-increment:rule;font-family:var(--f-display);font-style:italic;font-size:20px;color:var(--em);min-width:30px;line-height:1;font-weight:400}
+.rules{counter-reset:rule}
+.rules em{font-family:var(--f-display);font-style:italic;color:var(--paper-dim);font-size:17px;letter-spacing:-.01em}
+.rules code{font-family:var(--f-mono);font-size:12px;color:var(--em);background:var(--em-wash);padding:2px 6px;border-radius:2px;font-weight:500}
+.rules strong{color:var(--paper);font-weight:600}
+
+/* Sample index grid */
+.sample-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.sample-tile{display:block;border:1px solid var(--line);border-radius:2px;padding:16px 18px;background:var(--ink-raised);text-decoration:none;color:inherit;transition:all .2s;position:relative}
+.sample-tile:hover{border-color:var(--em);background:var(--em-wash)}
+.sample-tile-num{font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--em);margin-bottom:4px;font-weight:600}
+.sample-tile-name{font-family:var(--f-display);font-size:22px;color:var(--paper);letter-spacing:-.02em;font-weight:400;line-height:1.1}
+.sample-tile-name em{font-style:italic;color:var(--em)}
+.sample-tile-desc{font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:6px;letter-spacing:.06em;line-height:1.4}
+.sample-tile-url{font-family:var(--f-mono);font-size:9px;color:var(--faint);margin-top:8px;letter-spacing:.04em}
+
+footer{border-top:1px solid var(--line-strong);padding-top:28px;margin-top:60px;display:flex;justify-content:space-between;gap:16px;align-items:baseline}
+.foot-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);line-height:1.7}
+.foot-l strong{color:var(--paper-dim);font-weight:400}
+.foot-r{font-family:var(--f-display);font-size:18px;font-style:italic;color:var(--paper-dim);letter-spacing:.02em}
+</style>
+</head>
+<body>
+
+<div class="banner">— CashFlow Design System v8.6 · Editorial Banknote · Locked April 2026 —</div>
+<div class="sample-nav"><a href="/sample-home.html">Home</a><a href="/sample-signin.html">Sign-in</a><a href="/sample-track.html">Track</a><a href="/sample-receipt.html">Receipt</a><a href="/sample-ds.html" class="on">System</a><a href="/">Live →</a></div>
+
+<div class="wrap">
+
+<!-- Masthead -->
+<div class="masthead">
+  <div class="masthead-top">
+    <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+    <div class="doc-meta">
+      <strong>Version 8.6</strong><br>
+      Locked · April 2026<br>
+      Ref No. 001
+    </div>
+  </div>
+  <h1 class="doc-title">Design <em>System</em>.</h1>
+  <p class="doc-lede">A complete reference for the <em>Editorial Banknote</em> visual language — British currency heritage crossed with magazine-grade editorial design. Every token, font, rule and component used across the CashFlow product surface.</p>
+</div>
+
+<!-- Colors -->
+<section>
+  <div class="sec-head">Colour Palette <span class="num">§ 01</span></div>
+  <h2 class="sub">Five tokens. <em>No more.</em></h2>
+  <p class="intro">Restraint is the design. Emerald <code>#00E8B8</code> is used only for <em>active</em> state, key accents, and live signals. Amber reserved for CashPoints filter and earnings data-viz. Paper cream for primary action surfaces.</p>
+  <div class="swatches">
+    <div class="swatch"><div class="swatch-chip" style="background:#050A12;border:1px solid var(--line)"><span class="swatch-chip-label" style="color:#F7F3E3">Ink</span></div><div class="swatch-info"><strong>--ink</strong><br><span class="hex">#050A12</span> · Base dark</div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#0A111E;border:1px solid var(--line)"><span class="swatch-chip-label" style="color:#F7F3E3">Raised</span></div><div class="swatch-info"><strong>--ink-raised</strong><br><span class="hex">#0A111E</span> · Cards</div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#F2EDD7"><span class="swatch-chip-label" style="color:#050A12">Paper</span></div><div class="swatch-info"><strong>--paper</strong><br><span class="hex">#F2EDD7</span> · CTAs</div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#00E8B8"><span class="swatch-chip-label" style="color:#050A12">Emerald</span></div><div class="swatch-info"><strong>--em</strong><br><span class="hex">#00E8B8</span> · Active / Supply</div></div>
+    <div class="swatch"><div class="swatch-chip" style="background:#FFB800"><span class="swatch-chip-label" style="color:#050A12">Amber</span></div><div class="swatch-info"><strong>--am</strong><br><span class="hex">#FFB800</span> · CashPoints</div></div>
+  </div>
+</section>
+
+<!-- Mode Theming -->
+<section>
+  <div class="sec-head">Mode Theming <span class="num">§ 02</span></div>
+  <h2 class="sub">One variable. <em>Ten outcomes.</em></h2>
+  <p class="intro">The <code>--accent</code> CSS variable switches based on <code>body.supply-mode</code>. Default is paper cream (Get Cash). Toggling triggers emerald re-themeing across ~10 elements in 300ms: § glyphs, preset states, address icon, CTA background, HOME tab, sheet glow, user pin.</p>
+  <div class="spec"><span class="c">// Default — Get Cash mode</span><br>:root <span class="k">{</span><br>  --accent: <span class="v">var(--paper);</span><br><span class="k">}</span><br><br><span class="c">// Supply Cash mode</span><br>body.supply-mode <span class="k">{</span><br>  --accent: <span class="v">var(--em);</span><br><span class="k">}</span></div>
+</section>
+
+<!-- Typography -->
+<section>
+  <div class="sec-head">Typography <span class="num">§ 03</span></div>
+  <h2 class="sub">Three fonts. <em>Defined roles.</em></h2>
+  <p class="intro">Each font has exactly one job. <em>Instrument Serif</em> for display and tombstone numerals. <em>IBM Plex Mono</em> for labels, metadata, and letter-spaced uppercase. <em>Outfit</em> for body prose and buttons.</p>
+  <div class="fonts">
+    <div class="font-card">
+      <div class="font-name">Display · Instrument Serif</div>
+      <div class="font-demo-display">Sign <em>in</em>.</div>
+      <div class="font-spec"><strong>Usage:</strong> Headlines, tombstones, section § glyphs, wordmark "Flow", italic accent words, certificate titles<br><strong>Weight:</strong> 400 regular / 400 italic<br><strong>Letter-spacing:</strong> -.035em</div>
+    </div>
+    <div class="font-card">
+      <div class="font-name">Body · Outfit</div>
+      <div class="font-demo-body">Welcome to CashFlow. Enter your email and we'll send a verification code.</div>
+      <div class="font-spec"><strong>Usage:</strong> Body copy, buttons, address values, large UI text<br><strong>Weight:</strong> 400 / 500 / 600 / 700<br><strong>Sizes:</strong> 13 / 15 / 17 / 19 px</div>
+    </div>
+    <div class="font-card">
+      <div class="font-name">Mono · IBM Plex Mono</div>
+      <div class="font-demo-mono">— New Account · London</div>
+      <div class="font-spec"><strong>Usage:</strong> Eyebrow labels, section headers, section tags, serial numbers, numerical unit suffixes, toggle labels<br><strong>Weight:</strong> 500 / 600<br><strong>Letter-spacing:</strong> .14–.28em</div>
+    </div>
+  </div>
+</section>
+
+<!-- Type Scale -->
+<section>
+  <div class="sec-head">Type Scale <span class="num">§ 04</span></div>
+  <h2 class="sub">Seven sizes. <em>No between.</em></h2>
+  <p class="intro">The full scale: 10 · 11 · 13 · 15 · 19 · 28 · 48 · 84 px. Never anything between — <em>discipline maintains rhythm</em>.</p>
+  <div>
+    <div class="type-row"><div class="type-spec"><strong>Display XL · 84px</strong><br>Tombstone · Headline</div><div class="type-sample ts-84">Sign <em style="font-style:italic;color:var(--em)">in</em>.</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Display L · 48px</strong><br>Card titles</div><div class="type-sample ts-48">Thank <em style="font-style:italic;color:var(--em)">you</em>.</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Display M · 28px</strong><br>Section titles</div><div class="type-sample ts-28">Three fonts. <em style="font-style:italic;color:var(--em)">Defined roles.</em></div></div>
+    <div class="type-row"><div class="type-spec"><strong>Body L · 19px</strong><br>Address values</div><div class="type-sample ts-19">42 Brick Lane, London E1</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Body M · 15px</strong><br>Default prose</div><div class="type-sample ts-15">Default body text across the interface.</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Body S · 13px</strong><br>Supporting copy</div><div class="type-sample ts-13">Secondary text, footnotes, small inline.</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Mono M · 11px</strong><br>Section headers</div><div class="type-sample ts-11">Amount · Zone 1 · Shoreditch E1</div></div>
+    <div class="type-row"><div class="type-spec"><strong>Mono S · 10px</strong><br>Eyebrows, tags</div><div class="type-sample ts-10">Live · Step III of V</div></div>
+  </div>
+</section>
+
+<!-- Signature devices -->
+<section>
+  <div class="sec-head">Signature Devices <span class="num">§ 05</span></div>
+  <h2 class="sub">Distinctive <em>moments</em> across every surface.</h2>
+  <p class="intro">Recognisable visual devices used consistently across the design system. These are what make a CashFlow screen look like a CashFlow screen.</p>
+
+  <div class="components-grid">
+
+    <!-- Tombstone numerals -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Tombstone Numerals</span><span class="cls">.tomb · .amt-v</span></div>
+      <div class="comp-body">
+        <div class="tomb-row">
+          <div class="tomb"><span class="c">£</span>100</div>
+          <div class="tomb"><span class="c">£</span>284<span style="font-family:var(--f-mono);font-size:.33em;color:var(--mute);letter-spacing:0;position:relative;top:-.9em">.50</span></div>
+          <div class="tomb" style="font-size:54px">3<span style="font-size:.5em;color:var(--mute);letter-spacing:.05em;margin-left:3px;position:relative;top:-.6em;font-family:var(--f-mono);font-style:normal">min</span></div>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Instrument Serif · Currency symbol as superscript · Emerald hairline underline for money values · Mono unit suffixes</p>
+      </div>
+    </div>
+
+    <!-- Section headers -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Section Header</span><span class="cls">.sec-head</span></div>
+      <div class="comp-body">
+        <div class="sh-demo">Amount <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase">· Zone 1</span></div>
+        <div class="sh-demo">Where <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase">· Shoreditch E1</span></div>
+        <div class="sh-demo">Notifications <span style="font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase">· All caught up</span></div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Italic emerald § glyph + mono caps label + optional dim tag + hairline rule to right edge</p>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Buttons</span><span class="cls">.cta · .btn-mono · .btn-link · .seg</span></div>
+      <div class="comp-body">
+        <div class="btn-grid">
+          <button class="btn-cta"><span>Request <em>£100</em> →</span></button>
+          <button class="btn-emerald">Go Online →</button>
+          <button class="btn-mono">Couriers · 14</button>
+          <button class="btn-link"><em>Explore</em> the demo →</button>
+        </div>
+        <div class="seg" style="margin-top:18px">
+          <div class="seg-ind"></div>
+          <button class="seg-btn on">Get <em>Cash</em></button>
+          <button class="seg-btn">Supply <em>Cash</em></button>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Primary = paper cream with emerald slide-fill · Secondary emerald = earning/go action · Mono = filter/toggle · Link = minimal nav</p>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Hairline Input</span><span class="cls">.f-input · .input-el</span></div>
+      <div class="comp-body">
+        <div class="input-field">
+          <label class="input-label">Email Address</label>
+          <input class="input-el" type="email" placeholder="alex@gmail.com">
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Hairline bottom border only · Emerald focus state · Mono uppercase label above</p>
+      </div>
+    </div>
+
+    <!-- Row -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Address / Settings Row</span><span class="cls">.row-demo · .addr-row</span></div>
+      <div class="comp-body">
+        <div class="row-demo">
+          <div class="row-icon">◉</div>
+          <div class="row-info">
+            <div class="row-l">Deliver to</div>
+            <div class="row-v">42 Brick Lane, London E1</div>
+          </div>
+          <div class="row-chev">›</div>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Emerald circle icon · Mono caps label + serif value · Chevron right · Hairline top/bottom</p>
+      </div>
+    </div>
+
+    <!-- Badges -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Badges & Tags</span><span class="cls">.tag-instant · .tag-cp · .tag-mute</span></div>
+      <div class="comp-body">
+        <div class="badge-row">
+          <span class="tag-instant">⚡ Instant</span>
+          <span class="tag-cp">CashPoints</span>
+          <span class="tag-mute">Eco</span>
+          <span class="tag-instant">✓ Verified</span>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">Mono caps · Hairline border · Tinted wash background · Context-dependent colour</p>
+      </div>
+    </div>
+
+    <!-- Avatars -->
+    <div class="comp-card">
+      <div class="comp-head"><span>Avatars</span><span class="cls">.av · .courier-avatar</span></div>
+      <div class="comp-body">
+        <div class="av-row">
+          <div class="av">M</div>
+          <div class="av">A</div>
+          <div class="av">P</div>
+          <div class="av">J</div>
+        </div>
+        <p style="font-family:var(--f-mono);font-size:10px;color:var(--paper-dim);margin-top:18px;letter-spacing:.08em;line-height:1.6">First initial · Italic serif · Emerald on emerald-wash · Hairline ring · Never emoji</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Rules -->
+<section>
+  <div class="sec-head">The Ten Rules <span class="num">§ 06</span></div>
+  <h2 class="sub">Rules of <em>restraint</em>.</h2>
+  <p class="intro">Principles that make the system cohesive. Each rule has been earned through iteration.</p>
+  <ol class="rules">
+    <li>One <em>italic emerald accent</em> word per screen. No more. Signature, not decoration.</li>
+    <li>Emerald <code>#00E8B8</code> only for active state or meaningful accent. <strong>Never decorative.</strong></li>
+    <li>Every numerical value is a <em>tombstone</em>: Instrument Serif with optional emerald hairline underline.</li>
+    <li>Labels are <code>IBM Plex Mono</code> · uppercase · letter-spacing <code>.22em</code>. Always.</li>
+    <li>Dividers are hairlines (1px <code>rgba(242,237,215,.12)</code>). <strong>Never borders, never boxes.</strong></li>
+    <li>Currency is rendered as <em>£100</em> with the <em>£</em> as a small serif superscript, never same-size.</li>
+    <li>Corner L-brackets reserved for <em>certificate</em> moments only (receipt, hero stats, hero cards).</li>
+    <li>CTAs are paper-cream rectangles with emerald slide-fill hover. One primary per screen.</li>
+    <li>No emoji in production. Use Unicode ornaments (◉ ◈ § ⌂ ⚿) or custom SVG.</li>
+    <li>Film grain at 4–5% opacity with <code>mix-blend-mode: overlay</code>. Subtle, not textural.</li>
+  </ol>
+</section>
+
+<!-- Sample index -->
+<section>
+  <div class="sec-head">Sample Screens <span class="num">§ 07</span></div>
+  <h2 class="sub">The <em>pattern library</em>.</h2>
+  <p class="intro">Nine live sample screens covering the full user journey. Each demonstrates the design system applied to a specific product surface.</p>
+  <div class="sample-grid">
+    <a class="sample-tile" href="/sample-signin.html"><div class="sample-tile-num">No. 01 · Auth</div><div class="sample-tile-name">Sign <em>in</em>.</div><div class="sample-tile-desc">Email entry · Explore demo · Verify code intro</div><div class="sample-tile-url">sample-signin.html</div></a>
+    <a class="sample-tile" href="/sample-otp.html"><div class="sample-tile-num">No. 02 · Auth</div><div class="sample-tile-name">Check <em>email</em>.</div><div class="sample-tile-desc">8-digit OTP · Paste support · Resend countdown</div><div class="sample-tile-url">sample-otp.html</div></a>
+    <a class="sample-tile" href="/sample-home.html"><div class="sample-tile-num">No. 03 · Home</div><div class="sample-tile-name">Home <em>·</em> Mode-themed</div><div class="sample-tile-desc">Map · Couriers/CashPoints filter · Mode theming</div><div class="sample-tile-url">sample-home.html ★</div></a>
+    <a class="sample-tile" href="/sample-offers.html"><div class="sample-tile-num">No. 04 · Order</div><div class="sample-tile-name">Choose <em>courier</em>.</div><div class="sample-tile-desc">4 offers · Instant badge · Sort tabs</div><div class="sample-tile-url">sample-offers.html</div></a>
+    <a class="sample-tile" href="/sample-track.html"><div class="sample-tile-num">No. 05 · Order</div><div class="sample-tile-name">Courier <em>en route</em>.</div><div class="sample-tile-desc">Roman numerals · Live map · Animated pin</div><div class="sample-tile-url">sample-track.html</div></a>
+    <a class="sample-tile" href="/sample-receipt.html"><div class="sample-tile-num">No. 06 · Order</div><div class="sample-tile-name">Thank <em>you</em>.</div><div class="sample-tile-desc">Certificate of Delivery · Corner ornaments</div><div class="sample-tile-url">sample-receipt.html</div></a>
+    <a class="sample-tile" href="/sample-profile.html"><div class="sample-tile-num">No. 07 · Account</div><div class="sample-tile-name">Profile <em>·</em> Settings</div><div class="sample-tile-desc">Payment · Addresses · Toggles · Danger</div><div class="sample-tile-url">sample-profile.html</div></a>
+    <a class="sample-tile" href="/sample-earnings.html"><div class="sample-tile-num">No. 08 · Courier</div><div class="sample-tile-name">Ready to <em>earn</em>.</div><div class="sample-tile-desc">Heatmap · Float · Deliveries list</div><div class="sample-tile-url">sample-earnings.html</div></a>
+    <a class="sample-tile" href="/sample-empty.html"><div class="sample-tile-num">No. 09 · State</div><div class="sample-tile-name">Empty <em>states</em>.</div><div class="sample-tile-desc">3 specimens · Custom SVG ornaments</div><div class="sample-tile-url">sample-empty.html</div></a>
+    <a class="sample-tile" href="/couriers.html"><div class="sample-tile-num">No. 10 · Marketing</div><div class="sample-tile-name">Couriers <em>landing</em>.</div><div class="sample-tile-desc">Editorial · Already in production</div><div class="sample-tile-url">couriers.html ● Live</div></a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-l">
+    <strong>Azure IM Ltd</strong> · CashFlow · Design System<br>
+    Locked · 20 April 2026 · Commit e31e7ce<br>
+    Editorial Banknote v8.6 · London, UK
+  </div>
+  <div class="foot-r">No. 001</div>
+</footer>
+
+</div>
+</body>
+</html>
