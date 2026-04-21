@@ -4,243 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>CashFlow — Home (v8 preview)</title>
+<title>CashFlow — Home (v8 Editorial · compressed)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
 <style>
 :root{
-  --ink:#050A12;--ink-raised:#0A111E;--ink-cut:#070D17;
+  --ink:#050A12;--ink-raised:#0A111E;
   --paper:#F2EDD7;--paper-dim:#D6CDA8;
-  --em:#00E8B8;--em-wash:rgba(0,232,184,.08);
-  --line:rgba(242,237,215,.14);--line-strong:rgba(242,237,215,.28);--line-em:rgba(0,232,184,.22);
+  --em:#00E8B8;--am:#FFB800;--em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);
+  --line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.22);
   --text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;
-  --f-display:'Instrument Serif','Times New Roman',serif;
+  --f-display:'Instrument Serif',serif;
   --f-body:'Outfit',system-ui,sans-serif;
-  --f-mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+  --f-mono:'IBM Plex Mono',Menlo,monospace;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
-body{position:relative}
 
-/* ── MAP BACKGROUND ── */
+/* Map background */
 #map{position:fixed;inset:0;z-index:0;background:#050A12}
 #map::after{content:'';position:absolute;inset:0;pointer-events:none;background:
-  radial-gradient(ellipse at 50% 35%,transparent 20%,rgba(5,10,18,.55) 70%),
-  linear-gradient(180deg,rgba(5,10,18,.8) 0%,transparent 20%,transparent 50%,rgba(5,10,18,.4) 72%,rgba(5,10,18,.97) 88%,var(--ink) 100%)}
+  radial-gradient(ellipse at 50% 35%,transparent 30%,rgba(5,10,18,.45) 78%),
+  linear-gradient(180deg,rgba(5,10,18,.72) 0%,transparent 20%,transparent 55%,rgba(5,10,18,.96) 88%,var(--ink) 100%)}
 
-/* Film grain on top */
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.04 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}
+/* Film grain — editorial signature */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}
 
-/* ── SAMPLE NAV (delete in real app) ── */
-.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px 16px;z-index:200}
+/* Sample nav */
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}
 .sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201}
-.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none;transition:background .2s}
-.sample-nav a:hover{background:var(--em)}
-.sample-nav a.active{background:var(--em)}
+.sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}
+.sample-nav a.on{background:var(--em)}
 
-/* ── TOP BAR ── */
+/* ── TOP BAR — wordmark left, supply toggle right ── */
 .topbar{
   position:fixed;top:32px;left:0;right:0;z-index:50;
-  padding:16px 20px;display:flex;justify-content:space-between;align-items:center;
+  padding:18px 20px 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;
   pointer-events:none;
 }
 .topbar > *{pointer-events:auto}
-.tb-left{display:flex;flex-direction:column;gap:4px}
 .wordmark{font-family:var(--f-display);font-size:26px;letter-spacing:-.02em;line-height:1}
 .wordmark .c{color:var(--text)}
 .wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
-.tb-meta{font-family:var(--f-mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:10px}
-.tb-meta::before{content:'';width:20px;height:1px;background:var(--paper-dim)}
-.tb-right{display:flex;gap:8px;align-items:center}
-.pill-icon{
-  width:40px;height:40px;border-radius:50%;border:1px solid var(--line-strong);
-  background:rgba(5,10,18,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--f-display);color:var(--paper);font-size:14px;font-style:italic;
-  cursor:pointer;transition:border-color .2s;
-}
-.pill-icon:hover{border-color:var(--em);color:var(--em)}
 
-/* ── FLOATING SPECIMEN (live status card) ── */
-.specimen{
-  position:fixed;top:130px;left:20px;z-index:40;
-  background:rgba(5,10,18,.72);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  border:1px solid var(--line-em);border-radius:2px;
-  padding:10px 14px;
-  display:flex;align-items:center;gap:10px;
-  animation:fadeSlide .8s .3s cubic-bezier(.2,.8,.2,1) both;
+/* Supply toggle — editorial treatment with glassmorphic backdrop */
+.supply-toggle{
+  display:flex;gap:0;
+  background:rgba(5,10,18,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border:1px solid var(--line-strong);border-radius:2px;overflow:hidden;
 }
-@keyframes fadeSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
-.spec-dot{width:6px;height:6px;border-radius:50%;background:var(--em);box-shadow:0 0 8px var(--em);animation:pulse 2s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.spec-t{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper);font-weight:500}
-.spec-t b{color:var(--em);font-weight:600}
+.supply-btn{
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
+  padding:10px 12px;color:var(--mute);background:transparent;border:none;cursor:pointer;
+  display:flex;align-items:center;gap:6px;transition:color .15s,background .15s;
+  border-right:1px solid var(--line);
+}
+.supply-btn:last-child{border-right:none}
+.supply-btn .n{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.04em;opacity:.9}
+.supply-btn.on[data-t="cour"]{color:var(--em);background:rgba(0,232,184,.08)}
+.supply-btn.on[data-t="cp"]{color:var(--am);background:rgba(255,184,0,.08)}
+.supply-btn:not(.on):hover{color:var(--paper-dim)}
 
-/* ── LOCATION MARKER (fake the user's pin) ── */
-.you-marker{
-  position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none;
-}
-.you-marker .ring{
-  position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;
-  border:1px solid var(--em);border-radius:50%;opacity:.4;
-  animation:ringPulse 3s ease-in-out infinite;
-}
+/* ── USER PIN with expanding rings (editorial) ── */
+.you-marker{position:fixed;top:36%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none}
+.you-marker .ring{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border:1px solid var(--em);border-radius:50%;opacity:.4;animation:ringPulse 3s ease-in-out infinite}
+body.cp-mode .you-marker .ring{border-color:var(--am)}
 @keyframes ringPulse{0%,100%{transform:scale(.8);opacity:.6}50%{transform:scale(1.2);opacity:.15}}
 .you-marker .ring-2{animation-delay:1.2s}
-.you-marker .dot{
-  position:relative;width:14px;height:14px;border-radius:50%;background:var(--em);
-  box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 20px rgba(0,232,184,.7);
-}
+.you-marker .dot{position:relative;width:14px;height:14px;border-radius:50%;background:var(--em);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 20px rgba(0,232,184,.7);transition:all .3s}
+body.cp-mode .you-marker .dot{background:var(--am);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 20px rgba(255,184,0,.7)}
 
-/* ── BOTTOM SHEET ── */
+/* ── BOTTOM SHEET — compressed ── */
 .sheet{
   position:fixed;bottom:0;left:0;right:0;z-index:45;
-  background:linear-gradient(180deg,rgba(10,17,30,.4) 0%,rgba(5,10,18,.97) 8%,rgba(5,10,18,.98) 100%);
+  background:linear-gradient(180deg,rgba(10,17,30,.35) 0%,rgba(5,10,18,.97) 10%,rgba(5,10,18,.99) 100%);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
   border-top:1px solid var(--line-strong);
-  padding:0 20px 88px;
-  animation:slideUp .7s .1s cubic-bezier(.2,.8,.2,1) both;
+  padding:0 20px 80px;
 }
-@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:translateY(0);opacity:1}}
-.sheet::before{
-  content:'';position:absolute;top:-1px;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5;
-}
+.sheet::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5;transition:background .3s}
+body.cp-mode .sheet::before{background:linear-gradient(90deg,transparent,var(--am),transparent)}
 
-/* mode tabs */
+/* Mode tabs — editorial: two items with · separator */
 .mode-row{
-  display:flex;padding:20px 0 16px;border-bottom:1px solid var(--line);
+  display:flex;padding:14px 0 12px;border-bottom:1px solid var(--line);
   justify-content:space-between;align-items:center;gap:16px;
 }
-.mode-tabs{display:flex;gap:0}
+.mode-tabs{display:flex;gap:0;align-items:center}
 .mode-tab{
   font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
-  padding:10px 14px 10px 0;color:var(--faint);position:relative;cursor:pointer;transition:color .2s;
+  padding:6px 14px 6px 0;color:var(--faint);position:relative;cursor:pointer;
+  transition:color .15s;background:none;border:none;
 }
 .mode-tab.on{color:var(--em)}
-.mode-tab.on::after{content:'';position:absolute;left:0;right:14px;bottom:6px;height:1px;background:var(--em)}
-.mode-tab:not(.on):hover{color:var(--paper-dim)}
-.mode-sep{color:var(--faint);font-family:var(--f-mono);padding:10px 0;font-size:10px}
-
+body.cp-mode .mode-tab.on{color:var(--am)}
+.mode-tab.on::after{content:'';position:absolute;left:0;right:14px;bottom:2px;height:1px;background:currentColor}
+.mode-sep{color:var(--faint);font-family:var(--f-mono);font-size:10px;padding:6px 8px}
 .mode-loc{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:6px}
-.mode-loc::before{content:'◉';color:var(--em);font-size:12px}
+.mode-loc::before{content:'◉';color:var(--em);font-size:11px;transition:color .3s}
+body.cp-mode .mode-loc::before{color:var(--am)}
 
-/* amount tombstone */
-.amt-block{padding:32px 0 20px;text-align:center;position:relative}
-.amt-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:8px;font-weight:500}
+/* ── AMOUNT — COMPRESSED: smaller tombstone, tighter padding ── */
+.amt-block{padding:16px 0 10px;text-align:center;position:relative}
+.amt-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:4px;font-weight:500}
 .amt-v{
-  font-family:var(--f-display);font-size:clamp(84px,22vw,120px);line-height:.95;
+  font-family:var(--f-display);font-size:clamp(48px,13vw,72px);line-height:.95;
   color:var(--paper);letter-spacing:-.04em;font-weight:400;
-  display:inline-block;position:relative;padding-bottom:10px;
+  display:inline-block;position:relative;padding-bottom:6px;
 }
-.amt-v::after{content:'';position:absolute;left:22%;right:22%;bottom:0;height:1px;background:var(--em)}
-.amt-v .c{font-size:.42em;color:var(--mute);letter-spacing:0;position:relative;top:-.55em;margin-right:.04em;font-style:normal}
+.amt-v::after{content:'';position:absolute;left:25%;right:25%;bottom:0;height:1px;background:var(--em);transition:background .3s}
+body.cp-mode .amt-v::after{background:var(--am)}
+.amt-v .c{font-size:.46em;color:var(--mute);letter-spacing:0;position:relative;top:-.5em;margin-right:.04em;font-style:normal}
 
-/* preset chips */
-.presets{display:flex;gap:8px;padding:4px 0 24px;overflow-x:auto;scrollbar-width:none}
+/* Presets — editorial borders, tighter */
+.presets{display:flex;gap:6px;padding:4px 0 14px;overflow-x:auto;scrollbar-width:none}
 .presets::-webkit-scrollbar{display:none}
 .preset{
-  flex-shrink:0;padding:10px 16px;font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;
+  flex-shrink:0;padding:7px 12px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;
   color:var(--paper-dim);background:transparent;border:1px solid var(--line);border-radius:2px;cursor:pointer;
-  font-weight:500;transition:all .2s;
+  font-weight:500;transition:all .15s;
 }
 .preset:hover{border-color:var(--line-strong);color:var(--paper)}
 .preset.on{border-color:var(--em);color:var(--em);background:var(--em-wash)}
+body.cp-mode .preset.on{border-color:var(--am);color:var(--am);background:var(--am-wash)}
 
-/* address field */
+/* Address — compressed to single row height */
 .addr-row{
-  display:flex;align-items:center;gap:12px;padding:14px 0;border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);margin-bottom:24px;
+  display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);margin-bottom:14px;cursor:pointer;
 }
 .addr-icon{
-  width:28px;height:28px;border-radius:50%;border:1px solid var(--line-em);background:var(--em-wash);
-  display:flex;align-items:center;justify-content:center;color:var(--em);font-size:11px;flex-shrink:0;
+  width:26px;height:26px;border-radius:50%;border:1px solid var(--line-em);background:var(--em-wash);
+  display:flex;align-items:center;justify-content:center;color:var(--em);font-size:10px;flex-shrink:0;
+  transition:all .3s;
 }
-.addr-text{flex:1;display:flex;flex-direction:column;gap:2px}
+body.cp-mode .addr-icon{border-color:rgba(255,184,0,.22);background:var(--am-wash);color:var(--am)}
+.addr-text{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
 .addr-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
-.addr-v{font-family:var(--f-display);font-size:19px;color:var(--paper);letter-spacing:-.01em;font-weight:400;line-height:1.2}
-.addr-chev{font-family:var(--f-mono);color:var(--faint);font-size:16px}
+.addr-v{font-family:var(--f-display);font-size:17px;color:var(--paper);letter-spacing:-.01em;font-weight:400;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.addr-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px;flex-shrink:0}
 
-/* primary CTA */
+/* CTA */
 .cta{
-  width:100%;padding:20px;background:var(--paper);color:var(--ink);
+  width:100%;padding:17px;background:var(--paper);color:var(--ink);
   font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;
   border:1px solid var(--paper);border-radius:2px;cursor:pointer;
-  transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;
+  transition:all .2s;position:relative;overflow:hidden;
 }
-.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+body.cp-mode .cta::before{background:var(--am)}
 .cta:hover::before{transform:translateX(0)}
 .cta span{position:relative;z-index:2}
-.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;transition:transform .3s;display:inline-block}
+.cta em{font-family:var(--f-display);font-style:italic;color:inherit;font-size:17px}
+.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;display:inline-block;transition:transform .25s}
 .cta:hover .arr{transform:translateX(4px)}
 
-/* ── BOTTOM TAB BAR ── */
+/* Tab bar */
 .tabs{
   position:fixed;bottom:0;left:0;right:0;z-index:60;
-  background:rgba(5,10,18,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
   border-top:1px solid var(--line);
-  padding:14px 0 22px;display:flex;justify-content:space-around;
+  padding:12px 0 20px;display:flex;justify-content:space-around;
 }
 .tab-item{
-  display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;
-  font-family:var(--f-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;
-  padding:6px 10px;transition:color .2s;position:relative;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;
+  padding:6px 10px;cursor:pointer;transition:color .15s;position:relative;
 }
 .tab-item.on{color:var(--em)}
-.tab-item.on::before{content:'';position:absolute;top:-14px;left:50%;transform:translateX(-50%);width:16px;height:1px;background:var(--em)}
-.tab-item:not(.on):hover{color:var(--paper-dim)}
+body.cp-mode .tab-item.on{color:var(--am)}
+.tab-item.on::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:16px;height:1px;background:currentColor}
 </style>
 </head>
 <body>
 
-<div class="banner">— Preview · v8 Editorial Home · Not Live Yet —</div>
+<div class="banner">— v8 Editorial · Compressed —</div>
 <div class="sample-nav">
-  <a href="/sample-signin.html">Sign-in</a>
-  <a href="/sample-receipt.html">Receipt</a>
-  <a href="#" class="active">Home</a>
+  <a href="/sample-home.html" class="on">Editorial</a>
+  <a href="/sample-home-min.html">Min v1</a>
+  <a href="/sample-home-v3.html">Min v3</a>
   <a href="/">Live →</a>
 </div>
 
-<!-- Real Mapbox map as background -->
 <div id="map"></div>
 
-<!-- User pin overlay -->
 <div class="you-marker">
   <div class="ring"></div>
   <div class="ring ring-2"></div>
   <div class="dot"></div>
 </div>
 
-<!-- Top bar -->
 <header class="topbar">
-  <div class="tb-left">
-    <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
-    <div class="tb-meta">Shoreditch · E1</div>
-  </div>
-  <div class="tb-right">
-    <div class="pill-icon" title="Notifications">○</div>
-    <div class="pill-icon" title="Profile">O</div>
+  <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+  <div class="supply-toggle">
+    <button class="supply-btn on" data-t="cour" onclick="setSupply('cour')">Couriers <span class="n">14</span></button>
+    <button class="supply-btn" data-t="cp" onclick="setSupply('cp')">CashPoints <span class="n">7</span></button>
   </div>
 </header>
 
-<!-- Floating status specimen -->
-<div class="specimen">
-  <div class="spec-dot"></div>
-  <div class="spec-t"><b>14</b> couriers nearby · <b>3</b> within 500m</div>
-</div>
-
-<!-- Bottom sheet -->
 <div class="sheet">
   <div class="mode-row">
     <div class="mode-tabs">
-      <div class="mode-tab on">Get Cash</div>
-      <div class="mode-sep">·</div>
-      <div class="mode-tab">Supply</div>
+      <button class="mode-tab on">Get Cash</button>
+      <span class="mode-sep">·</span>
+      <button class="mode-tab">Supply</button>
     </div>
-    <div class="mode-loc">London · Zone 1</div>
+    <div class="mode-loc">Shoreditch · E1</div>
   </div>
 
   <div class="amt-block">
@@ -263,16 +233,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;bac
   <div class="addr-row">
     <div class="addr-icon">◉</div>
     <div class="addr-text">
-      <div class="addr-l">Deliver to</div>
-      <div class="addr-v">42 Brick Lane, London E1</div>
+      <div class="addr-l" id="addrL">Deliver to</div>
+      <div class="addr-v" id="addrV">42 Brick Lane, London E1</div>
     </div>
     <div class="addr-chev">›</div>
   </div>
 
-  <button class="cta"><span>Request <em style="font-family:var(--f-display);font-style:italic;color:inherit">£100</em> <span class="arr">→</span></span></button>
+  <button class="cta"><span id="ctaTxt">Request <em>£100</em> <span class="arr">→</span></span></button>
 </div>
 
-<!-- Bottom tab bar -->
 <nav class="tabs">
   <div class="tab-item on">Home</div>
   <div class="tab-item">Orders</div>
@@ -281,35 +250,53 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;bac
 </nav>
 
 <script>
-// Boot the Mapbox map
 mapboxgl.accessToken = 'pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
 const map = new mapboxgl.Map({
   container: 'map',
   style: 'mapbox://styles/mapbox/dark-v11',
-  center: [-0.0738, 51.5194],
-  zoom: 14.5,
-  pitch: 35,
-  bearing: -15,
+  center: [-0.0738, 51.5194], zoom: 14.5,
+  pitch: 30, bearing: -15,
   attributionControl: false,
-  interactive: true,
 });
 
-map.on('load', () => {
-  // Drop courier pins — emerald dots
-  const couriers = [
-    [-0.0712, 51.5202],
-    [-0.0698, 51.5155],
-    [-0.0762, 51.5221],
-    [-0.0785, 51.5175],
-    [-0.0691, 51.5184],
-  ];
-  couriers.forEach(coord => {
-    const el = document.createElement('div');
-    el.style.cssText = 'width:10px;height:10px;border-radius:50%;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 12px rgba(255,184,0,.6);';
-    new mapboxgl.Marker(el).setLngLat(coord).addTo(map);
-  });
-});
+const COURIERS = [[-0.0712,51.5202],[-0.0698,51.5155],[-0.0762,51.5221],[-0.0785,51.5175],[-0.0691,51.5184],[-0.0744,51.5168],[-0.0705,51.5215],[-0.0780,51.5200],[-0.0720,51.5180],[-0.0768,51.5150],[-0.0695,51.5230],[-0.0733,51.5145],[-0.0775,51.5240],[-0.0710,51.5163]];
+const CASHPOINTS = [[-0.0725,51.5210],[-0.0755,51.5185],[-0.0700,51.5175],[-0.0770,51.5218],[-0.0685,51.5195],[-0.0740,51.5160],[-0.0795,51.5205]];
+
+let markers = [];
+function drawMarkers(mode){
+  markers.forEach(m => m.remove());
+  markers = [];
+  if (mode === 'cour'){
+    COURIERS.forEach(c => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:9px;height:9px;border-radius:50%;background:#00E8B8;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(0,232,184,.55);';
+      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
+    });
+  } else {
+    CASHPOINTS.forEach(c => {
+      const el = document.createElement('div');
+      el.style.cssText = 'width:10px;height:10px;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(255,184,0,.6);';
+      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
+    });
+  }
+}
+
+function setSupply(mode){
+  document.body.classList.toggle('cp-mode', mode === 'cp');
+  document.querySelectorAll('.supply-btn').forEach(b => b.classList.toggle('on', b.dataset.t === mode));
+  if (mode === 'cp'){
+    document.getElementById('addrL').textContent = 'Pick up from';
+    document.getElementById('addrV').textContent = 'Brick Lane News · 42 Brick Lane';
+    document.getElementById('ctaTxt').innerHTML = 'Reserve <em>£100</em> <span class="arr">→</span>';
+  } else {
+    document.getElementById('addrL').textContent = 'Deliver to';
+    document.getElementById('addrV').textContent = '42 Brick Lane, London E1';
+    document.getElementById('ctaTxt').innerHTML = 'Request <em>£100</em> <span class="arr">→</span>';
+  }
+  drawMarkers(mode);
+}
+
+map.on('load', () => drawMarkers('cour'));
 </script>
-
 </body>
 </html>
