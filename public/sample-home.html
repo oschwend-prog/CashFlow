@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>CashFlow — Home (v8 Editorial · compressed)</title>
+<title>CashFlow — Home (v8.5 · clearer sections)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
 <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
 <style>
 :root{
-  --ink:#050A12;--ink-raised:#0A111E;
+  --ink:#050A12;--ink-raised:#0A111E;--ink-cut:#0D1623;
   --paper:#F2EDD7;--paper-dim:#D6CDA8;
   --em:#00E8B8;--am:#FFB800;--em-wash:rgba(0,232,184,.08);--am-wash:rgba(255,184,0,.08);
   --line:rgba(242,237,215,.12);--line-strong:rgba(242,237,215,.24);--line-em:rgba(0,232,184,.22);
@@ -23,52 +23,35 @@
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;height:100vh;-webkit-font-smoothing:antialiased;overflow:hidden}
 
-/* Map background */
 #map{position:fixed;inset:0;z-index:0;background:#050A12}
 #map::after{content:'';position:absolute;inset:0;pointer-events:none;background:
-  radial-gradient(ellipse at 50% 35%,transparent 30%,rgba(5,10,18,.45) 78%),
-  linear-gradient(180deg,rgba(5,10,18,.72) 0%,transparent 20%,transparent 55%,rgba(5,10,18,.96) 88%,var(--ink) 100%)}
+  radial-gradient(ellipse at 50% 30%,transparent 30%,rgba(5,10,18,.45) 78%),
+  linear-gradient(180deg,rgba(5,10,18,.72) 0%,transparent 20%,transparent 48%,rgba(5,10,18,.96) 82%,var(--ink) 100%)}
 
-/* Film grain — editorial signature */
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.5;mix-blend-mode:overlay}
 
-/* Sample nav */
 .banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:7px;z-index:200}
 .sample-nav{position:fixed;top:30px;right:14px;display:flex;gap:6px;z-index:201}
 .sample-nav a{font-family:var(--f-mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:5px 10px;border-radius:2px;text-decoration:none}
 .sample-nav a.on{background:var(--em)}
 
-/* ── TOP BAR — wordmark left, supply toggle right ── */
-.topbar{
-  position:fixed;top:32px;left:0;right:0;z-index:50;
-  padding:18px 20px 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;
-  pointer-events:none;
-}
+/* ── TOP BAR ── */
+.topbar{position:fixed;top:32px;left:0;right:0;z-index:50;padding:18px 20px 16px;display:flex;justify-content:space-between;align-items:center;gap:16px;pointer-events:none}
 .topbar > *{pointer-events:auto}
 .wordmark{font-family:var(--f-display);font-size:26px;letter-spacing:-.02em;line-height:1}
 .wordmark .c{color:var(--text)}
 .wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
 
-/* Supply toggle — editorial treatment with glassmorphic backdrop */
-.supply-toggle{
-  display:flex;gap:0;
-  background:rgba(5,10,18,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-  border:1px solid var(--line-strong);border-radius:2px;overflow:hidden;
-}
-.supply-btn{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;
-  padding:10px 12px;color:var(--mute);background:transparent;border:none;cursor:pointer;
-  display:flex;align-items:center;gap:6px;transition:color .15s,background .15s;
-  border-right:1px solid var(--line);
-}
+.supply-toggle{display:flex;gap:0;background:rgba(5,10,18,.68);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line-strong);border-radius:2px;overflow:hidden}
+.supply-btn{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;padding:10px 12px;color:var(--mute);background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;transition:color .15s,background .15s;border-right:1px solid var(--line)}
 .supply-btn:last-child{border-right:none}
 .supply-btn .n{font-family:var(--f-mono);font-size:11px;font-weight:700;letter-spacing:.04em;opacity:.9}
 .supply-btn.on[data-t="cour"]{color:var(--em);background:rgba(0,232,184,.08)}
 .supply-btn.on[data-t="cp"]{color:var(--am);background:rgba(255,184,0,.08)}
 .supply-btn:not(.on):hover{color:var(--paper-dim)}
 
-/* ── USER PIN with expanding rings (editorial) ── */
-.you-marker{position:fixed;top:36%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none}
+/* ── USER PIN with rings ── */
+.you-marker{position:fixed;top:33%;left:50%;transform:translate(-50%,-50%);z-index:20;pointer-events:none}
 .you-marker .ring{position:absolute;top:50%;left:50%;width:80px;height:80px;margin:-40px 0 0 -40px;border:1px solid var(--em);border-radius:50%;opacity:.4;animation:ringPulse 3s ease-in-out infinite}
 body.cp-mode .you-marker .ring{border-color:var(--am)}
 @keyframes ringPulse{0%,100%{transform:scale(.8);opacity:.6}50%{transform:scale(1.2);opacity:.15}}
@@ -76,70 +59,69 @@ body.cp-mode .you-marker .ring{border-color:var(--am)}
 .you-marker .dot{position:relative;width:14px;height:14px;border-radius:50%;background:var(--em);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 20px rgba(0,232,184,.7);transition:all .3s}
 body.cp-mode .you-marker .dot{background:var(--am);box-shadow:0 0 0 3px rgba(5,10,18,.8),0 0 20px rgba(255,184,0,.7)}
 
-/* ── BOTTOM SHEET — compressed ── */
-.sheet{
-  position:fixed;bottom:0;left:0;right:0;z-index:45;
-  background:linear-gradient(180deg,rgba(10,17,30,.35) 0%,rgba(5,10,18,.97) 10%,rgba(5,10,18,.99) 100%);
-  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-  border-top:1px solid var(--line-strong);
-  padding:0 20px 80px;
-}
+/* ── BOTTOM SHEET ── */
+.sheet{position:fixed;bottom:0;left:0;right:0;z-index:45;background:linear-gradient(180deg,rgba(10,17,30,.35) 0%,rgba(5,10,18,.97) 8%,rgba(5,10,18,.99) 100%);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line-strong);padding:14px 20px 78px}
 .sheet::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5;transition:background .3s}
 body.cp-mode .sheet::before{background:linear-gradient(90deg,transparent,var(--am),transparent)}
 
-/* Mode tabs — editorial: two items with · separator */
-.mode-row{
-  display:flex;padding:14px 0 12px;border-bottom:1px solid var(--line);
-  justify-content:space-between;align-items:center;gap:16px;
+/* ── SEGMENTED CONTROL — Get Cash / Supply (now OBVIOUS) ── */
+.segmented{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  background:rgba(242,237,215,.04);
+  border:1px solid var(--line);
+  border-radius:2px;
+  padding:3px;position:relative;overflow:hidden;margin-bottom:18px;
 }
-.mode-tabs{display:flex;gap:0;align-items:center}
-.mode-tab{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
-  padding:6px 14px 6px 0;color:var(--faint);position:relative;cursor:pointer;
-  transition:color .15s;background:none;border:none;
+.seg-btn{
+  font-family:var(--f-body);font-size:14px;font-weight:600;letter-spacing:-.01em;
+  padding:13px 12px;color:var(--mute);background:transparent;border:none;cursor:pointer;
+  transition:color .2s;position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;gap:6px;
 }
-.mode-tab.on{color:var(--em)}
-body.cp-mode .mode-tab.on{color:var(--am)}
-.mode-tab.on::after{content:'';position:absolute;left:0;right:14px;bottom:2px;height:1px;background:currentColor}
-.mode-sep{color:var(--faint);font-family:var(--f-mono);font-size:10px;padding:6px 8px}
-.mode-loc{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--paper-dim);display:flex;align-items:center;gap:6px}
-.mode-loc::before{content:'◉';color:var(--em);font-size:11px;transition:color .3s}
-body.cp-mode .mode-loc::before{color:var(--am)}
+.seg-btn em{font-family:var(--f-display);font-style:italic;font-size:16px;color:inherit;font-weight:400;letter-spacing:-.01em}
+.seg-btn.on{color:var(--ink)}
 
-/* ── AMOUNT — COMPRESSED: smaller tombstone, tighter padding ── */
-.amt-block{padding:16px 0 10px;text-align:center;position:relative}
-.amt-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:4px;font-weight:500}
+.seg-indicator{
+  position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);
+  background:var(--paper);border-radius:2px;
+  transition:transform .28s cubic-bezier(.2,.8,.2,1);z-index:1;
+  box-shadow:0 2px 8px rgba(0,0,0,.3);
+}
+body.supply-mode .seg-indicator{transform:translateX(100%)}
+
+/* ── SECTION HEADERS — editorial § glyph ── */
+.sec-head{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--f-mono);font-size:10px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--paper-dim);font-weight:600;margin:14px 0 6px;
+}
+.sec-head::before{content:'§';font-family:var(--f-display);font-size:15px;color:var(--em);font-style:italic;font-weight:400;line-height:1}
+body.cp-mode .sec-head::before{color:var(--am)}
+.sec-head::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-head .tag{font-family:var(--f-mono);font-size:9px;letter-spacing:.12em;color:var(--faint);font-weight:500;text-transform:uppercase}
+
+/* ── AMOUNT — section body ── */
+.amt-block{text-align:center;padding:4px 0 10px}
 .amt-v{
-  font-family:var(--f-display);font-size:clamp(48px,13vw,72px);line-height:.95;
+  font-family:var(--f-display);font-size:clamp(52px,14vw,78px);line-height:.95;
   color:var(--paper);letter-spacing:-.04em;font-weight:400;
   display:inline-block;position:relative;padding-bottom:6px;
 }
-.amt-v::after{content:'';position:absolute;left:25%;right:25%;bottom:0;height:1px;background:var(--em);transition:background .3s}
+.amt-v::after{content:'';position:absolute;left:22%;right:22%;bottom:0;height:1px;background:var(--em);transition:background .3s}
 body.cp-mode .amt-v::after{background:var(--am)}
 .amt-v .c{font-size:.46em;color:var(--mute);letter-spacing:0;position:relative;top:-.5em;margin-right:.04em;font-style:normal}
 
-/* Presets — editorial borders, tighter */
-.presets{display:flex;gap:6px;padding:4px 0 14px;overflow-x:auto;scrollbar-width:none}
+/* Presets */
+.presets{display:flex;gap:6px;padding:6px 0 4px;overflow-x:auto;scrollbar-width:none}
 .presets::-webkit-scrollbar{display:none}
-.preset{
-  flex-shrink:0;padding:7px 12px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;
-  color:var(--paper-dim);background:transparent;border:1px solid var(--line);border-radius:2px;cursor:pointer;
-  font-weight:500;transition:all .15s;
-}
+.preset{flex-shrink:0;padding:7px 12px;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--paper-dim);background:transparent;border:1px solid var(--line);border-radius:2px;cursor:pointer;font-weight:500;transition:all .15s}
 .preset:hover{border-color:var(--line-strong);color:var(--paper)}
 .preset.on{border-color:var(--em);color:var(--em);background:var(--em-wash)}
 body.cp-mode .preset.on{border-color:var(--am);color:var(--am);background:var(--am-wash)}
 
-/* Address — compressed to single row height */
-.addr-row{
-  display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);margin-bottom:14px;cursor:pointer;
-}
-.addr-icon{
-  width:26px;height:26px;border-radius:50%;border:1px solid var(--line-em);background:var(--em-wash);
-  display:flex;align-items:center;justify-content:center;color:var(--em);font-size:10px;flex-shrink:0;
-  transition:all .3s;
-}
+/* Address */
+.addr-row{display:flex;align-items:center;gap:12px;padding:10px 0 12px;cursor:pointer}
+.addr-icon{width:26px;height:26px;border-radius:50%;border:1px solid var(--line-em);background:var(--em-wash);display:flex;align-items:center;justify-content:center;color:var(--em);font-size:10px;flex-shrink:0;transition:all .3s}
 body.cp-mode .addr-icon{border-color:rgba(255,184,0,.22);background:var(--am-wash);color:var(--am)}
 .addr-text{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
 .addr-l{font-family:var(--f-mono);font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
@@ -147,12 +129,7 @@ body.cp-mode .addr-icon{border-color:rgba(255,184,0,.22);background:var(--am-was
 .addr-chev{font-family:var(--f-mono);color:var(--faint);font-size:14px;flex-shrink:0}
 
 /* CTA */
-.cta{
-  width:100%;padding:17px;background:var(--paper);color:var(--ink);
-  font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;
-  border:1px solid var(--paper);border-radius:2px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
-}
+.cta{width:100%;padding:17px;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;border:1px solid var(--paper);border-radius:2px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;margin-top:10px}
 .cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 body.cp-mode .cta::before{background:var(--am)}
 .cta:hover::before{transform:translateX(0)}
@@ -161,17 +138,9 @@ body.cp-mode .cta::before{background:var(--am)}
 .cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;display:inline-block;transition:transform .25s}
 .cta:hover .arr{transform:translateX(4px)}
 
-/* Tab bar */
-.tabs{
-  position:fixed;bottom:0;left:0;right:0;z-index:60;
-  background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
-  border-top:1px solid var(--line);
-  padding:12px 0 20px;display:flex;justify-content:space-around;
-}
-.tab-item{
-  font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;
-  padding:6px 10px;cursor:pointer;transition:color .15s;position:relative;
-}
+/* Tabs */
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:60;background:rgba(5,10,18,.97);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:12px 0 20px;display:flex;justify-content:space-around}
+.tab-item{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);font-weight:500;padding:6px 10px;cursor:pointer;transition:color .15s;position:relative}
 .tab-item.on{color:var(--em)}
 body.cp-mode .tab-item.on{color:var(--am)}
 .tab-item.on::before{content:'';position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:16px;height:1px;background:currentColor}
@@ -179,11 +148,9 @@ body.cp-mode .tab-item.on{color:var(--am)}
 </head>
 <body>
 
-<div class="banner">— v8 Editorial · Compressed —</div>
+<div class="banner">— v8.5 · Clearer Sections + Mode Toggle —</div>
 <div class="sample-nav">
   <a href="/sample-home.html" class="on">Editorial</a>
-  <a href="/sample-home-min.html">Min v1</a>
-  <a href="/sample-home-v3.html">Min v3</a>
   <a href="/">Live →</a>
 </div>
 
@@ -204,20 +171,18 @@ body.cp-mode .tab-item.on{color:var(--am)}
 </header>
 
 <div class="sheet">
-  <div class="mode-row">
-    <div class="mode-tabs">
-      <button class="mode-tab on">Get Cash</button>
-      <span class="mode-sep">·</span>
-      <button class="mode-tab">Supply</button>
-    </div>
-    <div class="mode-loc">Shoreditch · E1</div>
+  <!-- BIG, OBVIOUS segmented mode control -->
+  <div class="segmented" id="segmented">
+    <div class="seg-indicator"></div>
+    <button class="seg-btn on" data-m="get" onclick="setMode('get')">Get <em>Cash</em></button>
+    <button class="seg-btn" data-m="supply" onclick="setMode('supply')">Supply <em>Cash</em></button>
   </div>
 
+  <!-- Section 1: AMOUNT -->
+  <div class="sec-head">Amount <span class="tag">· Zone 1</span></div>
   <div class="amt-block">
-    <div class="amt-l">Amount</div>
     <div class="amt-v"><span class="c">£</span>100</div>
   </div>
-
   <div class="presets">
     <button class="preset">20</button>
     <button class="preset">40</button>
@@ -230,6 +195,8 @@ body.cp-mode .tab-item.on{color:var(--am)}
     <button class="preset">500</button>
   </div>
 
+  <!-- Section 2: WHERE -->
+  <div class="sec-head" id="sectionWhere">Where <span class="tag">· Shoreditch E1</span></div>
   <div class="addr-row">
     <div class="addr-icon">◉</div>
     <div class="addr-text">
@@ -258,45 +225,46 @@ const map = new mapboxgl.Map({
   pitch: 30, bearing: -15,
   attributionControl: false,
 });
+const COURIERS=[[-0.0712,51.5202],[-0.0698,51.5155],[-0.0762,51.5221],[-0.0785,51.5175],[-0.0691,51.5184],[-0.0744,51.5168],[-0.0705,51.5215],[-0.0780,51.5200],[-0.0720,51.5180],[-0.0768,51.5150],[-0.0695,51.5230],[-0.0733,51.5145],[-0.0775,51.5240],[-0.0710,51.5163]];
+const CASHPOINTS=[[-0.0725,51.5210],[-0.0755,51.5185],[-0.0700,51.5175],[-0.0770,51.5218],[-0.0685,51.5195],[-0.0740,51.5160],[-0.0795,51.5205]];
 
-const COURIERS = [[-0.0712,51.5202],[-0.0698,51.5155],[-0.0762,51.5221],[-0.0785,51.5175],[-0.0691,51.5184],[-0.0744,51.5168],[-0.0705,51.5215],[-0.0780,51.5200],[-0.0720,51.5180],[-0.0768,51.5150],[-0.0695,51.5230],[-0.0733,51.5145],[-0.0775,51.5240],[-0.0710,51.5163]];
-const CASHPOINTS = [[-0.0725,51.5210],[-0.0755,51.5185],[-0.0700,51.5175],[-0.0770,51.5218],[-0.0685,51.5195],[-0.0740,51.5160],[-0.0795,51.5205]];
-
-let markers = [];
-function drawMarkers(mode){
-  markers.forEach(m => m.remove());
-  markers = [];
-  if (mode === 'cour'){
-    COURIERS.forEach(c => {
-      const el = document.createElement('div');
-      el.style.cssText = 'width:9px;height:9px;border-radius:50%;background:#00E8B8;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(0,232,184,.55);';
-      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
-    });
+let markers=[];
+function drawMarkers(supply){
+  markers.forEach(m=>m.remove()); markers=[];
+  if(supply==='cour'){
+    COURIERS.forEach(c=>{const el=document.createElement('div');el.style.cssText='width:9px;height:9px;border-radius:50%;background:#00E8B8;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(0,232,184,.55);';markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map))});
   } else {
-    CASHPOINTS.forEach(c => {
-      const el = document.createElement('div');
-      el.style.cssText = 'width:10px;height:10px;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(255,184,0,.6);';
-      markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map));
-    });
+    CASHPOINTS.forEach(c=>{const el=document.createElement('div');el.style.cssText='width:10px;height:10px;background:#FFB800;box-shadow:0 0 0 2px rgba(5,10,18,.8),0 0 10px rgba(255,184,0,.6);';markers.push(new mapboxgl.Marker(el).setLngLat(c).addTo(map))});
   }
 }
-
-function setSupply(mode){
-  document.body.classList.toggle('cp-mode', mode === 'cp');
-  document.querySelectorAll('.supply-btn').forEach(b => b.classList.toggle('on', b.dataset.t === mode));
-  if (mode === 'cp'){
-    document.getElementById('addrL').textContent = 'Pick up from';
-    document.getElementById('addrV').textContent = 'Brick Lane News · 42 Brick Lane';
-    document.getElementById('ctaTxt').innerHTML = 'Reserve <em>£100</em> <span class="arr">→</span>';
+function setSupply(supply){
+  document.body.classList.toggle('cp-mode', supply==='cp');
+  document.querySelectorAll('.supply-btn').forEach(b=>b.classList.toggle('on', b.dataset.t===supply));
+  if(supply==='cp'){
+    document.getElementById('addrL').textContent='Pick up from';
+    document.getElementById('addrV').textContent='Brick Lane News · 42 Brick Lane';
+    document.getElementById('ctaTxt').innerHTML=document.body.classList.contains('supply-mode')?'Earn <em>£100</em> <span class="arr">→</span>':'Reserve <em>£100</em> <span class="arr">→</span>';
   } else {
-    document.getElementById('addrL').textContent = 'Deliver to';
-    document.getElementById('addrV').textContent = '42 Brick Lane, London E1';
-    document.getElementById('ctaTxt').innerHTML = 'Request <em>£100</em> <span class="arr">→</span>';
+    document.getElementById('addrL').textContent=document.body.classList.contains('supply-mode')?'Deliver from':'Deliver to';
+    document.getElementById('addrV').textContent='42 Brick Lane, London E1';
+    document.getElementById('ctaTxt').innerHTML=document.body.classList.contains('supply-mode')?'Go Online <span class="arr">→</span>':'Request <em>£100</em> <span class="arr">→</span>';
   }
-  drawMarkers(mode);
+  drawMarkers(supply);
 }
-
-map.on('load', () => drawMarkers('cour'));
+function setMode(mode){
+  document.body.classList.toggle('supply-mode', mode==='supply');
+  document.querySelectorAll('.seg-btn').forEach(b=>b.classList.toggle('on', b.dataset.m===mode));
+  if(mode==='supply'){
+    document.getElementById('addrL').textContent='Start location';
+    document.getElementById('addrV').textContent='42 Brick Lane, London E1';
+    document.getElementById('ctaTxt').innerHTML='Go Online <span class="arr">→</span>';
+  } else {
+    document.getElementById('addrL').textContent=document.body.classList.contains('cp-mode')?'Pick up from':'Deliver to';
+    document.getElementById('addrV').textContent=document.body.classList.contains('cp-mode')?'Brick Lane News · 42 Brick Lane':'42 Brick Lane, London E1';
+    document.getElementById('ctaTxt').innerHTML=document.body.classList.contains('cp-mode')?'Reserve <em>£100</em> <span class="arr">→</span>':'Request <em>£100</em> <span class="arr">→</span>';
+  }
+}
+map.on('load', ()=>drawMarkers('cour'));
 </script>
 </body>
 </html>
