@@ -1373,7 +1373,7 @@ body.mode-requester .scr.home-v2 .hc-top-wm{filter:brightness(1)}
 </head>
 <body>
 <div class="toast" id="toast"><span class="toast-i" id="tI">✓</span><div class="toast-t"><div class="t1" id="tT"></div><div class="t2" id="tS"></div></div></div>
-<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.7</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
+<div id="splash"><div class="splash-logo wm"><span class="c">Cash</span><span class="f">Flow</span></div><div class="splash-tag">Cash, delivered. <span style="opacity:.5;font-size:10px;margin-left:4px">v7.9</span></div><div class="splash-bar"><div class="splash-bar-fill" id="splashBar"></div></div></div>
 
 <!-- Floating order pill -->
 <div class="order-pill" id="orderPill" onclick="resumeOrder()"><span class="op-dot"></span><span class="op-txt" id="pillTxt">Order in progress</span><span class="op-amt" id="pillAmt"></span></div>
@@ -1403,13 +1403,13 @@ body.mode-requester .scr.home-v2 .hc-top-wm{filter:brightness(1)}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CashFlow v7.7 — build 2026.04.20
+// CashFlow v7.9 — build 2026.04.20
 // Features: wordmark, glass UI, gradient buttons, premium home sheet,
 // demand heatmap, animated route maps, fee toggle + ruler, demo mode,
 // local CashPoints browse + pickup mode
 // ═══════════════════════════════════════════════════════════════════
-console.log('%cCashFlow v7.7','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
-window.__CASHFLOW_VERSION__='7.7';
+console.log('%cCashFlow v7.9','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
+window.__CASHFLOW_VERSION__='7.9';
 
 const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
 const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
@@ -3436,7 +3436,7 @@ function renderProfileContent(){
     <div class="prof-item" onclick="toast('Coming soon','','🛡')"><span class="pi">🔒</span><span class="pt">Privacy & Security</span><span class="pa">›</span></div>
     <div class="prof-item" onclick="toast('Coming soon','','❓')"><span class="pi">❓</span><span class="pt">Help & Support</span><span class="pa">›</span></div>
     <div class="prof-item danger" onclick="signOut()"><span class="pi">🚪</span><span class="pt">Sign Out</span><span class="pa"></span></div>
-    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.7 · London E1<br>© 2026 CashFlow Ltd</div>
+    <div class="app-foot"><span class="wm"><span class="c">Cash</span><span class="f">Flow</span></span> &nbsp;v7.9 · London E1<br>© 2026 CashFlow Ltd</div>
   `;
 }
 
@@ -3574,14 +3574,70 @@ async function verifyOTP(){
   try{const r=await fetch(SB+'/auth/v1/verify',{method:'POST',headers:{'Content-Type':'application/json',apikey:SK},body:JSON.stringify({email:S.email,token:code,type:'email'})});
     const d=await r.json();if(d.error)throw new Error(d.error.message);
     S.user={id:d.user?.id,email:d.user?.email||S.email,access_token:d.access_token};
+    S._session={access_token:d.access_token,refresh_token:d.refresh_token};
     try{const p=await rest('profiles','id=eq.'+S.user.id+'&select=*');
       if(!p.length)await sb('/rest/v1/profiles',{method:'POST',headers:{'Prefer':'return=minimal'},body:JSON.stringify({id:S.user.id,display_name:S.email.split('@')[0]})});
       else S.user.display_name=p[0].display_name;
     }catch(e){S.user.display_name=S.email.split('@')[0]}
+    connectRealtime();
     S._otpSent=false;go('home','home');toast('Welcome!',S.email,'✓');
   }catch(er){const e2=$('authErr2');if(e2)e2.textContent=er.message}
 }
-function signOut(){if(!S._demo)sb('/auth/v1/logout',{method:'POST'}).catch(()=>{});S.user=null;S._demo=false;S._otpSent=false;go('auth');Object.values(polls).forEach(clearInterval)}
+
+// v7.9: Supabase realtime — subscribes to notifications + orders for logged-in user
+let _rtWs=null;
+function connectRealtime(){
+  if(!S.user?.id||S._demo)return;
+  if(_rtWs)try{_rtWs.close()}catch(e){}
+  const url=SB.replace('https://','wss://')+'/realtime/v1/websocket?apikey='+SK+'&vsn=1.0.0';
+  _rtWs=new WebSocket(url);
+  _rtWs.onopen=()=>{
+    const joinRef=()=>String(Math.random()).slice(2,10);
+    _rtWs.send(JSON.stringify({topic:'realtime:public:notifications:user_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+S.user.id}]}},ref:joinRef()}));
+    _rtWs.send(JSON.stringify({topic:'realtime:public:orders:requester_user_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'UPDATE',schema:'public',table:'orders',filter:'requester_user_id=eq.'+S.user.id}]}},ref:joinRef()}));
+    _rtWs._hb=setInterval(()=>{try{_rtWs.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:joinRef()}))}catch(e){}},30000);
+    console.log('[realtime] connected');
+  };
+  _rtWs.onmessage=(ev)=>{
+    try{
+      const msg=JSON.parse(ev.data);
+      if(msg.event!=='postgres_changes'&&msg.event!=='INSERT'&&msg.event!=='UPDATE')return;
+      const rec=msg.payload?.data?.record||msg.payload?.record;
+      if(!rec)return;
+      if(msg.payload?.data?.table==='notifications'||msg.topic?.includes('notifications')){
+        S.notifications=[{id:rec.id,title:rec.title,body:rec.body,icon:rec.icon||'🔔',time:'just now',read:false},...(S.notifications||[])];
+        haptic('success');
+        if(typeof playSound==='function')playSound('ping');
+        toast(rec.title,rec.body||'',rec.icon||'🔔');
+        render();
+      }
+      if(msg.payload?.data?.table==='orders'||msg.topic?.includes('orders')){
+        if(S.order&&rec.id===S.order.id){
+          S.order={...S.order,status:rec.status,handover_code:rec.handover_code||S.order.handover_code};
+          const statusToStep={'PAID':0,'MATCHING':0,'ACCEPTED':1,'EN_ROUTE':2,'ARRIVED':3,'HANDOVER_QR_SCANNED':4,'VERIFYING':4,'COMPLETED':5};
+          if(statusToStep[rec.status]!=null){S.orderStep=statusToStep[rec.status];haptic('tick');render()}
+        }
+      }
+    }catch(e){console.warn('[realtime] parse error',e)}
+  };
+  _rtWs.onerror=(e)=>console.warn('[realtime] error',e);
+  _rtWs.onclose=()=>{
+    if(_rtWs?._hb)clearInterval(_rtWs._hb);
+    console.log('[realtime] disconnected');
+    if(S.user?.id&&!S._demo)setTimeout(connectRealtime,3000);
+  };
+}
+function disconnectRealtime(){
+  if(_rtWs){try{if(_rtWs._hb)clearInterval(_rtWs._hb);_rtWs.close()}catch(e){}_rtWs=null}
+}
+
+function signOut(){
+  disconnectRealtime();
+  if(!S._demo)sb('/auth/v1/logout',{method:'POST'}).catch(()=>{});
+  S.user=null;S._session=null;S._demo=false;S._otpSent=false;
+  go('auth');
+  Object.values(polls).forEach(clearInterval);
+}
 
 // ---- Request Logic ----
 let searchTO;
@@ -3658,12 +3714,40 @@ async function submitOrder(){
     let step=0;polls.track=setInterval(()=>{step++;S.orderStep=step;render();if(step>=totalSteps-1)clearInterval(polls.track)},5000);
     return;
   }
-  try{const r=await sb('/rest/v1/orders',{method:'POST',headers:{'Prefer':'return=representation'},body:JSON.stringify(orderPayload)});
-    if(!r.ok)throw new Error('Failed');const d=await r.json();S.order=d[0]||d;
+  // v7.8: LIVE PATH — call create-payment-intent Edge Function
+  try {
+    const epPayload = {
+      requester_user_id: S.user.id,
+      courier_id: c?.dbId || null,
+      cashpoint_id: S.selectedCashPoint?.dbId || null,
+      fulfillment_mode: S.deliveryMode === 'pickup' ? 'pickup' : 'delivery',
+      cash_amount_pence: S.amt * 100,
+      delivery_fee_pence: Math.round((f.delivery||5)*100),
+      courier_fee_pct: c?.fee || S.courierFee || 10,
+      courier_fee_pence: Math.round(f.courierFee*100),
+      tip_pence: 0,
+      delivery_address: S.addr,
+      delivery_lat: S.coords?.[1],
+      delivery_lng: S.coords?.[0],
+      customer_email: S.email,
+    };
+    const ep = await fetch(`${SB}/functions/v1/create-payment-intent`, {
+      method:'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization': `Bearer ${S._session?.access_token || SK}`, 'apikey': SK },
+      body: JSON.stringify(epPayload),
+    });
+    if (!ep.ok) { const err = await ep.text(); throw new Error('Payment setup failed: ' + err); }
+    const pi = await ep.json();
+    S.order = { ...orderPayload, id: pi.order_id, airwallex_pi_id: pi.payment_intent_id, client_secret: pi.client_secret, created_at: new Date().toISOString() };
     setTimeout(()=>{clearInterval(polls.matchCD);go('tracking')},3500);
     const hasCash=S.courierHasCash;const totalSteps=hasCash?4:5;
     let step=0;polls.track=setInterval(()=>{step++;S.orderStep=step;render();if(step>=totalSteps-1)clearInterval(polls.track)},5000);
-  }catch(e){clearInterval(polls.matchCD);toast('Error',e.message,'❌');go('request')}
+  } catch(e){
+    clearInterval(polls.matchCD);
+    console.error('submitOrder error:', e);
+    toast('Error',e.message||'Payment failed','❌');
+    go('request');
+  }
 }
 
 // v7.3: Live courier approach — simulates the selected courier moving toward requester
