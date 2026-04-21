@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<title>CashFlow — Receipt (v8 preview)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050A12;--ink-raised:#0A111E;--ink-cut:#070D17;
+  --paper:#F2EDD7;--paper-dim:#D6CDA8;
+  --em:#00E8B8;--em-wash:rgba(0,232,184,.08);
+  --line:rgba(242,237,215,.14);--line-strong:rgba(242,237,215,.28);--line-em:rgba(0,232,184,.22);
+  --text:#F7F3E3;--mute:#97937E;--faint:#5C5B4C;
+  --f-display:'Instrument Serif','Times New Roman',serif;
+  --f-body:'Outfit',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono','SF Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--ink);color:var(--text);font-family:var(--f-body);font-size:16px;line-height:1.5;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{overflow-x:hidden;position:relative}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background-image:url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.93 0 0 0 0 0.84 0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");opacity:.55;mix-blend-mode:overlay}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(ellipse at 50% 40%,transparent 60%,rgba(0,0,0,.4) 100%)}
+
+.banner{position:fixed;top:0;left:0;right:0;background:var(--em);color:var(--ink);font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;text-align:center;padding:8px 16px;z-index:100}
+.sample-nav{position:fixed;top:32px;right:16px;display:flex;gap:8px;z-index:101}
+.sample-nav a{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);background:var(--paper);padding:6px 12px;border-radius:2px;text-decoration:none;transition:background .2s}
+.sample-nav a:hover{background:var(--em)}
+
+.masthead{display:flex;justify-content:space-between;align-items:center;padding:80px 28px 20px;position:relative;z-index:2}
+.wordmark{font-family:var(--f-display);font-size:26px;letter-spacing:-.02em;line-height:1}
+.wordmark .c{color:var(--text)}
+.wordmark .f{color:var(--em);font-style:italic;margin-left:-.04em;letter-spacing:-.04em}
+.mh-back{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:8px 14px;border:1px solid var(--line-strong);border-radius:2px;color:var(--paper);text-decoration:none}
+
+main{padding:40px 20px 100px;position:relative;z-index:2;max-width:540px;margin:0 auto}
+
+.cert-wrap{
+  background:var(--ink-raised);border:1px solid var(--line-strong);
+  padding:clamp(32px,7vw,56px) clamp(28px,5vw,44px);border-radius:2px;position:relative;
+  box-shadow:0 40px 100px rgba(0,0,0,.5),0 0 0 1px rgba(242,237,215,.02) inset;
+  animation:reveal .9s cubic-bezier(.2,.8,.2,1) both;
+}
+.cert-wrap::before,.cert-wrap::after{content:'';position:absolute;width:24px;height:24px;border:1px solid var(--em)}
+.cert-wrap::before{top:-1px;left:-1px;border-right:none;border-bottom:none}
+.cert-wrap::after{bottom:-1px;right:-1px;border-left:none;border-top:none}
+.cert-orn-tr,.cert-orn-bl{position:absolute;width:24px;height:24px;border:1px solid var(--em)}
+.cert-orn-tr{top:-1px;right:-1px;border-left:none;border-bottom:none}
+.cert-orn-bl{bottom:-1px;left:-1px;border-right:none;border-top:none}
+@keyframes reveal{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+.cert-seal{
+  width:64px;height:64px;margin:0 auto 24px;border:1px solid var(--em);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-display);font-size:36px;color:var(--em);font-style:italic;
+  background:radial-gradient(circle,var(--em-wash),transparent);
+  animation:sealDrop 1s .2s cubic-bezier(.34,1.56,.64,1) both;
+}
+@keyframes sealDrop{from{opacity:0;transform:scale(.6) rotate(-20deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+
+.cert-eyebrow{
+  text-align:center;font-family:var(--f-mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--em);margin-bottom:12px;font-weight:500;
+}
+.cert-title{
+  text-align:center;font-family:var(--f-display);font-size:clamp(42px,10vw,64px);line-height:1;letter-spacing:-.03em;
+  margin-bottom:8px;font-weight:400;
+}
+.cert-title em{font-style:italic;color:var(--em)}
+.cert-sub{
+  text-align:center;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--paper-dim);margin-bottom:40px;font-weight:400;
+}
+
+/* Hairline rule */
+.rule{height:1px;background:var(--line);margin:32px 0}
+.rule-em{height:1px;background:linear-gradient(90deg,transparent,var(--em),transparent);opacity:.5;margin:32px 0}
+
+/* Tombstone amount */
+.amount{text-align:center;padding:8px 0 32px}
+.amount-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.25em;text-transform:uppercase;color:var(--paper-dim);margin-bottom:12px;font-weight:500}
+.amount-v{
+  font-family:var(--f-display);font-size:clamp(72px,16vw,112px);line-height:1;
+  color:var(--paper);letter-spacing:-.04em;font-weight:400;
+  display:inline-block;position:relative;padding-bottom:10px;
+}
+.amount-v::after{content:'';position:absolute;left:15%;right:15%;bottom:0;height:1px;background:var(--em)}
+.amount-v .c{font-size:.5em;color:var(--mute);letter-spacing:0;position:relative;top:-.4em;margin-right:.05em}
+.amount-v em{font-style:italic;color:var(--em)}
+
+/* Breakdown rows */
+.break{margin:0 0 8px}
+.break-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:14px 0;border-bottom:1px solid var(--line);
+}
+.break-row:last-child{border-bottom:none}
+.break-l{font-family:var(--f-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper-dim);font-weight:500}
+.break-v{font-family:var(--f-display);font-size:22px;color:var(--paper);letter-spacing:-.01em;font-weight:400}
+.break-v em{font-style:italic;color:var(--em)}
+.break-v .mono{font-family:var(--f-mono);font-size:13px;color:var(--mute);letter-spacing:.04em;margin-left:8px}
+
+.total-row{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding:20px 0 4px;border-top:1px solid var(--line-strong);margin-top:8px;
+}
+.total-l{font-family:var(--f-mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--paper);font-weight:600}
+.total-v{font-family:var(--f-display);font-size:34px;color:var(--paper);letter-spacing:-.02em;font-weight:400}
+
+/* Courier card embedded */
+.courier{
+  display:flex;align-items:center;gap:16px;padding:14px 0;
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+  margin:28px 0 4px;
+}
+.courier-avatar{
+  width:48px;height:48px;border-radius:50%;background:var(--em-wash);border:1px solid var(--line-em);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--f-display);font-size:20px;color:var(--em);font-style:italic;font-weight:400;flex-shrink:0;
+}
+.courier-name{font-family:var(--f-display);font-size:22px;color:var(--paper);letter-spacing:-.01em;font-weight:400}
+.courier-meta{font-family:var(--f-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin-top:4px;font-weight:400}
+.courier-meta .star{color:var(--em)}
+.courier-rate{
+  margin-left:auto;font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--em);padding:8px 12px;border:1px solid var(--line-em);border-radius:2px;text-decoration:none;
+  font-weight:500;transition:all .2s;
+}
+.courier-rate:hover{background:var(--em);color:var(--ink)}
+
+/* CTA buttons */
+.cta{
+  width:100%;padding:20px;background:var(--paper);color:var(--ink);
+  font-family:var(--f-body);font-size:15px;font-weight:600;letter-spacing:-.01em;
+  border:1px solid var(--paper);border-radius:2px;cursor:pointer;
+  transition:all .3s cubic-bezier(.2,.8,.2,1);position:relative;overflow:hidden;margin-top:32px;
+  animation:reveal .9s .6s cubic-bezier(.2,.8,.2,1) both;
+}
+.cta::before{content:'';position:absolute;inset:0;background:var(--em);transform:translateX(-101%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+.cta:hover::before{transform:translateX(0)}
+.cta span{position:relative;z-index:2}
+.cta .arr{font-family:var(--f-mono);font-weight:400;margin-left:8px;display:inline-block;transition:transform .3s}
+.cta:hover .arr{transform:translateX(4px)}
+
+.dl-link{
+  width:100%;text-align:center;padding:16px 4px;margin-top:8px;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);
+  border:none;background:none;cursor:pointer;transition:color .2s,letter-spacing .3s;
+  animation:reveal .9s .75s cubic-bezier(.2,.8,.2,1) both;
+}
+.dl-link:hover{color:var(--em);letter-spacing:.22em}
+
+/* Footer serial */
+.cert-foot{
+  display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+  padding-top:32px;margin-top:32px;border-top:1px solid var(--line);
+}
+.cert-foot-l{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);line-height:1.6}
+.cert-foot-l strong{color:var(--paper-dim);font-weight:400}
+.cert-foot-r{font-family:var(--f-display);font-size:16px;color:var(--paper-dim);font-style:italic;letter-spacing:.02em}
+
+/* Guilloche decorative strip */
+.guilloche{
+  height:20px;margin:40px -20px 0;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'><g fill='none' stroke='%23F2EDD7' stroke-width='.35' opacity='.22'><path d='M0 10 Q 10 2 20 10 T 40 10 T 60 10 T 80 10 T 100 10 T 120 10 T 140 10 T 160 10 T 180 10 T 200 10'/><path d='M0 10 Q 10 18 20 10 T 40 10 T 60 10 T 80 10 T 100 10 T 120 10 T 140 10 T 160 10 T 180 10 T 200 10'/><path d='M0 10 Q 5 6 10 10 T 20 10 T 30 10 T 40 10 T 50 10 T 60 10 T 70 10 T 80 10 T 90 10 T 100 10 T 110 10 T 120 10 T 130 10 T 140 10 T 150 10 T 160 10 T 170 10 T 180 10 T 190 10 T 200 10'/></g></svg>");
+  background-repeat:repeat-x;background-size:200px 20px;
+  animation:reveal .9s .9s cubic-bezier(.2,.8,.2,1) both;
+}
+</style>
+</head>
+<body>
+
+<div class="banner">— Preview · v8 Editorial Receipt · Not Live Yet —</div>
+
+<div class="sample-nav">
+  <a href="/sample-signin.html">Sign-in</a>
+  <a href="/">Live app →</a>
+</div>
+
+<header class="masthead">
+  <a href="/" class="mh-back">← Close</a>
+  <div class="wordmark"><span class="c">Cash</span><span class="f">Flow</span></div>
+  <div style="width:70px"></div>
+</header>
+
+<main>
+  <div class="cert-wrap">
+    <span class="cert-orn-tr"></span>
+    <span class="cert-orn-bl"></span>
+
+    <div class="cert-seal">✓</div>
+    <div class="cert-eyebrow">Cash Delivered · 22:47 GMT</div>
+    <h1 class="cert-title">Thank <em>you</em>.</h1>
+    <div class="cert-sub">Order No. 000472 &middot; Shoreditch, E1</div>
+
+    <div class="amount">
+      <div class="amount-l">Cash received</div>
+      <div class="amount-v"><span class="c">£</span>100<em>.00</em></div>
+    </div>
+
+    <div class="courier">
+      <div class="courier-avatar">M</div>
+      <div>
+        <div class="courier-name">Marcus T.</div>
+        <div class="courier-meta"><span class="star">★</span> 4.92 &middot; 147 deliveries</div>
+      </div>
+      <a href="#" class="courier-rate">Rate →</a>
+    </div>
+
+    <div style="margin-top:24px">
+      <div class="break">
+        <div class="break-row">
+          <div class="break-l">Delivery time</div>
+          <div class="break-v">14<span class="mono">min</span></div>
+        </div>
+        <div class="break-row">
+          <div class="break-l">Distance</div>
+          <div class="break-v">1.2<span class="mono">km</span></div>
+        </div>
+        <div class="break-row">
+          <div class="break-l">Base fee</div>
+          <div class="break-v">£5.00</div>
+        </div>
+        <div class="break-row">
+          <div class="break-l">Courier fee &middot; 14%</div>
+          <div class="break-v">£14.00</div>
+        </div>
+        <div class="break-row">
+          <div class="break-l">Tip</div>
+          <div class="break-v">£<em>0</em>.00</div>
+        </div>
+      </div>
+      <div class="total-row">
+        <div class="total-l">Total charged</div>
+        <div class="total-v">£119.00</div>
+      </div>
+    </div>
+
+    <div class="rule-em"></div>
+    <button class="cta"><span>Rate your courier <span class="arr">→</span></span></button>
+    <button class="dl-link">Download PDF receipt</button>
+
+    <div class="guilloche"></div>
+
+    <div class="cert-foot">
+      <div class="cert-foot-l">
+        <strong>Azure IM Ltd</strong><br>
+        Receipt &middot; 2026-04-20
+      </div>
+      <div class="cert-foot-r">No. 000472</div>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
