@@ -2257,16 +2257,16 @@ input:focus,textarea:focus{outline:none}
 
 <script>
 // ═══════════════════════════════════════════════════════════════════
-// CashFlow v8.6 — build 2026.04.20
+// CashFlow v8.7 — build 2026.07.06
 // Features: wordmark, glass UI, gradient buttons, premium home sheet,
 // demand heatmap, animated route maps, fee toggle + ruler, demo mode,
 // local CashPoints browse + pickup mode
 // ═══════════════════════════════════════════════════════════════════
-console.log('%cCashFlow v8.6','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
+console.log('%cCashFlow v8.7','background:#00E8B8;color:#050A12;padding:4px 10px;border-radius:4px;font-weight:700','loaded — '+new Date().toISOString());
 window.__CASHFLOW_VERSION__='7.9';
 
-const SB='https://intjyovslhvxsvxcbhgk.supabase.co';
-const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImludGp5b3ZzbGh2eHN2eGNiaGdrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMzc2MjEsImV4cCI6MjA5MDYxMzYyMX0.y3fz4Vfry32HUYy8IgK7Tc6QN0tYirm-Z1AlwK6pfZA';
+const SB='https://ejcubnbodbtjwomjhxhm.supabase.co';
+const SK='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqY3VibmJvZGJ0andvbWpoeGhtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDk3MDQsImV4cCI6MjA5ODkyNTcwNH0.dkPTastdhwq0HpiTnDEsTc5n-3_xl9k9nfOswKOXlEM';
 const MBT='pk.eyJ1Ijoib3NjaHdlbmQiLCJhIjoiY21pM2U1a2xlMTd6NjJrcjRvMnc1ZGZqaSJ9.RYS0aX5nP3HRLb0bNycq2Q';
 
 // ─── FEE MODEL (locked per brand/investor memory) ──────────────────────
@@ -2686,7 +2686,7 @@ function updateModeHints(){
   // Cash side signals (visible on Cash button when user is currently in Flow mode)
   let cashHint = '';
   if(S.mode==='courier'){
-    if(S.order && S.order.status!=='CONFIRMED') cashHint = 'LIVE';    // active order pending
+    if(S.order && S.order.status!=='completed' && S.order.status!=='confirming') cashHint = 'LIVE';    // active order pending
     else if(_MODE_CACHE.requester?.amt && _MODE_CACHE.requester?.addr) cashHint = '•'; // draft in progress
   }
 
@@ -3798,7 +3798,7 @@ function renderVerify(){
 // Unified completion after combined review
 function completeReview(){
   if(!S.verifyChecks.every(Boolean)){toast('Check all three','Verify cash first','△');return}
-  if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'CONFIRMED'})}).catch(()=>{});
+  if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'confirming'})}).catch(()=>{});
   const msgs=[];
   if(S.rating>0)msgs.push(S.rating+'★ rating');
   if(S.tipAmount>0)msgs.push('£'+S.tipAmount+' tip');
@@ -4458,7 +4458,10 @@ function connectRealtime(){
   _rtWs.onopen=()=>{
     const joinRef=()=>String(Math.random()).slice(2,10);
     _rtWs.send(JSON.stringify({topic:'realtime:public:notifications:user_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+S.user.id}]}},ref:joinRef()}));
-    _rtWs.send(JSON.stringify({topic:'realtime:public:orders:requester_user_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'UPDATE',schema:'public',table:'orders',filter:'requester_user_id=eq.'+S.user.id}]}},ref:joinRef()}));
+    _rtWs.send(JSON.stringify({topic:'realtime:public:orders:requester_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'UPDATE',schema:'public',table:'orders',filter:'requester_id=eq.'+S.user.id}]}},ref:joinRef()}));
+    // v8.7: courier side — incoming dispatch offers + updates on orders I'm delivering
+    _rtWs.send(JSON.stringify({topic:'realtime:public:offers:courier_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'INSERT',schema:'public',table:'offers',filter:'courier_id=eq.'+S.user.id}]}},ref:joinRef()}));
+    _rtWs.send(JSON.stringify({topic:'realtime:public:orders:courier_id=eq.'+S.user.id,event:'phx_join',payload:{config:{postgres_changes:[{event:'UPDATE',schema:'public',table:'orders',filter:'courier_id=eq.'+S.user.id}]}},ref:joinRef()}));
     _rtWs._hb=setInterval(()=>{try{_rtWs.send(JSON.stringify({topic:'phoenix',event:'heartbeat',payload:{},ref:joinRef()}))}catch(e){}},30000);
     console.log('[realtime] connected');
   };
@@ -4475,10 +4478,17 @@ function connectRealtime(){
         toast(rec.title,rec.body||'',rec.icon||'¶');
         render();
       }
+      if(msg.payload?.data?.table==='offers'||msg.topic?.includes('offers')){
+        onLiveOffer(rec);
+      }
       if(msg.payload?.data?.table==='orders'||msg.topic?.includes('orders')){
         if(S.order&&rec.id===S.order.id){
-          S.order={...S.order,status:rec.status,handover_code:rec.handover_code||S.order.handover_code};
-          const statusToStep={'PAID':0,'MATCHING':0,'ACCEPTED':1,'EN_ROUTE':2,'ARRIVED':3,'HANDOVER_QR_SCANNED':4,'VERIFYING':4,'COMPLETED':5};
+          const wasPending=S.order.status==='pending'||!S.order.status;
+          S.order={...S.order,status:rec.status,courier_id:rec.courier_id||S.order.courier_id,qr_code:rec.qr_code||S.order.qr_code};
+          // v8.7: statuses are the real order_status enum values
+          const statusToStep={'pending':0,'accepted':1,'collecting':1,'collected':2,'en_route':2,'arrived':3,'verifying':4,'handing_over':4,'confirming':4,'completed':5};
+          if(rec.status==='accepted'&&wasPending&&S.mode==='requester'){onOrderAccepted(rec);return}
+          if(rec.status==='cancelled'){stopDispatchTick();clearInterval(polls.matchCD);toast('Order cancelled',rec.cancel_reason||'','△');if(S.mode==='requester')go('request');render();return}
           if(statusToStep[rec.status]!=null){S.orderStep=statusToStep[rec.status];haptic('tick');render()}
         }
       }
@@ -4493,6 +4503,198 @@ function connectRealtime(){
 }
 function disconnectRealtime(){
   if(_rtWs){try{if(_rtWs._hb)clearInterval(_rtWs._hb);_rtWs.close()}catch(e){}_rtWs=null}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// v8.7 LIVE MATCHING — real courier<->requester dispatch
+// Demo mode (S._demo) never touches any of this.
+// ═══════════════════════════════════════════════════════════════
+const LIVE={dispatchTimer:null,locTimer:null,posTimer:null,offer:null,courierOrder:null};
+
+async function rpc(fn,args){
+  const r=await sb('/rest/v1/rpc/'+fn,{method:'POST',body:JSON.stringify(args||{})});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
+
+// ---- Requester: drive the dispatch loop while matching ----
+function startDispatchTick(orderId){
+  stopDispatchTick();
+  const tick=async()=>{
+    try{
+      const r=await fetch(SB+'/functions/v1/dispatch-order',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+(S._session?.access_token||SK),'apikey':SK},body:JSON.stringify({order_id:orderId})});
+      const d=await r.json();
+      if(d.state==='no_couriers'){
+        stopDispatchTick();clearInterval(polls.matchCD);
+        toast('No couriers nearby','All couriers are busy — try again shortly','△');
+        go('request');
+      }else if(d.state&&d.state!=='offering'&&d.state!=='searching'&&d.state!=='pending'){
+        stopDispatchTick(); // accepted/cancelled — realtime handles the transition
+      }
+    }catch(e){/* transient network — keep ticking */}
+  };
+  tick();
+  LIVE.dispatchTimer=setInterval(tick,5000);
+}
+function stopDispatchTick(){clearInterval(LIVE.dispatchTimer);LIVE.dispatchTimer=null}
+
+// Realtime says a courier accepted — load their real profile and start tracking
+async function onOrderAccepted(rec){
+  stopDispatchTick();clearInterval(polls.matchCD);
+  try{
+    const rows=await rest('profiles','select=id,display_name,courier_rating,courier_total_deliveries,courier_fee_percent,courier_latitude,courier_longitude&id=eq.'+rec.courier_id);
+    const p=rows[0]||{};
+    S.selectedCourier={id:p.id,dbId:p.id,name:p.display_name||'Your courier',rating:+(p.courier_rating||5),fee:+(p.courier_fee_percent||10),eta:6,dist:1,cash:S.amt,area:'',lat:+(p.courier_latitude||51.5215),lng:+(p.courier_longitude||-0.073),deliveries:p.courier_total_deliveries||0,onTime:.97,cancel:.02,verified:true,cashDelivered:0,tenure:1};
+  }catch(e){}
+  S.orderStep=1;
+  feedback('success','match');
+  go('tracking');
+  startCourierPosPoll(rec.courier_id);
+}
+
+// Follow the live courier position on the tracking map
+function startCourierPosPoll(courierId){
+  stopCourierPosPoll();
+  LIVE.posTimer=setInterval(async()=>{
+    if(!S.order||S.order.status==='completed'||S.order.status==='cancelled'){stopCourierPosPoll();return}
+    try{
+      const rows=await rest('profiles','select=courier_latitude,courier_longitude&id=eq.'+courierId);
+      const p=rows[0];
+      if(p&&p.courier_latitude&&maps.track&&maps.track._liveCourMarker){
+        maps.track._liveCourMarker.setLngLat([+p.courier_longitude,+p.courier_latitude]);
+      }
+    }catch(e){}
+  },5000);
+}
+function stopCourierPosPoll(){clearInterval(LIVE.posTimer);LIVE.posTimer=null}
+
+// ---- Courier: presence + location heartbeat ----
+function liveGoOnline(){
+  return new Promise(res=>{
+    if(!navigator.geolocation){toast('No GPS','Location needed to go online','◉');res(false);return}
+    navigator.geolocation.getCurrentPosition(async pos=>{
+      try{
+        await sb('/rest/v1/profiles?id=eq.'+S.user.id,{method:'PATCH',body:JSON.stringify({
+          role:'both',courier_is_online:true,
+          courier_latitude:pos.coords.latitude,courier_longitude:pos.coords.longitude,
+          courier_location_updated_at:new Date().toISOString(),
+          courier_cash_float:S.cashOnHand,
+          courier_fee_percent:Math.max(1,Math.min(50,S.courierFee))
+        })});
+        startLocHeartbeat();
+        res(true);
+      }catch(e){toast('Error',e.message||'Could not go online','✕');res(false)}
+    },()=>{toast('No GPS','Allow location to go online','◉');res(false)},{enableHighAccuracy:true,timeout:8000});
+  });
+}
+async function liveGoOffline(){
+  stopLocHeartbeat();
+  try{await sb('/rest/v1/profiles?id=eq.'+S.user.id,{method:'PATCH',body:JSON.stringify({courier_is_online:false})})}catch(e){}
+}
+function startLocHeartbeat(){
+  stopLocHeartbeat();
+  LIVE.locTimer=setInterval(()=>{
+    navigator.geolocation?.getCurrentPosition(pos=>{
+      sb('/rest/v1/profiles?id=eq.'+S.user.id,{method:'PATCH',body:JSON.stringify({
+        courier_latitude:pos.coords.latitude,courier_longitude:pos.coords.longitude,
+        courier_location_updated_at:new Date().toISOString()
+      })}).catch(()=>{});
+    });
+  },15000);
+}
+function stopLocHeartbeat(){clearInterval(LIVE.locTimer);LIVE.locTimer=null}
+
+// ---- Courier: a real dispatch offer arrives ----
+async function onLiveOffer(rec){
+  if(S._demo||!rec||!rec.order_id)return;
+  if(S.mode!=='courier'||!S.online)return;
+  try{
+    const rows=await rest('orders','select=*&id=eq.'+rec.order_id);
+    const o=rows[0];if(!o)return;
+    LIVE.offer={...rec,order:o};
+    showLiveOfferCard(o,rec);
+  }catch(e){}
+}
+function showLiveOfferCard(o,ofr){
+  const el=document.getElementById('reqAlert');if(!el)return;
+  feedback('medium','match');
+  const earn=(o.courier_earnings!=null?+o.courier_earnings:(+o.amount*(S.courierFee/100)*(1-PCUT))).toFixed(2);
+  let remain=Math.max(3,Math.round((new Date(ofr.expires_at).getTime()-Date.now())/1000));
+  const renderCard=()=>{
+    el.className='req-card';
+    el.innerHTML=`
+      <div class="rc-hdr">
+        <span class="rc-hdr-pulse"></span>
+        <span class="rc-hdr-lbl">Live request</span>
+        <span class="rc-hdr-cd">${remain}s</span>
+      </div>
+      <div class="rc-body">
+        <div class="rc-amt">£${(+o.amount).toFixed(0)}</div>
+        <div class="rc-info">
+          <div class="rc-line">${o.delivery_address?String(o.delivery_address).slice(0,42):'Nearby'}</div>
+          <div class="rc-line dim">You earn £${earn}</div>
+        </div>
+      </div>
+      <div class="rc-actions">
+        <button class="rc-btn decline" onclick="declineLiveOffer()">Decline</button>
+        <button class="rc-btn accept" onclick="acceptLiveOffer()">Accept</button>
+      </div>`;
+  };
+  renderCard();
+  clearInterval(polls.alertTimer);
+  polls.alertTimer=setInterval(()=>{
+    remain--;
+    if(remain<=0){clearInterval(polls.alertTimer);hideLiveOfferCard();LIVE.offer=null;return}
+    const cd=el.querySelector('.rc-hdr-cd');if(cd)cd.textContent=remain+'s';
+    if(remain<=5)haptic('tick');
+  },1000);
+}
+function hideLiveOfferCard(){
+  clearInterval(polls.alertTimer);
+  const el=document.getElementById('reqAlert');
+  if(el){el.className='';el.innerHTML=''}
+}
+async function acceptLiveOffer(){
+  const ofr=LIVE.offer;if(!ofr)return;
+  LIVE.offer=null;hideLiveOfferCard();
+  try{
+    const won=await rpc('claim_offer',{p_offer_id:ofr.id});
+    if(won===true||won==='true'){
+      LIVE.courierOrder=ofr.order;
+      S.order={...ofr.order};
+      S.orderStep=0;S.courierHasCash=true;
+      feedback('success','match');
+      go('courDel');
+    }else{
+      toast('Too late','Another courier took this one','△');
+    }
+  }catch(e){toast('Error',e.message||'Could not accept','✕')}
+}
+async function declineLiveOffer(){
+  const ofr=LIVE.offer;LIVE.offer=null;hideLiveOfferCard();
+  if(ofr)try{await rpc('decline_offer',{p_offer_id:ofr.id})}catch(e){}
+}
+
+// ---- Courier: push real status transitions as the delivery advances ----
+const LIVE_STEP_STATUS=['accepted','collecting','en_route','arrived','verifying'];
+async function liveAdvanceStep(){
+  if(!LIVE.courierOrder||S._demo)return;
+  const next=LIVE_STEP_STATUS[Math.min(S.orderStep,LIVE_STEP_STATUS.length-1)];
+  try{await sb('/rest/v1/orders?id=eq.'+LIVE.courierOrder.id,{method:'PATCH',body:JSON.stringify({status:next})})}catch(e){}
+}
+
+// ---- Courier: verify the handover code server-side, then trigger payout ----
+async function liveVerifyHandover(code){
+  if(!LIVE.courierOrder)return false;
+  try{
+    const ok=await rpc('verify_handover',{p_order_id:LIVE.courierOrder.id,p_code:(code||'').trim()});
+    if(ok===true||ok==='true'){
+      fetch(SB+'/functions/v1/payout-courier',{method:'POST',headers:{'Content-Type':'application/json','apikey':SK},body:JSON.stringify({order_id:LIVE.courierOrder.id})}).catch(()=>{});
+      LIVE.courierOrder=null;
+      return true;
+    }
+  }catch(e){}
+  return false;
 }
 
 function signOut(){
@@ -4602,10 +4804,11 @@ async function submitOrder(){
     });
     if (!ep.ok) { const err = await ep.text(); throw new Error('Payment setup failed: ' + err); }
     const pi = await ep.json();
-    S.order = { ...orderPayload, id: pi.order_id, airwallex_pi_id: pi.payment_intent_id, client_secret: pi.client_secret, created_at: new Date().toISOString() };
-    setTimeout(()=>{clearInterval(polls.matchCD);go('tracking')},3500);
-    const hasCash=S.courierHasCash;const totalSteps=hasCash?4:5;
-    let step=0;polls.track=setInterval(()=>{step++;S.orderStep=step;render();if(step>=totalSteps-1)clearInterval(polls.track)},5000);
+    if (pi.error) throw new Error(pi.error);
+    S.order = { ...orderPayload, id: pi.order_id, status:'pending', qr_code: pi.qr_code, airwallex_pi_id: pi.payment_intent_id, client_secret: pi.client_secret, created_at: new Date().toISOString() };
+    if (pi.qr_code) S.handoverCode = pi.qr_code; // server-generated code is authoritative in live mode
+    // v8.7: real dispatch — stay on the match screen until a courier actually accepts (realtime)
+    startDispatchTick(pi.order_id);
   } catch(e){
     clearInterval(polls.matchCD);
     console.error('submitOrder error:', e);
@@ -4636,9 +4839,10 @@ function startCourierApproach(){
 }
 function cancelReq(){
   clearInterval(polls.matchCD);clearInterval(polls.track);
-  if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'CANCELLED'})}).catch(()=>{});
+  stopDispatchTick();stopCourierPosPoll();
+  if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'cancelled'})}).catch(()=>{});
   S.order=null;S.orderStep=0;S.selectedCourier=null;go('request')}
-function confirmHandover(){if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'CONFIRMED'})}).catch(()=>{});
+function confirmHandover(){if(S.order&&!S._demo)sb('/rest/v1/orders?id=eq.'+S.order.id,{method:'PATCH',body:JSON.stringify({status:'confirming'})}).catch(()=>{});
   toast('Cash received!','£'+S.amt+' delivered','✓');S.tipAmount=0;S.rating=0;go('tip')}
 
 // ---- Courier Logic ----
@@ -4781,17 +4985,27 @@ function declineLiveRequest(id,wasTimeout){
   toast(wasTimeout?'Request expired':'Passed','Waiting for next request','✦');
 }
 
-function toggleOnline(){
+async function toggleOnline(){
   if(!S.supplyMode){toast('Set up first','Choose how you supply cash','△');return}
   if(!S.online&&S.cashOnHand<20){toast('Set cash','Need at least £20 float','△');return}
   if(S.supplyMode==='cashpoint' && !S.online && !S.cpName){toast('Name required','Enter your CashPoint name','△');return}
+  const live=!S._demo&&S.user?.id;
+  if(!S.online&&live){const ok=await liveGoOnline();if(!ok)return}
   S.online=!S.online;
   saveSettings();
-  if(S.online){toast("You're live!",'£'+S.cashOnHand+' · '+S.courierFee+'%','●'); startRequestSim()}
-  else{stopRequestSim(); toast("You're offline",'',' ')}
+  if(S.online){toast("You're live!",'£'+S.cashOnHand+' · '+S.courierFee+'%','●'); if(!live)startRequestSim()}
+  else{if(live)liveGoOffline(); stopRequestSim(); toast("You're offline",'',' ')}
   render()}
-function advDeliveryStep(){S.orderStep++;render()}
-function courierScannedQR(){S.orderStep++;go('courDel');toast('QR verified!','Hand over the cash','✓')}
+function advDeliveryStep(){S.orderStep++;if(LIVE.courierOrder&&!S._demo)liveAdvanceStep();render()}
+async function courierScannedQR(){
+  if(LIVE.courierOrder&&!S._demo){
+    const code=prompt('Enter the handover code shown on the requester’s screen:');
+    if(!code)return;
+    const ok=await liveVerifyHandover(code);
+    if(!ok){toast('Wrong code','Check the code and try again','✕');return}
+    S.orderStep++;go('courDel');toast('Handover verified!','Cash delivered — payout on its way','✓');return;
+  }
+  S.orderStep++;go('courDel');toast('QR verified!','Hand over the cash','✓')}
 function saveCashPoint(){toast('Saved!','CashPoint settings updated','✓');go('home','home')}
 
 // ---- Profile Logic ----
